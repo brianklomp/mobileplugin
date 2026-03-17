@@ -1,0 +1,117 @@
+/* Frontend Styles for ADREMM Clock Plugin */
+
+#adremm-clock-root {
+    position: fixed;
+    z-index: 9999999;
+    font-family: var(--adremm-clock-font);
+    color: var(--adremm-clock-text);
+}
+
+.adremm-clock-panel {
+    background: var(--adremm-clock-bg);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    min-width: 200px;
+    text-align: center;
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.adremm-clock-close-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: inherit;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+}
+
+.adremm-clock-close-btn:hover {
+    opacity: 1;
+}
+
+.adremm-clock-content .time {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.adremm-clock-content .date {
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+/* Tab State (25x100) */
+.adremm-clock-tab {
+    position: fixed;
+    width: 25px;
+    height: 100px;
+    background: var(--adremm-clock-bg);
+    color: var(--adremm-clock-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    z-index: 9999999;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.adremm-clock-tab:hover {
+    width: 35px;
+}
+
+.adremm-clock-tab span {
+    transform: rotate(-90deg);
+    white-space: nowrap;
+    font-weight: bold;
+    font-size: 12px;
+    letter-spacing: 2px;
+}
+
+/* Position-based Styles */
+.adremm-clock-pos-top-left { top: 20px; left: 20px; }
+.adremm-clock-pos-top-center { top: 20px; left: 50%; transform: translateX(-50%); }
+.adremm-clock-pos-top-right { top: 20px; right: 20px; }
+.adremm-clock-pos-middle-left { top: 50%; left: 20px; transform: translateY(-50%); }
+.adremm-clock-pos-middle-right { top: 50%; right: 20px; transform: translateY(-50%); }
+.adremm-clock-pos-bottom-left { bottom: 20px; left: 20px; }
+.adremm-clock-pos-bottom-center { bottom: 20px; left: 50%; transform: translateX(-50%); }
+.adremm-clock-pos-bottom-right { bottom: 20px; right: 20px; }
+
+/* Tab Positions */
+.adremm-clock-tab.tab-left { left: 0; border-radius: 0 4px 4px 0; }
+.adremm-clock-tab.tab-right { right: 0; border-radius: 4px 0 0 4px; }
+
+/* Themes */
+.adremm-clock-theme-modern .adremm-clock-panel {
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.adremm-clock-theme-classic .adremm-clock-panel {
+    border: 4px double var(--adremm-clock-text);
+    border-radius: 0;
+}
+
+.adremm-clock-theme-digital .adremm-clock-panel {
+    border: 1px solid #0f0;
+    box-shadow: 0 0 15px #0f0;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+    .adremm-clock-panel {
+        min-width: 150px;
+        padding: 10px;
+    }
+    .adremm-clock-content .time {
+        font-size: 20px;
+    }
+    .adremm-clock-content .date {
+        font-size: 12px;
+    }
+}
