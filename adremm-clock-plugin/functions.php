@@ -28,10 +28,10 @@ function adremm_clock_admin_enqueue($hook) {
     wp_enqueue_script('wp-color-picker');
 
     // Enqueue custom admin styles
-    wp_enqueue_style('adremm-clock-admin-css', ADREMM_CLOCK_URL . 'assets/css/admin-style.css', array(), ADREMM_CLOCK_VERSION);
+    wp_enqueue_style('adremm-clock-admin-css', ADREMM_CLOCK_URL . 'assets/admin-style.css', array(), ADREMM_CLOCK_VERSION);
 
     // Enqueue custom admin JS
-    wp_enqueue_script('adremm-clock-admin-js', ADREMM_CLOCK_URL . 'assets/js/admin-preview.js', array('jquery', 'wp-color-picker'), ADREMM_CLOCK_VERSION, true);
+    wp_enqueue_script('adremm-clock-admin-js', ADREMM_CLOCK_URL . 'assets/admin-preview.js', array('jquery', 'wp-color-picker'), ADREMM_CLOCK_VERSION, true);
 
     // Load initial Google Font if needed
     $settings = get_option('adremm_clock_settings', adremm_clock_get_default_settings());
@@ -49,10 +49,10 @@ function adremm_clock_frontend_enqueue() {
     $settings = get_option('adremm_clock_settings', adremm_clock_get_default_settings());
 
     // Enqueue custom frontend styles
-    wp_enqueue_style('adremm-clock-public-css', ADREMM_CLOCK_URL . 'assets/css/public-style.css', array(), ADREMM_CLOCK_VERSION);
+    wp_enqueue_style('adremm-clock-public-css', ADREMM_CLOCK_URL . 'assets/public-style.css', array(), ADREMM_CLOCK_VERSION);
 
     // Enqueue custom frontend JS
-    wp_enqueue_script('adremm-clock-public-js', ADREMM_CLOCK_URL . 'assets/js/public-clock.js', array('jquery'), ADREMM_CLOCK_VERSION, true);
+    wp_enqueue_script('adremm-clock-public-js', ADREMM_CLOCK_URL . 'assets/public-clock.js', array('jquery'), ADREMM_CLOCK_VERSION, true);
 
     // Localize script for multilingual support
     wp_localize_script('adremm-clock-public-js', 'adremmClockData', array(

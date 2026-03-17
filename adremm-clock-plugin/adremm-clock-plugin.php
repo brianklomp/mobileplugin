@@ -18,8 +18,8 @@ define('ADREMM_CLOCK_PATH', plugin_dir_path(__FILE__));
 define('ADREMM_CLOCK_URL', plugin_dir_url(__FILE__));
 
 // Load Includes
-require_once ADREMM_CLOCK_PATH . 'includes/settings.php';
-require_once ADREMM_CLOCK_PATH . 'includes/functions.php';
+require_once ADREMM_CLOCK_PATH . 'settings.php';
+require_once ADREMM_CLOCK_PATH . 'functions.php';
 
 // Plugin Activation
 register_activation_hook(__FILE__, 'adremm_clock_activate');
@@ -32,5 +32,5 @@ function adremm_clock_activate() {
 add_action('wp_footer', 'adremm_clock_render_frontend');
 function adremm_clock_render_frontend() {
     if (is_admin()) return;
-    include ADREMM_CLOCK_PATH . 'public/views/clock-template.php';
+    include ADREMM_CLOCK_PATH . 'clock-template.php';
 }

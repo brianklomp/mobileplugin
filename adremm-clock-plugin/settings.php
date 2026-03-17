@@ -57,7 +57,7 @@ function adremm_clock_add_admin_menu() {
 }
 
 function adremm_clock_render_settings_page() {
-    include ADREMM_CLOCK_PATH . 'admin/views/settings-page.php';
+    include ADREMM_CLOCK_PATH . 'settings-page.php';
 }
 
 // Callbacks for settings fields (to be refined in the view step)
