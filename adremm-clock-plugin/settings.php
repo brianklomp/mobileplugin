@@ -25,7 +25,7 @@ function adremm_clock_get_default_settings() {
         'font_family' => 'Inter',
         'bg_color' => '#ffffff',
         'text_color' => '#111111',
-        'accent_color' => '#0073aa',
+        'menu_id' => 'none',
     );
 }
 
@@ -37,6 +37,7 @@ function adremm_clock_settings_validate($input) {
     $output['position'] = isset($input['position']) ? sanitize_text_field($input['position']) : $defaults['position'];
     $output['theme'] = isset($input['theme']) ? sanitize_text_field($input['theme']) : $defaults['theme'];
     $output['font_family'] = isset($input['font_family']) ? sanitize_text_field($input['font_family']) : $defaults['font_family'];
+    $output['menu_id'] = isset($input['menu_id']) ? sanitize_text_field($input['menu_id']) : 'none';
 
     // Custom RGBA/Hex sanitization
     $sanitize_color = function($color, $fallback) {
@@ -48,7 +49,6 @@ function adremm_clock_settings_validate($input) {
 
     $output['bg_color'] = isset($input['bg_color']) ? $sanitize_color($input['bg_color'], $defaults['bg_color']) : $defaults['bg_color'];
     $output['text_color'] = isset($input['text_color']) ? $sanitize_color($input['text_color'], $defaults['text_color']) : $defaults['text_color'];
-    $output['accent_color'] = isset($input['accent_color']) ? $sanitize_color($input['accent_color'], $defaults['accent_color']) : $defaults['accent_color'];
 
     return $output;
 }
