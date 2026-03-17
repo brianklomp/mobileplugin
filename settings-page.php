@@ -68,11 +68,11 @@ $fonts = adremm_clock_get_google_fonts(); // To be implemented in functions.php
                     </tr>
                     <tr>
                         <th scope="row"><?php _e('Achtergrond Kleur', 'adremm-clock-plugin'); ?></th>
-                        <td><input type="text" name="adremm_clock_settings[bg_color]" value="<?php echo esc_attr($settings['bg_color']); ?>" class="color-picker"></td>
+                        <td><input type="text" name="adremm_clock_settings[bg_color]" value="<?php echo esc_attr($settings['bg_color']); ?>" class="color-picker" data-alpha="true"></td>
                     </tr>
                     <tr>
                         <th scope="row"><?php _e('Tekst Kleur', 'adremm-clock-plugin'); ?></th>
-                        <td><input type="text" name="adremm_clock_settings[text_color]" value="<?php echo esc_attr($settings['text_color']); ?>" class="color-picker"></td>
+                        <td><input type="text" name="adremm_clock_settings[text_color]" value="<?php echo esc_attr($settings['text_color']); ?>" class="color-picker" data-alpha="true"></td>
                     </tr>
                 </table>
 

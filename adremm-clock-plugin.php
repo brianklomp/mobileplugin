@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: ADREMM ADREMM Klok Plugin
+ * Plugin Name: ADREMM Klok Plugin
  * Description: Een meertalige klokplugin met live previews en schaalbare weergave.
  * Version: 1.0.0
  * Author: ADREMM

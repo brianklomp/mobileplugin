@@ -37,9 +37,18 @@ function adremm_clock_settings_validate($input) {
     $output['position'] = isset($input['position']) ? sanitize_text_field($input['position']) : $defaults['position'];
     $output['theme'] = isset($input['theme']) ? sanitize_text_field($input['theme']) : $defaults['theme'];
     $output['font_family'] = isset($input['font_family']) ? sanitize_text_field($input['font_family']) : $defaults['font_family'];
-    $output['bg_color'] = isset($input['bg_color']) ? sanitize_hex_color($input['bg_color']) : $defaults['bg_color'];
-    $output['text_color'] = isset($input['text_color']) ? sanitize_hex_color($input['text_color']) : $defaults['text_color'];
-    $output['accent_color'] = isset($input['accent_color']) ? sanitize_hex_color($input['accent_color']) : $defaults['accent_color'];
+
+    // Custom RGBA/Hex sanitization
+    $sanitize_color = function($color, $fallback) {
+        $color = trim($color);
+        if (preg_match('/^rgba\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*(0(\.\d+)?|1(\.0+)?)\s*\)$/', $color)) return $color;
+        if (preg_match('/^#([A-Fa-f0-9]{3}){1,2}$/', $color)) return $color;
+        return $fallback;
+    };
+
+    $output['bg_color'] = isset($input['bg_color']) ? $sanitize_color($input['bg_color'], $defaults['bg_color']) : $defaults['bg_color'];
+    $output['text_color'] = isset($input['text_color']) ? $sanitize_color($input['text_color'], $defaults['text_color']) : $defaults['text_color'];
+    $output['accent_color'] = isset($input['accent_color']) ? $sanitize_color($input['accent_color'], $defaults['accent_color']) : $defaults['accent_color'];
 
     return $output;
 }

@@ -48,7 +48,8 @@ jQuery(document).ready(function($) {
         $('.color-picker').wpColorPicker({
             change: function(event, ui) {
                 setTimeout(updateColors, 10);
-            }
+            },
+            alpha: true
         });
     } else {
         $bgColorInput.on('input', updateColors);

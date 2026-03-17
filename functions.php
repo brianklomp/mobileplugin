@@ -9,6 +9,13 @@ if ( ! defined('ABSPATH') ) exit;
  * Return an array of Google Fonts
  */
 function adremm_clock_get_google_fonts() {
+    $fonts_file = ADREMM_CLOCK_PATH . 'assets/fonts.json';
+    if (file_exists($fonts_file)) {
+        $fonts = json_decode(file_get_contents($fonts_file), true);
+        if (is_array($fonts)) {
+            return $fonts;
+        }
+    }
     return array(
         'Inter', 'Poppins', 'Outfit', 'Roboto', 'Montserrat', 'Open Sans', 'Lato',
         'Nunito', 'Raleway', 'Ubuntu', 'Playfair Display', 'Oswald', 'Rubik',
@@ -26,6 +33,7 @@ function adremm_clock_admin_enqueue($hook) {
     // Enqueue WP Color Picker
     wp_enqueue_style('wp-color-picker');
     wp_enqueue_script('wp-color-picker');
+    wp_enqueue_script('wp-color-picker-alpha', ADREMM_CLOCK_URL . 'assets/wp-color-picker-alpha.min.js', array('wp-color-picker'), '3.0.0', true);
 
     // Enqueue custom admin styles
     wp_enqueue_style('adremm-clock-admin-css', ADREMM_CLOCK_URL . 'assets/admin-style.css', array(), ADREMM_CLOCK_VERSION);
