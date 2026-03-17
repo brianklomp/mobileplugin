@@ -1,87 +1,87 @@
-/* ADREMM Clock Frontend Styles */
-#adremm-clock-root {
+/* ADREMM Clock Frontend Styles V2 */
+#adremm-clock-wrapper {
     position: fixed;
-    z-index: 9999999;
-    font-family: var(--adremm-clock-font);
+    z-index: 2147483647;
+    font-family: sans-serif;
     color: var(--adremm-clock-text);
     box-sizing: border-box;
 }
 
-#adremm-clock-root * { box-sizing: border-box; }
+#adremm-clock-wrapper * { box-sizing: border-box; }
 
-/* Panel Styles */
-.adremm-clock-panel {
+/* PANEL LAYOUT (Floating) */
+.adremm-clock-panel .adremm-clock-container {
     background: var(--adremm-clock-bg);
-    padding: 30px;
+    padding: 25px;
     border-radius: 20px;
-    box-shadow: 0 15px 45px rgba(0,0,0,0.2);
-    min-width: 250px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+    min-width: 260px;
+    max-width: 320px;
     text-align: center;
     position: relative;
-    border: 1px solid rgba(255,255,255,0.1);
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+    border: 1px solid rgba(0,0,0,0.05);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.adremm-clock-close-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: rgba(0,0,0,0.05);
-    border: none;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    cursor: pointer;
-    color: inherit;
-    font-size: 20px;
+/* BAR LAYOUT (Header/Footer) */
+.adremm-clock-bar {
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background: var(--adremm-clock-bg);
     display: flex;
     align-items: center;
     justify-content: center;
-    line-height: 1;
-    transition: background 0.2s;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    padding: 0 20px;
 }
 
-.adremm-clock-close-btn:hover { background: rgba(0,0,0,0.1); }
+.adremm-clock-bar.adremm-clock-pos-top-center { top: 0; border-bottom: 1px solid rgba(0,0,0,0.1); }
+.adremm-clock-bar.adremm-clock-pos-bottom-center { bottom: 0; border-top: 1px solid rgba(0,0,0,0.1); }
 
-.adremm-clock-inner .time {
-    font-size: 42px;
-    font-weight: 700;
-    display: block;
-    line-height: 1;
-    margin-bottom: 5px;
+.adremm-clock-bar .adremm-clock-main {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 30px;
+    max-width: 1200px;
 }
 
-.adremm-clock-inner .date {
-    font-size: 16px;
-    opacity: 0.8;
-    display: block;
-    margin-bottom: 20px;
+.adremm-clock-bar .adremm-clock-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
 }
 
-/* Menu Styles */
-.adremm-clock-menu-wrap {
-    border-top: 1px solid rgba(0,0,0,0.1);
-    padding-top: 15px;
-}
+.adremm-clock-bar .adremm-clock-analog { width: 40px; height: 40px; }
+.adremm-clock-bar .face { width: 40px; height: 40px; }
+.adremm-clock-bar .extra-row { display: none; } /* Hide extra in bar by default for space */
 
-.adremm-clock-nav ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
+/* Common Elements */
+.adremm-clock-analog { margin-bottom: 15px; }
+.adremm-clock-bar .adremm-clock-analog { margin-bottom: 0; }
 
-.adremm-clock-nav li { margin-bottom: 8px; }
-.adremm-clock-nav a {
-    text-decoration: none;
-    color: inherit;
-    font-size: 15px;
-    font-weight: 500;
-    opacity: 0.9;
-    transition: opacity 0.2s;
-}
-.adremm-clock-nav a:hover { opacity: 1; }
+.face { width: 80px; height: 80px; border-radius: 50%; background: #000; border: 2px solid #3399ff; position: relative; margin: 0 auto; }
+.h-hour, .h-min, .h-sec { position: absolute; bottom: 50%; left: 50%; transform-origin: bottom center; background: #fff; border-radius: 4px; }
+.h-hour { height: 25px; width: 3px; margin-left: -1.5px; }
+.h-min { height: 35px; width: 2px; margin-left: -1px; }
+.h-sec { height: 38px; width: 1px; background: #ff3b30; margin-left: -0.5px; }
 
-/* Tab State (25x100) */
+.time-digital { font-size: 24px; font-weight: 800; }
+.status-row { font-weight: bold; font-size: 18px; margin: 5px 0; }
+.date-row { font-size: 14px; opacity: 0.8; }
+.extra-row { font-size: 11px; margin-top: 10px; line-height: 1.4; opacity: 0.9; }
+
+/* Floating Positions */
+.adremm-clock-pos-top-left { top: 20px; left: 20px; }
+.adremm-clock-pos-top-right { top: 20px; right: 20px; }
+.adremm-clock-pos-middle-left { top: 50%; left: 20px; transform: translateY(-50%); }
+.adremm-clock-pos-middle-right { top: 50%; right: 20px; transform: translateY(-50%); }
+.adremm-clock-pos-bottom-left { bottom: 20px; left: 20px; }
+.adremm-clock-pos-bottom-right { bottom: 20px; right: 20px; }
+
+/* Tab Style */
 .adremm-clock-tab {
     position: fixed;
     width: 25px;
@@ -92,52 +92,32 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
-    z-index: 9999999;
-    transition: width 0.3s ease, background 0.3s ease;
-    border: 1px solid rgba(0,0,0,0.05);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    border: 1px solid rgba(0,0,0,0.1);
+    transition: width 0.3s;
 }
-
 .adremm-clock-tab:hover { width: 35px; }
+.adremm-clock-tab .tab-label { transform: rotate(-90deg); white-space: nowrap; font-weight: bold; font-size: 11px; letter-spacing: 2px; }
 
-.adremm-clock-tab .tab-label {
-    transform: rotate(-90deg);
-    white-space: nowrap;
-    font-weight: 800;
-    font-size: 12px;
-    letter-spacing: 3px;
-    pointer-events: none;
-}
-
-/* Positioning */
-.adremm-clock-pos-top-left { top: 30px; left: 30px; }
-.adremm-clock-pos-top-center { top: 30px; left: 50%; transform: translateX(-50%); }
-.adremm-clock-pos-top-right { top: 30px; right: 30px; }
-.adremm-clock-pos-middle-left { top: 50%; left: 30px; transform: translateY(-50%); }
-.adremm-clock-pos-middle-right { top: 50%; right: 30px; transform: translateY(-50%); }
-.adremm-clock-pos-bottom-left { bottom: 30px; left: 30px; }
-.adremm-clock-pos-bottom-center { bottom: 30px; left: 50%; transform: translateX(-50%); }
-.adremm-clock-pos-bottom-right { bottom: 30px; right: 30px; }
-
-/* Tab Positions & Specific Fixes */
 .adremm-clock-tab.tab-left { left: 0; border-radius: 0 10px 10px 0; }
 .adremm-clock-tab.tab-right { right: 0; border-radius: 10px 0 0 10px; }
 
-/* Special handling for top/bottom center tabs */
-.adremm-clock-tab.tab-top { top: 0; width: 100px; height: 25px; border-radius: 0 0 10px 10px; flex-direction: row; }
-.adremm-clock-tab.tab-top .tab-label { transform: none; }
-.adremm-clock-tab.tab-top:hover { height: 35px; width: 100px; }
-
-.adremm-clock-tab.tab-bottom { bottom: 0; width: 100px; height: 25px; border-radius: 10px 10px 0 0; flex-direction: row; }
-.adremm-clock-tab.tab-bottom .tab-label { transform: none; }
-.adremm-clock-tab.tab-bottom:hover { height: 35px; width: 100px; }
-
-/* Themes */
-.adremm-clock-theme-classic .adremm-clock-panel { border: 6px double currentColor; border-radius: 0; font-family: serif; }
-.adremm-clock-theme-digital .adremm-clock-panel { background: #000 !important; color: #0f0 !important; font-family: monospace !important; border: 2px solid #0f0; box-shadow: 0 0 20px #0f0; }
+/* Close Button */
+.adremm-clock-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: inherit;
+    opacity: 0.5;
+}
+.adremm-clock-close:hover { opacity: 1; }
 
 /* Responsive */
-@media screen and (max-width: 600px) {
-    .adremm-clock-panel { min-width: 200px; padding: 20px; }
-    .adremm-clock-inner .time { font-size: 30px; }
+@media screen and (max-width: 768px) {
+    .adremm-clock-bar .adremm-clock-info .date-row { display: none; }
+    .adremm-clock-bar .adremm-clock-main { gap: 15px; }
 }
