@@ -1,7 +1,7 @@
 <?php
 /**
- * Plugin Name: ADREMM Klok Plugin
- * Description: Een meertalige klokplugin met live previews en schaalbare weergave.
+ * Plugin Name: ADREMM Klok
+ * Description: Een uiterst gebruiksvriendelijke, meertalige klokplugin met live previews, openingstijden en schaalbare weergave.
  * Version: 1.0.0
  * Author: ADREMM
  * Author URI: https://adremm.nl
@@ -21,11 +21,29 @@ define('ADREMM_CLOCK_URL', plugin_dir_url(__FILE__));
 require_once ADREMM_CLOCK_PATH . 'settings.php';
 require_once ADREMM_CLOCK_PATH . 'functions.php';
 
+// Constants for Redirect
+define('ADREMM_CLOCK_REDIRECT_TRANS', 'adremm_clock_redirect_active');
+
 // Plugin Activation
 register_activation_hook(__FILE__, 'adremm_clock_activate');
 function adremm_clock_activate() {
     $default_settings = adremm_clock_get_default_settings();
-    update_option('adremm_clock_settings', $default_settings);
+    if (!get_option('adremm_clock_settings')) {
+        update_option('adremm_clock_settings', $default_settings);
+    }
+    set_transient(ADREMM_CLOCK_REDIRECT_TRANS, 1, 60);
+}
+
+// Handle Redirect
+add_action('admin_init', 'adremm_clock_handle_activation_redirect');
+function adremm_clock_handle_activation_redirect() {
+    if (get_transient(ADREMM_CLOCK_REDIRECT_TRANS)) {
+        delete_transient(ADREMM_CLOCK_REDIRECT_TRANS);
+        if (!isset($_GET['activate-multi'])) {
+            wp_safe_redirect(admin_url('admin.php?page=adremm-clock-settings'));
+            exit;
+        }
+    }
 }
 
 // Add the clock to the footer

@@ -62,9 +62,13 @@ function adremm_clock_frontend_enqueue() {
     // Enqueue custom frontend JS
     wp_enqueue_script('adremm-clock-public-js', ADREMM_CLOCK_URL . 'assets/public-clock.js', array('jquery'), ADREMM_CLOCK_VERSION, true);
 
-    // Localize script for multilingual support
+    // Localize script for multilingual support and settings
     wp_localize_script('adremm-clock-public-js', 'adremmClockData', array(
         'locale' => str_replace('_', '-', get_locale()),
+        'panelSize' => $settings['panel_size'],
+        'handSweep' => $settings['hand_sweep'],
+        'extraMarquee' => $settings['extra_marquee'],
+        'extraSpeed' => $settings['extra_speed'],
     ));
 
     // Load Google Font

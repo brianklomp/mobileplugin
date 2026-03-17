@@ -29,17 +29,37 @@ $style_vars = sprintf(
         <?php endif; ?>
 
         <div class="adremm-clock-main">
-            <!-- Analog Section (if enabled/placeholder) -->
-            <div class="adremm-clock-analog">
-                <div class="face">
-                    <div class="h-hour"></div>
-                    <div class="h-min"></div>
-                    <div class="h-sec"></div>
+            <!-- Analog Section -->
+            <?php if ($settings['show_analog'] === 'yes'): ?>
+                <div class="adremm-clock-analog">
+                    <div class="face" style="
+                        background-color: <?php echo ($settings['analog_bg_type'] === 'color') ? esc_attr($settings['analog_bg_color']) : 'transparent'; ?>;
+                        background-image: <?php echo ($settings['analog_bg_type'] === 'image' && $settings['analog_bg_image']) ? 'url('.esc_url($settings['analog_bg_image']).')' : 'none'; ?>;
+                        border-color: <?php echo esc_attr($settings['analog_ring_color']); ?>;
+                        border-width: <?php echo esc_attr($settings['analog_ring_size']); ?>px;
+                    ">
+                        <!-- Hour Notations -->
+                        <div class="notations hour-notations <?php echo esc_attr($settings['analog_hour_not']); ?> <?php echo ($settings['analog_not_above'] === 'yes') ? 'above' : ''; ?>" style="color: <?php echo esc_attr($settings['analog_hour_color']); ?>;">
+                            <?php for($i=1; $i<=12; $i++): ?><i style="transform: rotate(<?php echo $i*30; ?>deg)"></i><?php endfor; ?>
+                        </div>
+                        <div class="h-hour <?php echo esc_attr($settings['hand_hour_style']); ?>" style="background-color: <?php echo esc_attr($settings['hand_hour_color']); ?>; width: <?php echo esc_attr($settings['hand_hour_thick']); ?>px;"></div>
+                        <div class="h-min <?php echo esc_attr($settings['hand_min_style']); ?>" style="background-color: <?php echo esc_attr($settings['hand_min_color']); ?>; width: <?php echo esc_attr($settings['hand_min_thick']); ?>px;"></div>
+                        <div class="h-sec <?php echo esc_attr($settings['hand_sec_style']); ?>" style="background-color: <?php echo esc_attr($settings['hand_sec_color']); ?>; width: <?php echo esc_attr($settings['hand_sec_thick']); ?>px;"></div>
+                    </div>
                 </div>
-            </div>
+            <?php endif; ?>
 
             <!-- Digital & Info Section -->
             <div class="adremm-clock-info">
+                <?php if ($settings['show_digital'] === 'yes'): ?>
+                    <div class="time-row digital-style-<?php echo esc_attr($settings['digital_style']); ?>" style="
+                        font-family: '<?php echo esc_attr($settings['digital_font']); ?>';
+                        color: <?php echo esc_attr($settings['digital_color']); ?>;
+                        background-color: <?php echo esc_attr($settings['digital_bg']); ?>;
+                    ">
+                        <span class="time-digital"></span>
+                    </div>
+                <?php endif; ?>
                 <div class="time-row">
                     <span class="time-digital"></span>
                 </div>
@@ -57,8 +77,8 @@ $style_vars = sprintf(
                 <?php endif; ?>
 
                 <?php if (!empty($settings['extra_message'])): ?>
-                    <div class="extra-row" style="color: <?php echo esc_attr($settings['extra_color']); ?>;">
-                        <?php echo esc_html($settings['extra_message']); ?>
+                    <div class="extra-row" style="color: <?php echo esc_attr($settings['extra_color']); ?>; font-size: <?php echo esc_attr($settings['extra_font_size']); ?>px;">
+                        <span><?php echo esc_html($settings['extra_message']); ?></span>
                     </div>
                 <?php endif; ?>
             </div>
@@ -67,7 +87,10 @@ $style_vars = sprintf(
 
     <?php if (!$is_bar && $settings['is_collapsible'] === 'yes'): ?>
         <!-- Collapsed Tab -->
-        <div class="adremm-clock-tab" style="display: none;">
+        <div class="adremm-clock-tab" style="display: none; background-color: <?php echo esc_attr($settings['tab_bg']); ?>; color: <?php echo esc_attr($settings['tab_color']); ?>; font-family: '<?php echo esc_attr($settings['tab_font']); ?>'; box-shadow: <?php echo esc_attr($settings['tab_shadow']); ?>;">
+            <?php if ($settings['tab_arrow'] === 'yes'): ?>
+                <span class="tab-arrow"></span>
+            <?php endif; ?>
             <span class="tab-label"><?php echo esc_html($settings['tab_text']); ?></span>
         </div>
     <?php endif; ?>

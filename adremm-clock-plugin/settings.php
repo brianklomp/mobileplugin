@@ -22,13 +22,49 @@ function adremm_clock_get_default_settings() {
     return array(
         'position' => 'bottom-right',
         'theme' => 'modern',
-        'display_type' => 'both', // analog, digital, both
+        'theme_font' => 'Inter',
+        'panel_size' => 'normal', // small, normal, large
+        'panel_padding' => '25',
         'bg_color' => '#ffffff',
         'text_color' => '#111111',
-        'font_main' => 'Inter',
+
+        // Analoge Klok
+        'show_analog' => 'yes',
+        'analog_bg_type' => 'color', // color, image
+        'analog_bg_image' => '',
+        'analog_bg_color' => '#000000',
+        'analog_ring_color' => '#3399ff',
+        'analog_ring_size' => '2',
+        'analog_hour_not' => 'lines', // lines, dots
+        'analog_hour_color' => '#ffffff',
+        'analog_min_not' => 'lines', // lines, dots
+        'analog_min_color' => '#ffffff',
+        'analog_not_above' => 'yes',
+
+        // Wijzers
+        'hand_hour_thick' => '4',
+        'hand_hour_color' => '#ffffff',
+        'hand_hour_style' => 'rectangle', // rectangle, rounded, point, heart
+        'hand_min_thick' => '3',
+        'hand_min_color' => '#ffffff',
+        'hand_min_style' => 'rectangle',
+        'hand_sec_thick' => '1',
+        'hand_sec_color' => '#ff3b30',
+        'hand_sec_style' => 'point',
+        'hand_sweep' => 'smooth', // smooth, ticking
+
+        // Digitale Tijd
+        'show_digital' => 'yes',
+        'digital_font' => 'Inter',
+        'digital_color' => '#111111',
+        'digital_weight' => '700',
+        'digital_bg' => 'transparent',
+        'digital_show_sec' => 'yes',
+        'digital_style' => 'custom', // alarm, wall, custom
 
         // Status
         'show_status' => 'yes',
+        'status_pos' => 'below_digital', // above_digital, below_digital, above_analog, below_analog, below_date
         'text_open' => 'Wij zijn geopend',
         'text_closed' => 'Wij zijn gesloten',
         'color_open' => '#28a745',
@@ -41,15 +77,35 @@ function adremm_clock_get_default_settings() {
         'font_date' => 'Inter',
 
         // Extra
-        'extra_message' => 'Alleen deze week! Extra korting aan de kassa aan de hand van de temperatuur. Kom je je voordeel ook halen in de winkel? Tot snel!',
+        'extra_message' => 'Alleen deze week! Extra korting aan de kassa aan de hand van de temperatuur.',
         'extra_color' => '#6f42c1',
+        'extra_font_size' => '11',
+        'extra_marquee' => 'no',
+        'extra_speed' => '5',
 
-        // Menu
-        'menu_id' => 'none',
-
-        // Collapsible
+        // Tijdpaneel / Inklapbaar
         'is_collapsible' => 'yes',
+        'show_close_x' => 'yes',
+        'color_close_x' => '#111111',
+        'show_close_label' => 'yes',
+        'close_label' => 'Sluiten',
+        'color_close_label' => '#111111',
+        'panel_border' => '1px solid rgba(0,0,0,0.1)',
+
+        // Tab Styling
+        'tab_font' => 'Inter',
+        'tab_color' => '#111111',
+        'tab_bg' => '#ffffff',
         'tab_text' => 'KLOK',
+        'tab_arrow' => 'yes',
+        'tab_shadow' => '0 4px 15px rgba(0,0,0,0.2)',
+        'tab_shadow_pos' => 'outer',
+
+        // Algemeen
+        'language' => 'auto',
+
+        // Openingstijden (Placeholder for JSON)
+        'opening_hours' => '',
     );
 }
 
@@ -57,22 +113,18 @@ function adremm_clock_settings_validate($input) {
     $output = array();
     $defaults = adremm_clock_get_default_settings();
 
-    $simple_fields = array('position', 'theme', 'display_type', 'font_main', 'show_status', 'text_open', 'text_closed', 'font_status', 'show_date', 'font_date', 'extra_message', 'menu_id', 'is_collapsible', 'tab_text');
-    foreach($simple_fields as $field) {
-        $output[$field] = isset($input[$field]) ? sanitize_text_field($input[$field]) : ($defaults[$field] ?? '');
-    }
-
-    // Custom RGBA/Hex sanitization
-    $sanitize_color = function($color, $fallback) {
-        $color = trim((string)$color);
-        if (preg_match('/^rgba\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*(0(\.\d+)?|1(\.0+)?)\s*\)$/', $color)) return $color;
-        if (preg_match('/^#([A-Fa-f0-9]{3}){1,2}$/', $color)) return $color;
-        return $fallback;
-    };
-
-    $color_fields = array('bg_color', 'text_color', 'color_open', 'color_closed', 'color_date', 'extra_color');
-    foreach($color_fields as $field) {
-        $output[$field] = isset($input[$field]) ? $sanitize_color($input[$field], $defaults[$field]) : $defaults[$field];
+    foreach($defaults as $key => $default_val) {
+        if (strpos($key, 'color') !== false || strpos($key, 'bg') !== false || strpos($key, 'ring') !== false) {
+             // Sanitization for colors
+             $color = trim((string)($input[$key] ?? $default_val));
+             if (preg_match('/^rgba\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*(0(\.\d+)?|1(\.0+)?)\s*\)$/', $color) || preg_match('/^#([A-Fa-f0-9]{3}){1,2}$/', $color) || $color === 'transparent') {
+                $output[$key] = $color;
+             } else {
+                $output[$key] = $default_val;
+             }
+        } else {
+            $output[$key] = isset($input[$key]) ? sanitize_text_field($input[$key]) : $default_val;
+        }
     }
 
     return $output;
@@ -81,13 +133,40 @@ function adremm_clock_settings_validate($input) {
 // Add admin menu
 add_action('admin_menu', 'adremm_clock_add_admin_menu');
 function adremm_clock_add_admin_menu() {
-    add_options_page(
+    // Top level menu
+    add_menu_page(
         'ADREMM Klok Instellingen',
         'ADREMM Klok',
         'manage_options',
         'adremm-clock-settings',
+        'adremm_clock_render_settings_page',
+        'dashicons-clock', // Default dashicon, user can provide 20x20px SVG later
+        60
+    );
+
+    // Submenu: Instellingen (Points to same as parent)
+    add_submenu_page(
+        'adremm-clock-settings',
+        'Instellingen',
+        'Instellingen',
+        'manage_options',
+        'adremm-clock-settings',
         'adremm_clock_render_settings_page'
     );
+
+    // Submenu: Openingstijden
+    add_submenu_page(
+        'adremm-clock-settings',
+        'Openingstijden',
+        'Openingstijden',
+        'manage_options',
+        'adremm-clock-openingstijden',
+        'adremm_clock_render_openingstijden_page'
+    );
+}
+
+function adremm_clock_render_openingstijden_page() {
+    include ADREMM_CLOCK_PATH . 'openingstijden-page.php';
 }
 
 function adremm_clock_render_settings_page() {

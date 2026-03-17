@@ -1,6 +1,6 @@
 <?php
 /**
- * Redesigned Settings Page View for ADREMM Clock Plugin
+ * Settings Page View for ADREMM Clock Plugin - FULL IMPLEMENTATION
  */
 if ( ! defined('ABSPATH') ) exit;
 
@@ -8,18 +8,18 @@ $settings = get_option('adremm_clock_settings', adremm_clock_get_default_setting
 $fonts = adremm_clock_get_google_fonts();
 ?>
 <div class="wrap adremm-clock-v2">
-    <h1><?php _e('SET-UP Clock – Instellingen', 'adremm-clock-plugin'); ?></h1>
+    <h1><?php _e('ADREMM Klok – Instellingen', 'adremm-clock-plugin'); ?></h1>
 
     <div class="adremm-nav-tabs">
         <a href="#tab-thema" class="nav-tab is-active"><?php _e('Thema', 'adremm-clock-plugin'); ?></a>
-        <a href="#tab-wijzerplaat" class="nav-tab"><?php _e('Wijzerplaat', 'adremm-clock-plugin'); ?></a>
+        <a href="#tab-analoog" class="nav-tab"><?php _e('Analoge klok', 'adremm-clock-plugin'); ?></a>
         <a href="#tab-wijzers" class="nav-tab"><?php _e('Wijzers', 'adremm-clock-plugin'); ?></a>
         <a href="#tab-digitaal" class="nav-tab"><?php _e('Digitaal', 'adremm-clock-plugin'); ?></a>
         <a href="#tab-status" class="nav-tab"><?php _e('Status', 'adremm-clock-plugin'); ?></a>
         <a href="#tab-extra" class="nav-tab"><?php _e('Extra', 'adremm-clock-plugin'); ?></a>
         <a href="#tab-positie" class="nav-tab"><?php _e('Positie', 'adremm-clock-plugin'); ?></a>
-        <a href="#tab-inklapbaar" class="nav-tab"><?php _e('Inklapbaar', 'adremm-clock-plugin'); ?></a>
-        <a href="#tab-taal" class="nav-tab"><?php _e('Taal', 'adremm-clock-plugin'); ?></a>
+        <a href="#tab-paneel" class="nav-tab"><?php _e('Tijdpaneel', 'adremm-clock-plugin'); ?></a>
+        <a href="#tab-algemeen" class="nav-tab"><?php _e('Algemeen', 'adremm-clock-plugin'); ?></a>
     </div>
 
     <form method="post" action="options.php" id="adremm-clock-form">
@@ -29,115 +29,278 @@ $fonts = adremm_clock_get_google_fonts();
             <!-- Left: Settings Panels -->
             <div class="adremm-settings-panels">
 
-                <!-- STATUS TAB (Matching Image) -->
-                <div id="tab-status" class="adremm-panel is-active">
+                <!-- THEMA TAB -->
+                <div id="tab-thema" class="adremm-panel is-active">
                     <table class="form-table">
                         <tr>
-                            <th><?php _e('Toon Status', 'adremm-clock-plugin'); ?><br><small>Toon Status</small></th>
+                            <th><?php _e('Thema Google Font', 'adremm-clock-plugin'); ?></th>
                             <td>
-                                <label><input type="radio" name="adremm_clock_settings[show_status]" value="yes" <?php checked($settings['show_status'], 'yes'); ?>> Ja</label>
-                                <label style="margin-left:15px;"><input type="radio" name="adremm_clock_settings[show_status]" value="no" <?php checked($settings['show_status'], 'no'); ?>> Nee</label>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th><?php _e('Tekst Open', 'adremm-clock-plugin'); ?><br><small>Tekst Open</small></th>
-                            <td><input type="text" name="adremm_clock_settings[text_open]" value="<?php echo esc_attr($settings['text_open']); ?>" class="regular-text"></td>
-                        </tr>
-                        <tr>
-                            <th><?php _e('Tekst Gesloten', 'adremm-clock-plugin'); ?><br><small>Tekst Gesloten</small></th>
-                            <td><input type="text" name="adremm_clock_settings[text_closed]" value="<?php echo esc_attr($settings['text_closed']); ?>" class="regular-text"></td>
-                        </tr>
-                        <tr>
-                            <th><?php _e('Kleur Open', 'adremm-clock-plugin'); ?><br><small>Kleur Open</small></th>
-                            <td><input type="text" name="adremm_clock_settings[color_open]" value="<?php echo esc_attr($settings['color_open']); ?>" class="adremm-color-picker" data-alpha="true"></td>
-                        </tr>
-                        <tr>
-                            <th><?php _e('Kleur Gesloten', 'adremm-clock-plugin'); ?><br><small>Kleur Gesloten</small></th>
-                            <td><input type="text" name="adremm_clock_settings[color_closed]" value="<?php echo esc_attr($settings['color_closed']); ?>" class="adremm-color-picker" data-alpha="true"></td>
-                        </tr>
-                        <tr>
-                            <th><?php _e('Lettertype', 'adremm-clock-plugin'); ?><br><small>Lettertype</small></th>
-                            <td>
-                                <select name="adremm_clock_settings[font_status]" class="adremm-font-select">
+                                <select name="adremm_clock_settings[theme_font]" class="adremm-font-select">
                                     <?php foreach ($fonts as $font) : ?>
-                                        <option value="<?php echo esc_attr($font); ?>" <?php selected($settings['font_status'], $font); ?> style="font-family: '<?php echo esc_attr($font); ?>';"><?php echo esc_html($font); ?></option>
+                                        <option value="<?php echo esc_attr($font); ?>" <?php selected($settings['theme_font'], $font); ?>><?php echo esc_html($font); ?></option>
                                     <?php endforeach; ?>
                                 </select>
                             </td>
                         </tr>
                         <tr>
-                            <th><?php _e('Toon Datum', 'adremm-clock-plugin'); ?><br><small>Toon Datum</small></th>
+                            <th><?php _e('Paneel Grootte', 'adremm-clock-plugin'); ?></th>
                             <td>
-                                <label><input type="radio" name="adremm_clock_settings[show_date]" value="yes" <?php checked($settings['show_date'], 'yes'); ?>> Ja</label>
-                                <label style="margin-left:15px;"><input type="radio" name="adremm_clock_settings[show_date]" value="no" <?php checked($settings['show_date'], 'no'); ?>> Nee</label>
+                                <select name="adremm_clock_settings[panel_size]">
+                                    <option value="small" <?php selected($settings['panel_size'], 'small'); ?>>Klein</option>
+                                    <option value="normal" <?php selected($settings['panel_size'], 'normal'); ?>>Normaal</option>
+                                    <option value="large" <?php selected($settings['panel_size'], 'large'); ?>>Groot</option>
+                                </select>
                             </td>
                         </tr>
                         <tr>
-                            <th><?php _e('Kleur Datum', 'adremm-clock-plugin'); ?><br><small>Kleur Datum</small></th>
-                            <td><input type="text" name="adremm_clock_settings[color_date]" value="<?php echo esc_attr($settings['color_date']); ?>" class="adremm-color-picker" data-alpha="true"></td>
+                            <th><?php _e('Achtergrond Kleur', 'adremm-clock-plugin'); ?></th>
+                            <td><input type="text" name="adremm_clock_settings[bg_color]" value="<?php echo esc_attr($settings['bg_color']); ?>" class="adremm-color-picker" data-alpha="true"></td>
+                        </tr>
+                        <tr>
+                            <th><?php _e('Padding (binnen)', 'adremm-clock-plugin'); ?></th>
+                            <td><input type="number" name="adremm_clock_settings[panel_padding]" value="<?php echo esc_attr($settings['panel_padding']); ?>"> px</td>
                         </tr>
                     </table>
                 </div>
 
-                <!-- POSITIE TAB (Joystick) -->
-                <div id="tab-positie" class="adremm-panel">
-                    <h3><?php _e('Positie (Joystick)', 'adremm-clock-plugin'); ?></h3>
-                    <div class="adremm-joystick-container">
-                        <div class="joystick-grid">
-                            <?php
-                            $joystick = array(
-                                'top-left' => '↖', 'top-center' => '↑', 'top-right' => '↗',
-                                'middle-left' => '←', 'center' => '●', 'middle-right' => '→',
-                                'bottom-left' => '↙', 'bottom-center' => '↓', 'bottom-right' => '↘'
-                            );
-                            foreach ($joystick as $key => $icon):
-                                $active = ($settings['position'] === $key) ? 'is-selected' : '';
-                                if ($key === 'center') {
-                                    echo '<div class="joy-btn joy-center">'.$icon.'</div>';
-                                    continue;
-                                }
-                            ?>
-                                <label class="joy-btn <?php echo $active; ?>" title="<?php echo esc_attr($key); ?>">
-                                    <input type="radio" name="adremm_clock_settings[position]" value="<?php echo $key; ?>" <?php checked($settings['position'], $key); ?>>
-                                    <span><?php echo $icon; ?></span>
-                                </label>
-                            <?php endforeach; ?>
+                <!-- ANALOGE KLOK TAB -->
+                <div id="tab-analoog" class="adremm-panel">
+                    <table class="form-table">
+                        <tr>
+                            <th><?php _e('Toon Analoge Klok', 'adremm-clock-plugin'); ?></th>
+                            <td>
+                                <label><input type="radio" name="adremm_clock_settings[show_analog]" value="yes" <?php checked($settings['show_analog'], 'yes'); ?>> Ja</label>
+                                <label style="margin-left:15px;"><input type="radio" name="adremm_clock_settings[show_analog]" value="no" <?php checked($settings['show_analog'], 'no'); ?>> Nee</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><?php _e('Achtergrond Wijzerplaat', 'adremm-clock-plugin'); ?></th>
+                            <td>
+                                <input type="text" name="adremm_clock_settings[analog_bg_image]" value="<?php echo esc_attr($settings['analog_bg_image']); ?>" class="regular-text adremm-media-url">
+                                <button type="button" class="button adremm-media-upload">Kies afbeelding</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><?php _e('Of Achtergrond Kleur', 'adremm-clock-plugin'); ?></th>
+                            <td><input type="text" name="adremm_clock_settings[analog_bg_color]" value="<?php echo esc_attr($settings['analog_bg_color']); ?>" class="adremm-color-picker" data-alpha="true"></td>
+                        </tr>
+                        <tr>
+                            <th><?php _e('Ringkleur & Grootte', 'adremm-clock-plugin'); ?></th>
+                            <td>
+                                <input type="text" name="adremm_clock_settings[analog_ring_color]" value="<?php echo esc_attr($settings['analog_ring_color']); ?>" class="adremm-color-picker" data-alpha="true">
+                                <input type="number" name="adremm_clock_settings[analog_ring_size]" value="<?php echo esc_attr($settings['analog_ring_size']); ?>" style="width:60px;"> px
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- WIJZERS TAB -->
+                <div id="tab-wijzers" class="adremm-panel">
+                    <h3><?php _e('Wijzers Instellen', 'adremm-clock-plugin'); ?></h3>
+                    <?php
+                    $hands = array('hour' => 'Urenwijzer', 'min' => 'Minutenwijzer', 'sec' => 'Secondenwijzer');
+                    foreach($hands as $h => $label): ?>
+                        <div class="hand-settings-group">
+                            <h4><?php echo $label; ?></h4>
+                            <table class="form-table">
+                                <tr>
+                                    <th>Kleur & Dikte</th>
+                                    <td>
+                                        <input type="text" name="adremm_clock_settings[hand_<?php echo $h; ?>_color]" value="<?php echo esc_attr($settings['hand_'.$h.'_color']); ?>" class="adremm-color-picker" data-alpha="true">
+                                        <input type="number" name="adremm_clock_settings[hand_<?php echo $h; ?>_thick]" value="<?php echo esc_attr($settings['hand_'.$h.'_thick']); ?>" style="width:60px;"> px
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Stijl</th>
+                                    <td>
+                                        <select name="adremm_clock_settings[hand_<?php echo $h; ?>_style]">
+                                            <option value="rectangle" <?php selected($settings['hand_'.$h.'_style'], 'rectangle'); ?>>Rechthoek</option>
+                                            <option value="rounded" <?php selected($settings['hand_'.$h.'_style'], 'rounded'); ?>>Afgerond</option>
+                                            <option value="point" <?php selected($settings['hand_'.$h.'_style'], 'point'); ?>>Punt</option>
+                                            <option value="heart" <?php selected($settings['hand_'.$h.'_style'], 'heart'); ?>>Hart</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
-                    </div>
-                    <p class="description"><?php _e('HD (↑) en FT (↓) worden als 60px hoge balken weergegeven.', 'adremm-clock-plugin'); ?></p>
+                    <?php endforeach; ?>
+                    <table class="form-table">
+                        <tr>
+                            <th>Sweep Style</th>
+                            <td>
+                                <select name="adremm_clock_settings[hand_sweep]">
+                                    <option value="smooth" <?php selected($settings['hand_sweep'], 'smooth'); ?>>Vloeiend (Rolex)</option>
+                                    <option value="ticking" <?php selected($settings['hand_sweep'], 'ticking'); ?>>Tikkend (Seiko 5)</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- DIGITAAL TAB -->
+                <div id="tab-digitaal" class="adremm-panel">
+                    <table class="form-table">
+                        <tr>
+                            <th><?php _e('Toon Digitale Klok', 'adremm-clock-plugin'); ?></th>
+                            <td>
+                                <label><input type="radio" name="adremm_clock_settings[show_digital]" value="yes" <?php checked($settings['show_digital'], 'yes'); ?>> Ja</label>
+                                <label style="margin-left:15px;"><input type="radio" name="adremm_clock_settings[show_digital]" value="no" <?php checked($settings['show_digital'], 'no'); ?>> Nee</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><?php _e('Digital Style', 'adremm-clock-plugin'); ?></th>
+                            <td>
+                                <select name="adremm_clock_settings[digital_style]">
+                                    <option value="alarm" <?php selected($settings['digital_style'], 'alarm'); ?>>1. Wekker</option>
+                                    <option value="wall" <?php selected($settings['digital_style'], 'wall'); ?>>2. Muurklok</option>
+                                    <option value="custom" <?php selected($settings['digital_style'], 'custom'); ?>>3. Custom</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><?php _e('Font Overrides', 'adremm-clock-plugin'); ?></th>
+                            <td>
+                                <select name="adremm_clock_settings[digital_font]" class="adremm-font-select">
+                                    <?php foreach ($fonts as $font) : ?>
+                                        <option value="<?php echo esc_attr($font); ?>" <?php selected($settings['digital_font'], $font); ?>><?php echo esc_html($font); ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                                <input type="text" name="adremm_clock_settings[digital_color]" value="<?php echo esc_attr($settings['digital_color']); ?>" class="adremm-color-picker" data-alpha="true">
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- STATUS TAB -->
+                <div id="tab-status" class="adremm-panel">
+                    <table class="form-table">
+                        <tr>
+                            <th><?php _e('Bericht Positie', 'adremm-clock-plugin'); ?></th>
+                            <td>
+                                <select name="adremm_clock_settings[status_pos]">
+                                    <option value="above_digital" <?php selected($settings['status_pos'], 'above_digital'); ?>>Boven digitale klok</option>
+                                    <option value="below_digital" <?php selected($settings['status_pos'], 'below_digital'); ?>>Onder digitale klok</option>
+                                    <option value="above_analog" <?php selected($settings['status_pos'], 'above_analog'); ?>>Boven analoge klok</option>
+                                    <option value="below_analog" <?php selected($settings['status_pos'], 'below_analog'); ?>>Onder analoge klok</option>
+                                    <option value="below_date" <?php selected($settings['status_pos'], 'below_date'); ?>>Onder datum</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><?php _e('Tekst Open/Dicht', 'adremm-clock-plugin'); ?></th>
+                            <td>
+                                <input type="text" name="adremm_clock_settings[text_open]" value="<?php echo esc_attr($settings['text_open']); ?>">
+                                <input type="text" name="adremm_clock_settings[color_open]" value="<?php echo esc_attr($settings['color_open']); ?>" class="adremm-color-picker" data-alpha="true">
+                                <br><br>
+                                <input type="text" name="adremm_clock_settings[text_closed]" value="<?php echo esc_attr($settings['text_closed']); ?>">
+                                <input type="text" name="adremm_clock_settings[color_closed]" value="<?php echo esc_attr($settings['color_closed']); ?>" class="adremm-color-picker" data-alpha="true">
+                            </td>
+                        </tr>
+                    </table>
                 </div>
 
                 <!-- EXTRA TAB -->
                 <div id="tab-extra" class="adremm-panel">
                     <table class="form-table">
                         <tr>
-                            <th><?php _e('Extra Bericht', 'adremm-clock-plugin'); ?></th>
-                            <td><textarea name="adremm_clock_settings[extra_message]" class="large-text" rows="4"><?php echo esc_textarea($settings['extra_message']); ?></textarea></td>
+                            <th><?php _e('Lichtslang (Marquee)', 'adremm-clock-plugin'); ?></th>
+                            <td>
+                                <label><input type="radio" name="adremm_clock_settings[extra_marquee]" value="yes" <?php checked($settings['extra_marquee'], 'yes'); ?>> Ja</label>
+                                <label style="margin-left:15px;"><input type="radio" name="adremm_clock_settings[extra_marquee]" value="no" <?php checked($settings['extra_marquee'], 'no'); ?>> Nee</label>
+                            </td>
                         </tr>
                         <tr>
-                            <th><?php _e('Kleur Bericht', 'adremm-clock-plugin'); ?></th>
-                            <td><input type="text" name="adremm_clock_settings[extra_color]" value="<?php echo esc_attr($settings['extra_color']); ?>" class="adremm-color-picker" data-alpha="true"></td>
+                            <th><?php _e('Snelheid & Grootte', 'adremm-clock-plugin'); ?></th>
+                            <td>
+                                <input type="range" name="adremm_clock_settings[extra_speed]" min="1" max="20" value="<?php echo esc_attr($settings['extra_speed']); ?>">
+                                <input type="number" name="adremm_clock_settings[extra_font_size]" value="<?php echo esc_attr($settings['extra_font_size']); ?>" style="width:60px;"> px
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><?php _e('Extra Bericht', 'adremm-clock-plugin'); ?></th>
+                            <td>
+                                <textarea name="adremm_clock_settings[extra_message]" rows="4" class="large-text"><?php echo esc_textarea($settings['extra_message']); ?></textarea>
+                            </td>
                         </tr>
                     </table>
                 </div>
 
-                <!-- OTHER TABS (Placeholders) -->
-                <div id="tab-thema" class="adremm-panel"><h3>Thema Instellingen</h3></div>
-                <div id="tab-wijzerplaat" class="adremm-panel"><h3>Wijzerplaat Instellingen</h3></div>
-                <div id="tab-wijzers" class="adremm-panel"><h3>Wijzers Instellingen</h3></div>
-                <div id="tab-digitaal" class="adremm-panel"><h3>Digitaal Instellingen</h3></div>
-                <div id="tab-inklapbaar" class="adremm-panel"><h3>Inklapbaar Instellingen</h3></div>
-                <div id="tab-taal" class="adremm-panel"><h3>Taal Instellingen</h3></div>
+                <!-- POSITIE TAB -->
+                <div id="tab-positie" class="adremm-panel">
+                    <h3>Joystick Positie</h3>
+                    <div class="adremm-joystick-box">
+                         <div class="joy-grid">
+                            <?php
+                            $joy = array('top-left'=>'↖','top-center'=>'↑','top-right'=>'↗','middle-left'=>'←','center'=>'●','middle-right'=>'→','bottom-left'=>'↙','bottom-center'=>'↓','bottom-right'=>'↘');
+                            foreach($joy as $k=>$icon): ?>
+                                <label class="joy-item <?php echo ($settings['position']===$k)?'active':''; ?>">
+                                    <input type="radio" name="adremm_clock_settings[position]" value="<?php echo $k; ?>" <?php checked($settings['position'], $k); ?>>
+                                    <span><?php echo $icon; ?></span>
+                                </label>
+                            <?php endforeach; ?>
+                         </div>
+                    </div>
+                </div>
+
+                <!-- TIJDPANEEL TAB -->
+                <div id="tab-paneel" class="adremm-panel">
+                    <h3>Inklapbaar & Styling</h3>
+                    <div class="adremm-sub-tabs">
+                        <button type="button" class="sub-tab-btn active" data-sub="sub-general">Algemeen</button>
+                        <button type="button" class="sub-tab-btn" data-sub="sub-tab-styling">Styling Gesloten Tab</button>
+                    </div>
+
+                    <div id="sub-general" class="adremm-sub-panel active">
+                         <table class="form-table">
+                            <tr>
+                                <th>Inklapbaar Panel</th>
+                                <td><input type="checkbox" name="adremm_clock_settings[is_collapsible]" value="yes" <?php checked($settings['is_collapsible'], 'yes'); ?>></td>
+                            </tr>
+                            <tr>
+                                <th>Sluitkruis & Kleur</th>
+                                <td>
+                                    <input type="checkbox" name="adremm_clock_settings[show_close_x]" value="yes" <?php checked($settings['show_close_x'], 'yes'); ?>>
+                                    <input type="text" name="adremm_clock_settings[color_close_x]" value="<?php echo esc_attr($settings['color_close_x']); ?>" class="adremm-color-picker" data-alpha="true">
+                                </td>
+                            </tr>
+                         </table>
+                    </div>
+
+                    <div id="sub-tab-styling" class="adremm-sub-panel">
+                        <table class="form-table">
+                            <tr>
+                                <th>Pijltje op tab</th>
+                                <td><input type="checkbox" name="adremm_clock_settings[tab_arrow]" value="yes" <?php checked($settings['tab_arrow'], 'yes'); ?>></td>
+                            </tr>
+                            <tr>
+                                <th>Achtergrond & Kleur</th>
+                                <td>
+                                    <input type="text" name="adremm_clock_settings[tab_bg]" value="<?php echo esc_attr($settings['tab_bg']); ?>" class="adremm-color-picker" data-alpha="true">
+                                    <input type="text" name="adremm_clock_settings[tab_color]" value="<?php echo esc_attr($settings['tab_color']); ?>" class="adremm-color-picker" data-alpha="true">
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ALGEMEEN TAB -->
+                <div id="tab-algemeen" class="adremm-panel">
+                    <table class="form-table">
+                        <tr>
+                            <th>Taal</th>
+                            <td><select name="adremm_clock_settings[language]"><option value="auto">Auto (Multilinguaal)</option></select></td>
+                        </tr>
+                    </table>
+                </div>
 
             </div>
 
-            <!-- Right: Live Preview Box (Matching Image) -->
-            <div class="adremm-preview-sidebar">
+            <!-- Right: Fixed Live Preview -->
+            <div class="adremm-preview-col">
                 <div class="adremm-preview-card">
                     <h3>Live preview</h3>
                     <div class="preview-stage">
                         <div id="clock-live-view">
-                            <!-- Analog Clock Placeholder -->
                             <div class="analog-preview">
                                 <div class="clock-face">
                                     <div class="hand hour"></div>
@@ -145,12 +308,11 @@ $fonts = adremm_clock_get_google_fonts();
                                     <div class="hand sec"></div>
                                 </div>
                             </div>
-                            <!-- Info Area -->
                             <div class="clock-info">
                                 <div class="preview-time">12:34:56</div>
-                                <div class="preview-status"><?php echo esc_html($settings['text_open']); ?></div>
+                                <div class="preview-status">Wij zijn geopend</div>
                                 <div class="preview-date">Maandag 1 januari</div>
-                                <div class="preview-extra"><?php echo esc_html($settings['extra_message']); ?></div>
+                                <div class="preview-extra">Extra bericht tekst...</div>
                             </div>
                         </div>
                     </div>
@@ -161,38 +323,3 @@ $fonts = adremm_clock_get_google_fonts();
         </div>
     </form>
 </div>
-<style>
-/* Simplified Joystick & Sidebar CSS */
-.adremm-clock-v2 { max-width: 1200px; margin-top: 20px; }
-.adremm-nav-tabs { margin-bottom: 20px; border-bottom: 1px solid #ccc; display: flex; flex-wrap: wrap; }
-.adremm-nav-tabs .nav-tab { margin-bottom: -1px; }
-
-.adremm-clock-editor { display: grid; grid-template-columns: 1fr 320px; gap: 30px; align-items: start; }
-.adremm-panel { display: none; background: #fff; padding: 20px; border: 1px solid #ccc; }
-.adremm-panel.is-active { display: block; }
-
-/* Joystick */
-.adremm-joystick-container { background: #f0f0f1; padding: 20px; display: inline-block; border-radius: 8px; }
-.joystick-grid { display: grid; grid-template-columns: repeat(3, 50px); grid-template-rows: repeat(3, 50px); gap: 10px; }
-.joy-btn { background: #fff; border: 1px solid #ccc; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 20px; position: relative; }
-.joy-btn input { display: none; }
-.joy-btn:hover { background: #f0f6fb; border-color: #2271b1; }
-.joy-btn.is-selected { background: #0073aa; color: #fff; border-color: #0073aa; }
-.joy-center { background: #ddd; cursor: default; }
-
-/* Preview Card */
-.adremm-preview-card { background: #f9f9f9; border: 1px solid #ddd; border-radius: 8px; padding: 15px; position: sticky; top: 40px; }
-.preview-stage { background: #fff; border: 1px solid #eee; border-radius: 4px; padding: 20px; min-height: 300px; display: flex; align-items: center; justify-content: center; text-align: center; }
-.analog-preview { margin-bottom: 15px; }
-.clock-face { width: 100px; height: 100px; border-radius: 50%; background: #000; border: 2px solid #3399ff; position: relative; margin: 0 auto; }
-.hand { position: absolute; bottom: 50%; left: 50%; transform-origin: bottom center; background: #fff; border-radius: 4px; }
-.hand.hour { height: 30px; width: 4px; margin-left: -2px; }
-.hand.min { height: 40px; width: 3px; margin-left: -1.5px; }
-.hand.sec { height: 45px; width: 1px; background: red; margin-left: -0.5px; }
-
-.preview-time { font-size: 18px; margin-bottom: 5px; }
-.preview-status { font-weight: bold; font-size: 16px; margin-bottom: 5px; }
-.preview-date { font-size: 14px; opacity: 0.6; margin-bottom: 10px; }
-.preview-extra { font-size: 11px; line-height: 1.4; color: #666; }
-.preview-footer { font-size: 11px; opacity: 0.5; margin-top: 10px; text-align: center; }
-</style>
