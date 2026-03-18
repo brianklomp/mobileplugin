@@ -31,19 +31,19 @@ jQuery(document).ready(function($) {
         $(this).find('input').prop('checked', true).trigger('change');
     });
 
-    // Color Pickers
+    // Color Pickers with enhanced Alpha support
     if ($.isFunction($.fn.wpColorPicker)) {
         $('.adremm-color-picker').wpColorPicker({
+            alpha: true,
             change: function(event, ui) {
-                // Ensure immediate update on color change
-                $(this).val(ui.color.toString());
+                const color = ui.color.to_s('rgba');
+                $(this).val(color);
                 setTimeout(updatePreview, 20);
             },
             clear: function() {
                 $(this).val('transparent');
                 setTimeout(updatePreview, 20);
-            },
-            alpha: true
+            }
         });
     }
 
@@ -59,11 +59,17 @@ jQuery(document).ready(function($) {
         frame.open();
     });
 
+    // Helpers
+    const getVal = (name) => $form.find(`[name="adremm_clock_settings[${name}]"]`).val();
+    const getRadioVal = (name) => $form.find(`[name="adremm_clock_settings[${name}]"]:checked`).val();
+
+    // Force Color Pickers to trigger preview on manual input as well
+    $form.on('keyup', '.adremm-color-picker', function() {
+        updatePreview();
+    });
+
     // Dynamic Updates
     function updatePreview() {
-        const getVal = (name) => $form.find(`[name="adremm_clock_settings[${name}]"]`).val();
-        const getRadioVal = (name) => $form.find(`[name="adremm_clock_settings[${name}]"]:checked`).val();
-
         const s = {
             theme: getRadioVal('theme'),
             theme_font: getVal('theme_font'),
@@ -116,7 +122,7 @@ jQuery(document).ready(function($) {
         $liveView.addClass('theme-' + s.theme);
 
         $liveView.css({
-            'background-color': s.bg_color || '#ffffff',
+            'background-color': (s.bg_color && s.bg_color !== 'transparent') ? s.bg_color : 'transparent',
             'color': s.text_color || '#000000',
             'font-family': (s.theme_font && s.theme_font !== 'inherit') ? `"${s.theme_font}"` : 'inherit',
             'box-shadow': s.panel_shadow || 'none',
@@ -154,26 +160,28 @@ jQuery(document).ready(function($) {
             const $hNots = $face.find('.hour-notations');
             $hNots.html('');
             for(let i=1; i<=12; i++) {
-                $hNots.append(`<i style="transform: rotate(${i*30}deg)"></i>`);
+                $hNots.append(`<i style="transform: rotate(${i*30}deg); transform-origin: center 40px;"></i>`);
             }
             $hNots.css({
                 'color': s.analog_hour_color,
                 '--not-thick': s.analog_hour_thick + 'px',
                 '--not-len': s.analog_hour_length + 'px',
-                'display': 'block'
+                'display': 'block',
+                'z-index': (s.analog_not_above === 'yes' ? 20 : 5)
             });
             if (s.analog_not_above === 'yes') $hNots.addClass('above'); else $hNots.removeClass('above');
 
             const $mNots = $face.find('.min-notations');
             $mNots.html('');
             for(let i=1; i<=60; i++) {
-                if(i%5!==0) $mNots.append(`<i style="transform: rotate(${i*6}deg)"></i>`);
+                if(i%5!==0) $mNots.append(`<i style="transform: rotate(${i*6}deg); transform-origin: center 40px;"></i>`);
             }
             $mNots.css({
                 'color': s.analog_min_color,
                 '--not-thick': s.analog_min_thick + 'px',
                 '--not-len': s.analog_min_length + 'px',
-                'display': 'block'
+                'display': 'block',
+                'z-index': (s.analog_not_above === 'yes' ? 20 : 5)
             });
             if (s.analog_not_above === 'yes') $mNots.addClass('above'); else $mNots.removeClass('above');
 
@@ -274,7 +282,9 @@ jQuery(document).ready(function($) {
     // Initial trigger to sync UI with loaded settings
         if ($('.nav-tab.is-active').length) $('.nav-tab.is-active').trigger('click');
         if ($('.sub-tab-btn.active').length) $('.sub-tab-btn.active').trigger('click');
-        updatePreview();
+
+        // Final force update
+        setTimeout(updatePreview, 100);
 
     // Close preview button logic
     function updateCloseBtn(s) {

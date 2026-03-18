@@ -28,18 +28,19 @@ function adremm_clock_activate() {
     if (!get_option('adremm_clock_settings')) {
         update_option('adremm_clock_settings', $default_settings);
     }
-    add_option('adremm_clock_do_redirect', true);
+    set_transient('adremm_clock_activation_redirect', true, 30);
 }
 
 // Handle Redirect
 add_action('admin_init', 'adremm_clock_handle_activation_redirect');
 function adremm_clock_handle_activation_redirect() {
-    if (get_option('adremm_clock_do_redirect')) {
-        delete_option('adremm_clock_do_redirect');
-        if (!isset($_GET['activate-multi'])) {
-            wp_safe_redirect(admin_url('admin.php?page=adremm-clock-settings'));
-            exit;
-        }
+    if (get_transient('adremm_clock_activation_redirect')) {
+        delete_transient('adremm_clock_activation_redirect');
+        if (defined('DOING_AJAX') && DOING_AJAX) return;
+        if (isset($_GET['activate-multi'])) return;
+
+        wp_safe_redirect(admin_url('admin.php?page=adremm-clock-settings'));
+        exit;
     }
 }
 

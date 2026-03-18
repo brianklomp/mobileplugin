@@ -75,7 +75,7 @@ $fonts = adremm_clock_get_google_fonts();
                         </tr>
                         <tr>
                             <th><?php _e('Achtergrond Kleur', 'adremm-clock-plugin'); ?></th>
-                            <td><input type="text" name="adremm_clock_settings[bg_color]" value="<?php echo esc_attr($settings['bg_color']); ?>" class="adremm-color-picker" data-alpha="true"></td>
+                            <td><input type="text" name="adremm_clock_settings[bg_color]" value="<?php echo esc_attr($settings['bg_color']); ?>" class="adremm-color-picker" data-alpha-enabled="true" data-alpha-color-type="rgba"></td>
                         </tr>
                         <tr>
                             <th><?php _e('Padding (binnen)', 'adremm-clock-plugin'); ?></th>
@@ -104,19 +104,19 @@ $fonts = adremm_clock_get_google_fonts();
                         </tr>
                         <tr>
                             <th><?php _e('Of Achtergrond Kleur', 'adremm-clock-plugin'); ?></th>
-                            <td><input type="text" name="adremm_clock_settings[analog_bg_color]" value="<?php echo esc_attr($settings['analog_bg_color']); ?>" class="adremm-color-picker" data-alpha="true"></td>
+                            <td><input type="text" name="adremm_clock_settings[analog_bg_color]" value="<?php echo esc_attr($settings['analog_bg_color']); ?>" class="adremm-color-picker" data-alpha-enabled="true" data-alpha-color-type="rgba"></td>
                         </tr>
                         <tr>
                             <th><?php _e('Ringkleur & Grootte', 'adremm-clock-plugin'); ?></th>
                             <td>
-                                <input type="text" name="adremm_clock_settings[analog_ring_color]" value="<?php echo esc_attr($settings['analog_ring_color']); ?>" class="adremm-color-picker" data-alpha="true">
+                                <input type="text" name="adremm_clock_settings[analog_ring_color]" value="<?php echo esc_attr($settings['analog_ring_color']); ?>" class="adremm-color-picker" data-alpha-enabled="true" data-alpha-color-type="rgba">
                                 <input type="number" name="adremm_clock_settings[analog_ring_size]" value="<?php echo esc_attr($settings['analog_ring_size']); ?>" style="width:60px;"> px
                             </td>
                         </tr>
                         <tr>
                             <th><?php _e('Uur Notatie', 'adremm-clock-plugin'); ?></th>
                             <td>
-                                <input type="text" name="adremm_clock_settings[analog_hour_color]" value="<?php echo esc_attr($settings['analog_hour_color']); ?>" class="adremm-color-picker" data-alpha="true">
+                                <input type="text" name="adremm_clock_settings[analog_hour_color]" value="<?php echo esc_attr($settings['analog_hour_color']); ?>" class="adremm-color-picker" data-alpha-enabled="true" data-alpha-color-type="rgba">
                                 Dikte: <input type="number" name="adremm_clock_settings[analog_hour_thick]" value="<?php echo esc_attr($settings['analog_hour_thick']); ?>" style="width:50px;">
                                 Lengte: <input type="number" name="adremm_clock_settings[analog_hour_length]" value="<?php echo esc_attr($settings['analog_hour_length']); ?>" style="width:50px;">
                             </td>
@@ -124,7 +124,7 @@ $fonts = adremm_clock_get_google_fonts();
                         <tr>
                             <th><?php _e('Minuut Notatie', 'adremm-clock-plugin'); ?></th>
                             <td>
-                                <input type="text" name="adremm_clock_settings[analog_min_color]" value="<?php echo esc_attr($settings['analog_min_color']); ?>" class="adremm-color-picker" data-alpha="true">
+                                <input type="text" name="adremm_clock_settings[analog_min_color]" value="<?php echo esc_attr($settings['analog_min_color']); ?>" class="adremm-color-picker" data-alpha-enabled="true" data-alpha-color-type="rgba">
                                 Dikte: <input type="number" name="adremm_clock_settings[analog_min_thick]" value="<?php echo esc_attr($settings['analog_min_thick']); ?>" style="width:50px;">
                                 Lengte: <input type="number" name="adremm_clock_settings[analog_min_length]" value="<?php echo esc_attr($settings['analog_min_length']); ?>" style="width:50px;">
                             </td>
@@ -151,7 +151,7 @@ $fonts = adremm_clock_get_google_fonts();
                                 <tr>
                                     <th>Kleur & Dikte</th>
                                     <td>
-                                        <input type="text" name="adremm_clock_settings[hand_<?php echo $h; ?>_color]" value="<?php echo esc_attr($settings['hand_'.$h.'_color']); ?>" class="adremm-color-picker" data-alpha="true">
+                                        <input type="text" name="adremm_clock_settings[hand_<?php echo $h; ?>_color]" value="<?php echo esc_attr($settings['hand_'.$h.'_color']); ?>" class="adremm-color-picker" data-alpha-enabled="true" data-alpha-color-type="rgba">
                                         <input type="number" name="adremm_clock_settings[hand_<?php echo $h; ?>_thick]" value="<?php echo esc_attr($settings['hand_'.$h.'_thick']); ?>" style="width:60px;"> px
                                     </td>
                                 </tr>
@@ -211,7 +211,7 @@ $fonts = adremm_clock_get_google_fonts();
                             <td>
                                 <input type="hidden" name="adremm_clock_settings[digital_glow]" value="no">
                                 <input type="checkbox" name="adremm_clock_settings[digital_glow]" value="yes" <?php checked($settings['digital_glow'], 'yes'); ?>> Actief
-                                <input type="text" name="adremm_clock_settings[digital_glow_color]" value="<?php echo esc_attr($settings['digital_glow_color']); ?>" class="adremm-color-picker" data-alpha="true">
+                                <input type="text" name="adremm_clock_settings[digital_glow_color]" value="<?php echo esc_attr($settings['digital_glow_color']); ?>" class="adremm-color-picker" data-alpha-enabled="true" data-alpha-color-type="rgba">
                                 <input type="number" name="adremm_clock_settings[digital_glow_spread]" value="<?php echo esc_attr($settings['digital_glow_spread']); ?>" style="width:60px;"> px
                             </td>
                         </tr>
@@ -223,7 +223,7 @@ $fonts = adremm_clock_get_google_fonts();
                                         <option value="<?php echo esc_attr($font); ?>" <?php selected($settings['digital_font'], $font); ?>><?php echo esc_html($font); ?></option>
                                     <?php endforeach; ?>
                                 </select>
-                                <input type="text" name="adremm_clock_settings[digital_color]" value="<?php echo esc_attr($settings['digital_color']); ?>" class="adremm-color-picker" data-alpha="true">
+                                <input type="text" name="adremm_clock_settings[digital_color]" value="<?php echo esc_attr($settings['digital_color']); ?>" class="adremm-color-picker" data-alpha-enabled="true" data-alpha-color-type="rgba">
                             </td>
                         </tr>
                     </table>
@@ -248,10 +248,10 @@ $fonts = adremm_clock_get_google_fonts();
                             <th><?php _e('Tekst Open/Dicht', 'adremm-clock-plugin'); ?></th>
                             <td>
                                 <input type="text" name="adremm_clock_settings[text_open]" value="<?php echo esc_attr($settings['text_open']); ?>">
-                                <input type="text" name="adremm_clock_settings[color_open]" value="<?php echo esc_attr($settings['color_open']); ?>" class="adremm-color-picker" data-alpha="true">
+                                <input type="text" name="adremm_clock_settings[color_open]" value="<?php echo esc_attr($settings['color_open']); ?>" class="adremm-color-picker" data-alpha-enabled="true" data-alpha-color-type="rgba">
                                 <br><br>
                                 <input type="text" name="adremm_clock_settings[text_closed]" value="<?php echo esc_attr($settings['text_closed']); ?>">
-                                <input type="text" name="adremm_clock_settings[color_closed]" value="<?php echo esc_attr($settings['color_closed']); ?>" class="adremm-color-picker" data-alpha="true">
+                                <input type="text" name="adremm_clock_settings[color_closed]" value="<?php echo esc_attr($settings['color_closed']); ?>" class="adremm-color-picker" data-alpha-enabled="true" data-alpha-color-type="rgba">
                             </td>
                         </tr>
                     </table>
@@ -337,7 +337,7 @@ $fonts = adremm_clock_get_google_fonts();
                                     <input type="hidden" name="adremm_clock_settings[show_close_x]" value="no">
                                     <input type="checkbox" name="adremm_clock_settings[show_close_x]" value="yes" <?php checked($settings['show_close_x'], 'yes'); ?>>
                                     Grootte: <input type="number" name="adremm_clock_settings[close_x_size]" value="<?php echo esc_attr($settings['close_x_size']); ?>" style="width:50px;"> px
-                                    <input type="text" name="adremm_clock_settings[color_close_x]" value="<?php echo esc_attr($settings['color_close_x']); ?>" class="adremm-color-picker" data-alpha="true">
+                                    <input type="text" name="adremm_clock_settings[color_close_x]" value="<?php echo esc_attr($settings['color_close_x']); ?>" class="adremm-color-picker" data-alpha-enabled="true" data-alpha-color-type="rgba">
                                 </td>
                             </tr>
                             <tr>
@@ -346,7 +346,7 @@ $fonts = adremm_clock_get_google_fonts();
                                     <input type="hidden" name="adremm_clock_settings[show_close_label]" value="no">
                                     <input type="checkbox" name="adremm_clock_settings[show_close_label]" value="yes" <?php checked($settings['show_close_label'], 'yes'); ?>>
                                     Tekst: <input type="text" name="adremm_clock_settings[close_label]" value="<?php echo esc_attr($settings['close_label']); ?>">
-                                    <input type="text" name="adremm_clock_settings[color_close_label]" value="<?php echo esc_attr($settings['color_close_label']); ?>" class="adremm-color-picker" data-alpha="true">
+                                    <input type="text" name="adremm_clock_settings[color_close_label]" value="<?php echo esc_attr($settings['color_close_label']); ?>" class="adremm-color-picker" data-alpha-enabled="true" data-alpha-color-type="rgba">
                                 </td>
                             </tr>
                             <tr>
@@ -379,8 +379,8 @@ $fonts = adremm_clock_get_google_fonts();
                             <tr>
                                 <th><?php _e('Achtergrond & Kleur', 'adremm-clock-plugin'); ?></th>
                                 <td>
-                                    <input type="text" name="adremm_clock_settings[tab_bg]" value="<?php echo esc_attr($settings['tab_bg']); ?>" class="adremm-color-picker" data-alpha="true">
-                                    <input type="text" name="adremm_clock_settings[tab_color]" value="<?php echo esc_attr($settings['tab_color']); ?>" class="adremm-color-picker" data-alpha="true">
+                                    <input type="text" name="adremm_clock_settings[tab_bg]" value="<?php echo esc_attr($settings['tab_bg']); ?>" class="adremm-color-picker" data-alpha-enabled="true" data-alpha-color-type="rgba">
+                                    <input type="text" name="adremm_clock_settings[tab_color]" value="<?php echo esc_attr($settings['tab_color']); ?>" class="adremm-color-picker" data-alpha-enabled="true" data-alpha-color-type="rgba">
                                 </td>
                             </tr>
                             <tr>
