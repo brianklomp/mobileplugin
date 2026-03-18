@@ -24,6 +24,7 @@ $fonts = adremm_clock_get_google_fonts();
 
     <form method="post" action="options.php" id="adremm-clock-form">
         <?php settings_fields('adremm_clock_options'); ?>
+        <input type="hidden" name="adremm_clock_settings[opening_hours]" value="<?php echo esc_attr($settings['opening_hours']); ?>">
 
         <div class="adremm-clock-editor">
             <!-- Left: Settings Panels -->

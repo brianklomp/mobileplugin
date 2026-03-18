@@ -113,15 +113,28 @@ function adremm_clock_settings_validate($input) {
     $output = array();
     $defaults = adremm_clock_get_default_settings();
 
+    // Define specifically which keys are color fields that need color validation
+    $color_keys = array(
+        'bg_color', 'analog_bg_color', 'analog_ring_color', 'hand_hour_color',
+        'hand_min_color', 'hand_sec_color', 'digital_color', 'digital_bg',
+        'color_open', 'color_closed', 'color_date', 'color_close_x',
+        'color_close_label', 'tab_color', 'tab_bg'
+    );
+
     foreach($defaults as $key => $default_val) {
-        if (strpos($key, 'color') !== false || strpos($key, 'bg') !== false || strpos($key, 'ring') !== false) {
-             // Sanitization for colors
+        if (in_array($key, $color_keys)) {
+             // Sanitization for colors (HEX, RGBA, or transparent)
              $color = trim((string)($input[$key] ?? $default_val));
-             if (preg_match('/^rgba\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*(0(\.\d+)?|1(\.0+)?)\s*\)$/', $color) || preg_match('/^#([A-Fa-f0-9]{3}){1,2}$/', $color) || $color === 'transparent') {
+             if (preg_match('/^rgba\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*(0(\.\d+)?|1(\.0+)?)\s*\)$/', $color) ||
+                 preg_match('/^#([A-Fa-f0-9]{3,8})$/', $color) ||
+                 $color === 'transparent') {
                 $output[$key] = $color;
              } else {
                 $output[$key] = $default_val;
              }
+        } elseif ($key === 'opening_hours') {
+            // Special handling for opening_hours JSON string
+            $output[$key] = isset($input[$key]) ? $input[$key] : $default_val;
         } else {
             $output[$key] = isset($input[$key]) ? sanitize_text_field($input[$key]) : $default_val;
         }
