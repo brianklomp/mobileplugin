@@ -23,7 +23,11 @@
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-#adremm-clock-wrapper.panel-size-small .adremm-clock-container { min-width: 180px; padding: 15px; }
+#adremm-clock-wrapper.panel-size-small .adremm-clock-container { min-width: 125px; padding: 10px; }
+#adremm-clock-wrapper.panel-size-small .face { width: 55px; height: 55px; }
+#adremm-clock-wrapper.panel-size-small .time-digital { font-size: 16px; }
+#adremm-clock-wrapper.panel-size-small .status-row { font-size: 12px; }
+#adremm-clock-wrapper.panel-size-small .date-row { font-size: 10px; }
 #adremm-clock-wrapper.panel-size-large .adremm-clock-container { min-width: 400px; padding: 40px; }
 
 /* BAR LAYOUT (Header/Footer) */
@@ -73,10 +77,34 @@
 
 /* Notations (Ticks) */
 .notations { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
-.notations i { position: absolute; top: 0; left: 50%; width: 2px; height: 8px; background: currentColor; transform-origin: 0 40px; }
-.notations.dots i { width: 4px; height: 4px; border-radius: 50%; }
+.notations i {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: var(--not-thick);
+    height: var(--not-len);
+    background: currentColor;
+    transform-origin: 0 40px;
+    margin-left: calc(var(--not-thick) / -2);
+}
+.panel-size-small .notations i { transform-origin: 0 27.5px; }
+.notations.above { z-index: 20; }
 
 /* Digital Styles */
+.time-row.has-glow .time-digital {
+    text-shadow: 0 0 var(--digital-glow-spread) var(--digital-glow-color);
+}
+.time-row.digital-style-blocks .time-digital {
+    background: #000;
+    color: #0f0;
+    padding: 5px 10px;
+    border-radius: 4px;
+    letter-spacing: 2px;
+}
+.time-row.digital-style-dots .time-digital {
+    font-family: 'Courier New', Courier, monospace;
+    letter-spacing: 4px;
+}
 .time-row.digital-style-alarm { background: #000; color: #ff3b30; padding: 10px; border: 2px solid #333; border-radius: 4px; font-family: monospace; }
 .time-row.digital-style-wall { background: #fff; border: 4px solid #333; border-radius: 50%; width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; color: #000; }
 
@@ -128,12 +156,16 @@
     right: 10px;
     background: none;
     border: none;
-    font-size: 24px;
     cursor: pointer;
     color: inherit;
     opacity: 0.5;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    line-height: 1;
 }
 .adremm-clock-close:hover { opacity: 1; }
+.adremm-clock-close .close-label { font-size: 12px; font-weight: bold; }
 
 /* Themes */
 .adremm-clock-theme-classic .adremm-clock-container { border: 6px double currentColor; border-radius: 0; font-family: serif; }
@@ -160,8 +192,25 @@
 .h-hour.point, .h-min.point { clip-path: polygon(50% 0%, 100% 100%, 0% 100%); height: 35px; }
 .h-hour.heart, .h-min.heart { clip-path: path('M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402z'); width: 20px; height: 20px; transform-origin: center; margin-left: -10px; bottom: 40%; }
 
-/* Responsive */
+/* Responsive Breakpoints & Overrides */
+/* The actual values are injected by PHP via wp_add_inline_style or handled via media classes if complex.
+   But for now, standard classes will work. */
+
+.adremm-clock-mobile-hide { display: none !important; }
+
 @media screen and (max-width: 768px) {
+    /* Mobile Override Example */
+    #adremm-clock-wrapper.mobile-size-small .adremm-clock-container { min-width: 125px; padding: 10px; }
+    #adremm-clock-wrapper.mobile-size-small .face { width: 55px; height: 55px; }
+    #adremm-clock-wrapper.mobile-size-small .time-digital { font-size: 16px; }
+    #adremm-clock-wrapper.mobile-size-small .status-row { font-size: 12px; }
+
+    /* Position overrides */
+    #adremm-clock-wrapper.mobile-pos-top-right { top: 10px; right: 10px; bottom: auto; left: auto; }
+    #adremm-clock-wrapper.mobile-pos-bottom-right { bottom: 10px; right: 10px; top: auto; left: auto; }
+    #adremm-clock-wrapper.mobile-pos-top-left { top: 10px; left: 10px; bottom: auto; right: auto; }
+    #adremm-clock-wrapper.mobile-pos-bottom-left { bottom: 10px; left: 10px; top: auto; right: auto; }
+
     .adremm-clock-bar .adremm-clock-info .date-row { display: none; }
     .adremm-clock-bar .adremm-clock-main { gap: 15px; }
 }

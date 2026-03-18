@@ -37,8 +37,12 @@ function adremm_clock_get_default_settings() {
         'analog_ring_size' => '2',
         'analog_hour_not' => 'lines', // lines, dots
         'analog_hour_color' => '#ffffff',
+        'analog_hour_thick' => '2',
+        'analog_hour_length' => '8',
         'analog_min_not' => 'lines', // lines, dots
         'analog_min_color' => '#ffffff',
+        'analog_min_thick' => '1',
+        'analog_min_length' => '5',
         'analog_not_above' => 'yes',
 
         // Wijzers
@@ -60,7 +64,10 @@ function adremm_clock_get_default_settings() {
         'digital_weight' => '700',
         'digital_bg' => 'transparent',
         'digital_show_sec' => 'yes',
-        'digital_style' => 'custom', // alarm, wall, custom
+        'digital_style' => 'custom', // alarm, wall, custom, blocks, dots
+        'digital_glow' => 'no',
+        'digital_glow_color' => '#ffffff',
+        'digital_glow_spread' => '10',
 
         // Status
         'show_status' => 'yes',
@@ -86,11 +93,13 @@ function adremm_clock_get_default_settings() {
         // Tijdpaneel / Inklapbaar
         'is_collapsible' => 'yes',
         'show_close_x' => 'yes',
+        'close_x_size' => '24',
         'color_close_x' => '#111111',
         'show_close_label' => 'yes',
         'close_label' => 'Sluiten',
         'color_close_label' => '#111111',
         'panel_border' => '1px solid rgba(0,0,0,0.1)',
+        'panel_shadow' => '0 10px 40px rgba(0,0,0,0.15)',
 
         // Tab Styling
         'tab_font' => 'Inter',
@@ -100,6 +109,14 @@ function adremm_clock_get_default_settings() {
         'tab_arrow' => 'yes',
         'tab_shadow' => '0 4px 15px rgba(0,0,0,0.2)',
         'tab_shadow_pos' => 'outer',
+
+        // Mobile / Tablet Settings
+        'mobile_visibility' => 'both', // both, desktop, mobile, tablet
+        'mobile_breakpoint' => '768',
+        'tablet_breakpoint' => '1024',
+        'mobile_position' => 'bottom-right',
+        'mobile_size' => 'small',
+        'mobile_theme' => 'inherit',
 
         // Algemeen
         'language' => 'auto',
@@ -117,8 +134,8 @@ function adremm_clock_settings_validate($input) {
     $color_keys = array(
         'bg_color', 'analog_bg_color', 'analog_ring_color', 'hand_hour_color',
         'hand_min_color', 'hand_sec_color', 'digital_color', 'digital_bg',
-        'color_open', 'color_closed', 'color_date', 'color_close_x',
-        'color_close_label', 'tab_color', 'tab_bg'
+        'digital_glow_color', 'color_open', 'color_closed', 'color_date',
+        'color_close_x', 'color_close_label', 'tab_color', 'tab_bg'
     );
 
     foreach($defaults as $key => $default_val) {
@@ -176,10 +193,24 @@ function adremm_clock_add_admin_menu() {
         'adremm-clock-openingstijden',
         'adremm_clock_render_openingstijden_page'
     );
+
+    // Submenu: Mobiel & Tablet
+    add_submenu_page(
+        'adremm-clock-settings',
+        'Mobiel & Tablet',
+        'Mobiel & Tablet',
+        'manage_options',
+        'adremm-clock-mobile',
+        'adremm_clock_render_mobile_settings_page'
+    );
 }
 
 function adremm_clock_render_openingstijden_page() {
     include ADREMM_CLOCK_PATH . 'openingstijden-page.php';
+}
+
+function adremm_clock_render_mobile_settings_page() {
+    include ADREMM_CLOCK_PATH . 'mobile-settings-page.php';
 }
 
 function adremm_clock_render_settings_page() {

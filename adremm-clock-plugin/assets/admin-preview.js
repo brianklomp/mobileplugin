@@ -2,8 +2,8 @@
  * ADREMM Clock Admin Preview Logic V3 - FULL UPGRADE
  */
 jQuery(document).ready(function($) {
-    const $form = $('#adremm-clock-form');
-    const $liveView = $('#clock-live-view');
+    const $form = $('#adremm-clock-form, #adremm-clock-mobile-form');
+    const $liveView = $('#clock-live-view, #clock-mobile-view');
 
     // Main Tab Switching
     $('.adremm-nav-tabs .nav-tab').on('click', function(e) {
@@ -35,9 +35,12 @@ jQuery(document).ready(function($) {
     if ($.isFunction($.fn.wpColorPicker)) {
         $('.adremm-color-picker').wpColorPicker({
             change: function(event, ui) {
-                setTimeout(updatePreview, 5);
+                // Ensure immediate update on color change
+                setTimeout(updatePreview, 10);
             },
-            clear: updatePreview,
+            clear: function() {
+                setTimeout(updatePreview, 10);
+            },
             alpha: true
         });
     }
@@ -65,14 +68,27 @@ jQuery(document).ready(function($) {
             bg_color: getVal('bg_color'),
             text_color: getVal('text_color'),
             panel_size: getVal('panel_size'),
+            panel_shadow: getVal('panel_shadow'),
+            panel_border: getVal('panel_border'),
             show_analog: getRadioVal('show_analog'),
             analog_bg_image: getVal('analog_bg_image'),
             analog_bg_color: getVal('analog_bg_color'),
             analog_ring_color: getVal('analog_ring_color'),
             analog_ring_size: getVal('analog_ring_size'),
+            analog_hour_color: getVal('analog_hour_color'),
+            analog_hour_thick: getVal('analog_hour_thick'),
+            analog_hour_length: getVal('analog_hour_length'),
+            analog_min_color: getVal('analog_min_color'),
+            analog_min_thick: getVal('analog_min_thick'),
+            analog_min_length: getVal('analog_min_length'),
+            analog_not_above: $form.find('[name="adremm_clock_settings[analog_not_above]"]').is(':checked') ? 'yes' : 'no',
             show_digital: getRadioVal('show_digital'),
             digital_color: getVal('digital_color'),
             digital_font: getVal('digital_font'),
+            digital_style: getVal('digital_style'),
+            digital_glow: $form.find('[name="adremm_clock_settings[digital_glow]"]').is(':checked') ? 'yes' : 'no',
+            digital_glow_color: getVal('digital_glow_color'),
+            digital_glow_spread: getVal('digital_glow_spread'),
             text_open: getVal('text_open'),
             color_open: getVal('color_open'),
             font_status: getVal('font_status'),
@@ -82,10 +98,15 @@ jQuery(document).ready(function($) {
             extra_color: getVal('extra_color'),
             extra_font_size: getVal('extra_font_size'),
             extra_marquee: getRadioVal('extra_marquee'),
-            digital_style: getVal('digital_style'),
             hand_hour_color: getVal('hand_hour_color'),
             hand_min_color: getVal('hand_min_color'),
-            hand_sec_color: getVal('hand_sec_color')
+            hand_sec_color: getVal('hand_sec_color'),
+            show_close_x: $form.find('[name="adremm_clock_settings[show_close_x]"]').is(':checked') ? 'yes' : 'no',
+            close_x_size: getVal('close_x_size'),
+            color_close_x: getVal('color_close_x'),
+            show_close_label: $form.find('[name="adremm_clock_settings[show_close_label]"]').is(':checked') ? 'yes' : 'no',
+            close_label: getVal('close_label'),
+            color_close_label: getVal('color_close_label')
         };
 
         // Root styles & Theme classes
@@ -95,7 +116,9 @@ jQuery(document).ready(function($) {
         $liveView.css({
             'background-color': s.bg_color || '#ffffff',
             'color': s.text_color || '#000000',
-            'font-family': (s.theme_font && s.theme_font !== 'inherit') ? `"${s.theme_font}"` : 'inherit'
+            'font-family': (s.theme_font && s.theme_font !== 'inherit') ? `"${s.theme_font}"` : 'inherit',
+            'box-shadow': s.panel_shadow || 'none',
+            'border': s.panel_border || 'none'
         });
 
         // Preload fonts
@@ -117,6 +140,27 @@ jQuery(document).ready(function($) {
                 'border-color': s.analog_ring_color,
                 'border-width': s.analog_ring_size + 'px'
             });
+
+            // Notations
+            const $notations = $face.find('.notations');
+            if ($notations.length === 0) {
+                // Initialize preview notation structure if missing
+                let html = '<div class="notations hour-notations"></div><div class="notations min-notations"></div>';
+                $face.prepend(html);
+            }
+
+            const $hNots = $face.find('.hour-notations');
+            $hNots.html('');
+            for(let i=1; i<=12; i++) {
+                $hNots.append(`<i style="transform: rotate(${i*30}deg)"></i>`);
+            }
+            $hNots.css({
+                'color': s.analog_hour_color,
+                '--not-thick': s.analog_hour_thick + 'px',
+                '--not-len': s.analog_hour_length + 'px'
+            });
+            if (s.analog_not_above === 'yes') $hNots.addClass('above'); else $hNots.removeClass('above');
+
             $liveView.find('.hand.hour').css('background-color', s.hand_hour_color);
             $liveView.find('.hand.min').css('background-color', s.hand_min_color);
             $liveView.find('.hand.sec').css('background-color', s.hand_sec_color);
@@ -126,11 +170,16 @@ jQuery(document).ready(function($) {
 
         // Digital
         const $time = $liveView.find('.preview-time');
-        $time.removeClass('style-alarm style-wall style-custom');
+        $time.removeClass('style-alarm style-wall style-custom style-blocks style-dots has-glow');
         if (s.show_digital === 'yes') {
-            $time.show().addClass('style-' + s.digital_style).css({
+            $time.show().addClass('style-' + s.digital_style);
+            if (s.digital_glow === 'yes') $time.addClass('has-glow');
+
+            $time.css({
                 'color': s.digital_color,
-                'font-family': (s.digital_font && s.digital_font !== 'inherit') ? `"${s.digital_font}"` : 'inherit'
+                'font-family': (s.digital_font && s.digital_font !== 'inherit') ? `"${s.digital_font}"` : 'inherit',
+                '--digital-glow-color': s.digital_glow_color,
+                '--digital-glow-spread': s.digital_glow_spread + 'px'
             });
         } else {
             $time.hide();
@@ -161,6 +210,8 @@ jQuery(document).ready(function($) {
 
         // Size classes (visual feedback in preview)
         $liveView.removeClass('size-small size-normal size-large').addClass('size-' + s.panel_size);
+
+        updateCloseBtn(s);
     }
 
     // Font Preload for select options and handle preview
@@ -169,11 +220,31 @@ jQuery(document).ready(function($) {
         $(this).css('font-family', (font && font !== 'inherit') ? `"${font}"` : 'inherit');
     }).trigger('change');
 
-    $form.find('input, select, textarea').on('input change', updatePreview);
+    $form.find('input, select, textarea').on('input change', function() {
+        updatePreview();
+    });
 
     // Initial trigger to sync UI with loaded settings
     $('.nav-tab.is-active').trigger('click');
     $('.sub-tab-btn.active').trigger('click');
+        updatePreview();
+
+    // Close preview button logic
+    function updateCloseBtn(s) {
+        let $btn = $liveView.find('.preview-close');
+        if ($btn.length === 0) {
+            $btn = $('<div class="preview-close"></div>');
+            $liveView.prepend($btn);
+        }
+        $btn.html('');
+        if (s.show_close_label === 'yes') {
+            $btn.append(`<span class="close-label" style="color:${s.color_close_label}">${s.close_label}</span>`);
+        }
+        if (s.show_close_x === 'yes') {
+            $btn.append(`<span class="close-x" style="font-size:${s.close_x_size}px; color:${s.color_close_x}">&times;</span>`);
+        }
+        if (s.show_close_x !== 'yes' && s.show_close_label !== 'yes') $btn.hide(); else $btn.show();
+    }
 
     function animateClock() {
         const now = new Date();

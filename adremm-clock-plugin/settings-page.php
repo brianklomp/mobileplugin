@@ -111,6 +111,26 @@ $fonts = adremm_clock_get_google_fonts();
                                 <input type="number" name="adremm_clock_settings[analog_ring_size]" value="<?php echo esc_attr($settings['analog_ring_size']); ?>" style="width:60px;"> px
                             </td>
                         </tr>
+                        <tr>
+                            <th><?php _e('Uur Notatie', 'adremm-clock-plugin'); ?></th>
+                            <td>
+                                <input type="text" name="adremm_clock_settings[analog_hour_color]" value="<?php echo esc_attr($settings['analog_hour_color']); ?>" class="adremm-color-picker" data-alpha="true">
+                                Dikte: <input type="number" name="adremm_clock_settings[analog_hour_thick]" value="<?php echo esc_attr($settings['analog_hour_thick']); ?>" style="width:50px;">
+                                Lengte: <input type="number" name="adremm_clock_settings[analog_hour_length]" value="<?php echo esc_attr($settings['analog_hour_length']); ?>" style="width:50px;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><?php _e('Minuut Notatie', 'adremm-clock-plugin'); ?></th>
+                            <td>
+                                <input type="text" name="adremm_clock_settings[analog_min_color]" value="<?php echo esc_attr($settings['analog_min_color']); ?>" class="adremm-color-picker" data-alpha="true">
+                                Dikte: <input type="number" name="adremm_clock_settings[analog_min_thick]" value="<?php echo esc_attr($settings['analog_min_thick']); ?>" style="width:50px;">
+                                Lengte: <input type="number" name="adremm_clock_settings[analog_min_length]" value="<?php echo esc_attr($settings['analog_min_length']); ?>" style="width:50px;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><?php _e('Notatie Boven Wijzers?', 'adremm-clock-plugin'); ?></th>
+                            <td><input type="checkbox" name="adremm_clock_settings[analog_not_above]" value="yes" <?php checked($settings['analog_not_above'], 'yes'); ?>></td>
+                        </tr>
                     </table>
                 </div>
 
@@ -173,8 +193,18 @@ $fonts = adremm_clock_get_google_fonts();
                                 <select name="adremm_clock_settings[digital_style]">
                                     <option value="alarm" <?php selected($settings['digital_style'], 'alarm'); ?>>1. Wekker</option>
                                     <option value="wall" <?php selected($settings['digital_style'], 'wall'); ?>>2. Muurklok</option>
-                                    <option value="custom" <?php selected($settings['digital_style'], 'custom'); ?>>3. Custom</option>
+                                    <option value="blocks" <?php selected($settings['digital_style'], 'blocks'); ?>>3. Blokjes</option>
+                                    <option value="dots" <?php selected($settings['digital_style'], 'dots'); ?>>4. Dots</option>
+                                    <option value="custom" <?php selected($settings['digital_style'], 'custom'); ?>>5. Custom</option>
                                 </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><?php _e('Glow Effect (Font)', 'adremm-clock-plugin'); ?></th>
+                            <td>
+                                <input type="checkbox" name="adremm_clock_settings[digital_glow]" value="yes" <?php checked($settings['digital_glow'], 'yes'); ?>> Actief
+                                <input type="text" name="adremm_clock_settings[digital_glow_color]" value="<?php echo esc_attr($settings['digital_glow_color']); ?>" class="adremm-color-picker" data-alpha="true">
+                                <input type="number" name="adremm_clock_settings[digital_glow_spread]" value="<?php echo esc_attr($settings['digital_glow_spread']); ?>" style="width:60px;"> px
                             </td>
                         </tr>
                         <tr>
@@ -293,7 +323,23 @@ $fonts = adremm_clock_get_google_fonts();
                                 <th>Sluitkruis & Kleur</th>
                                 <td>
                                     <input type="checkbox" name="adremm_clock_settings[show_close_x]" value="yes" <?php checked($settings['show_close_x'], 'yes'); ?>>
+                                    Grootte: <input type="number" name="adremm_clock_settings[close_x_size]" value="<?php echo esc_attr($settings['close_x_size']); ?>" style="width:50px;"> px
                                     <input type="text" name="adremm_clock_settings[color_close_x]" value="<?php echo esc_attr($settings['color_close_x']); ?>" class="adremm-color-picker" data-alpha="true">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Sluit Label</th>
+                                <td>
+                                    <input type="checkbox" name="adremm_clock_settings[show_close_label]" value="yes" <?php checked($settings['show_close_label'], 'yes'); ?>>
+                                    Tekst: <input type="text" name="adremm_clock_settings[close_label]" value="<?php echo esc_attr($settings['close_label']); ?>">
+                                    <input type="text" name="adremm_clock_settings[color_close_label]" value="<?php echo esc_attr($settings['color_close_label']); ?>" class="adremm-color-picker" data-alpha="true">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Schaduw Paneel</th>
+                                <td>
+                                    <input type="text" name="adremm_clock_settings[panel_shadow]" value="<?php echo esc_attr($settings['panel_shadow']); ?>" class="large-text">
+                                    <p class="description">CSS box-shadow format (bijv: 0 10px 40px rgba(0,0,0,0.2))</p>
                                 </td>
                             </tr>
                          </table>
@@ -308,6 +354,10 @@ $fonts = adremm_clock_get_google_fonts();
                             <tr>
                                 <th><?php _e('Pijltje op tab', 'adremm-clock-plugin'); ?></th>
                                 <td><input type="checkbox" name="adremm_clock_settings[tab_arrow]" value="yes" <?php checked($settings['tab_arrow'], 'yes'); ?>></td>
+                            </tr>
+                            <tr>
+                                <th><?php _e('Schaduw Tab', 'adremm-clock-plugin'); ?></th>
+                                <td><input type="text" name="adremm_clock_settings[tab_shadow]" value="<?php echo esc_attr($settings['tab_shadow']); ?>" class="large-text"></td>
                             </tr>
                             <tr>
                                 <th><?php _e('Achtergrond & Kleur', 'adremm-clock-plugin'); ?></th>

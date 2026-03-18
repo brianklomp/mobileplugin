@@ -28,7 +28,15 @@ function adremm_clock_get_google_fonts() {
  */
 add_action('admin_enqueue_scripts', 'adremm_clock_admin_enqueue');
 function adremm_clock_admin_enqueue($hook) {
-    if ('toplevel_page_adremm-clock-settings' !== $hook && 'adremm-clock-settings_page_adremm-clock-openingstijden' !== $hook) return;
+    $pages = array(
+        'toplevel_page_adremm-clock-settings',
+        'adremm-clock-settings_page_adremm-clock-openingstijden',
+        'adremm-clock-settings_page_adremm-clock-mobile'
+    );
+    if (!in_array($hook, $pages)) return;
+
+    // Enqueue Media for background image uploader
+    wp_enqueue_media();
 
     // Enqueue WP Color Picker
     wp_enqueue_style('wp-color-picker');
