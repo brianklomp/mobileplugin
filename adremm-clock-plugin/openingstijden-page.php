@@ -1,66 +1,98 @@
 <?php
 /**
- * Openingstijden Admin View for ADREMM Clock Plugin
+ * Opening Hours Settings Page for ADREMM Clock Plugin
  */
 if ( ! defined('ABSPATH') ) exit;
 
-// We include this within settings-page.php or as a standalone page.
-// For now, let's create the logic that will be included in the tab 'Openingstijden' (if added)
-// or as the standalone page content.
+$settings = wp_parse_args(get_option('adremm_clock_settings', array()), adremm_clock_get_default_settings());
+$days = array(
+    'mon' => 'Maandag',
+    'tue' => 'Dinsdag',
+    'wed' => 'Woensdag',
+    'thu' => 'Donderdag',
+    'fri' => 'Vrijdag',
+    'sat' => 'Zaterdag',
+    'sun' => 'Zondag'
+);
 
+$opening_hours = !empty($settings['opening_hours']) ? json_decode($settings['opening_hours'], true) : array();
 ?>
-<div class="adremm-openingstijden-wrap">
-    <h3><?php _e('Wekelijkse Openingstijden', 'adremm-clock-plugin'); ?></h3>
-    <p class="description"><?php _e('Stel hier de standaard openingstijden per dag in.', 'adremm-clock-plugin'); ?></p>
+<div class="wrap adremm-clock-v2">
+    <h1><?php _e('ADREMM Klok – Openingstijden', 'adremm-clock-plugin'); ?></h1>
+    <p><?php _e('Stel hier de openingstijden in voor de Status-melding op de klok.', 'adremm-clock-plugin'); ?></p>
 
-    <div class="days-container">
-        <?php
-        $days = array('Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', 'Zondag');
-        foreach($days as $day): ?>
-            <div class="day-row" data-day="<?php echo esc_attr($day); ?>">
-                <div class="day-header">
-                    <strong><?php echo $day; ?></strong>
-                    <label><input type="checkbox" class="is-closed"> Gesloten</label>
-                </div>
-                <div class="time-slots">
-                    <div class="slot">
-                        <input type="time" value="09:00"> tot <input type="time" value="18:00">
-                        <button type="button" class="button remove-slot">Verwijderen</button>
-                    </div>
-                </div>
-                <button type="button" class="button add-slot">+ Tijdsblok toevoegen</button>
-                <div class="extra-note">
-                    <label>Extra bericht (bijv. "Koopavond"):</label>
-                    <input type="text" class="regular-text" placeholder="Bericht...">
-                </div>
-                <button type="button" class="button copy-to-all">Kopieer naar alle dagen</button>
-            </div>
+    <form method="post" action="options.php">
+        <?php settings_fields('adremm_clock_options'); ?>
+
+        <!-- We need to pass all settings because register_setting is for the whole array -->
+        <?php foreach ($settings as $key => $val): ?>
+            <?php if ($key !== 'opening_hours'): ?>
+                <input type="hidden" name="adremm_clock_settings[<?php echo esc_attr($key); ?>]" value="<?php echo esc_attr($val); ?>">
+            <?php endif; ?>
         <?php endforeach; ?>
-    </div>
 
-    <hr>
+        <table class="widefat fixed striped" style="max-width: 600px; margin-top: 20px;">
+            <thead>
+                <tr>
+                    <th><?php _e('Dag', 'adremm-clock-plugin'); ?></th>
+                    <th><?php _e('Open', 'adremm-clock-plugin'); ?></th>
+                    <th><?php _e('Gesloten', 'adremm-clock-plugin'); ?></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach($days as $key => $label):
+                    $open = $opening_hours[$key]['open'] ?? '09:00';
+                    $close = $opening_hours[$key]['close'] ?? '18:00';
+                    $is_closed = !empty($opening_hours[$key]['is_closed']);
+                ?>
+                <tr>
+                    <td><strong><?php echo $label; ?></strong></td>
+                    <td>
+                        <input type="time" name="adremm_clock_opening_hours[<?php echo $key; ?>][open]" value="<?php echo esc_attr($open); ?>" <?php disabled($is_closed); ?>>
+                    </td>
+                    <td>
+                        <input type="time" name="adremm_clock_opening_hours[<?php echo $key; ?>][close]" value="<?php echo esc_attr($close); ?>" <?php disabled($is_closed); ?>>
+                        <label style="margin-left:10px;">
+                            <input type="checkbox" name="adremm_clock_opening_hours[<?php echo $key; ?>][is_closed]" value="1" <?php checked($is_closed); ?>>
+                            <?php _e('Gesloten', 'adremm-clock-plugin'); ?>
+                        </label>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
 
-    <h3><?php _e('Uitzonderingen', 'adremm-clock-plugin'); ?></h3>
-    <div class="exceptions-container">
-         <div class="exception-row">
-            <input type="date">
-            <label><input type="checkbox"> Gesloten</label>
-            <div class="exc-slots">
-                 <input type="time" value="09:00"> tot <input type="time" value="17:00">
-            </div>
-            <button type="button" class="button remove-exc">Verwijderen</button>
-         </div>
-    </div>
-    <button type="button" class="button add-exception">+ Nieuwe uitzondering</button>
+        <!-- We'll use a hidden field to store the JSON string to keep things compatible with our main settings array -->
+        <input type="hidden" name="adremm_clock_settings[opening_hours]" id="adremm_opening_hours_json" value="<?php echo esc_attr($settings['opening_hours']); ?>">
+
+        <p class="submit">
+            <?php submit_button(__('Openingstijden Opslaan', 'adremm-clock-plugin'), 'primary', 'submit', false); ?>
+        </p>
+    </form>
 </div>
 
-<style>
-.adremm-openingstijden-wrap { background: #fff; padding: 20px; border: 1px solid #ccc; }
-.day-row { margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #eee; }
-.day-header { display: flex; gap: 20px; align-items: center; margin-bottom: 10px; font-size: 16px; }
-.time-slots { margin-bottom: 10px; }
-.slot { margin-bottom: 5px; display: flex; align-items: center; gap: 10px; }
-.extra-note { margin: 10px 0; }
-.exceptions-container { margin-bottom: 15px; }
-.exception-row { display: flex; align-items: center; gap: 15px; margin-bottom: 10px; padding: 10px; background: #f9f9f9; border-radius: 4px; }
-</style>
+<script>
+jQuery(document).ready(function($) {
+    $('form').on('submit', function() {
+        var hours = {};
+        $('tr').each(function() {
+            var $row = $(this);
+            var dayKey = $row.find('input[type="time"]').first().attr('name');
+            if (dayKey) {
+                dayKey = dayKey.match(/\[(.*?)\]/)[1];
+                hours[dayKey] = {
+                    open: $row.find('input[name*="[open]"]').val(),
+                    close: $row.find('input[name*="[close]"]').val(),
+                    is_closed: $row.find('input[type="checkbox"]').is(':checked')
+                };
+            }
+        });
+        $('#adremm_opening_hours_json').val(JSON.stringify(hours));
+    });
+
+    $('input[type="checkbox"]').on('change', function() {
+        var $row = $(this).closest('tr');
+        $row.find('input[type="time"]').prop('disabled', $(this).is(':checked'));
+    });
+});
+</script>

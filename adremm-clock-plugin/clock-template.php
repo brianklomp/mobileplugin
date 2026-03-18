@@ -5,8 +5,8 @@
 
 if ( ! defined('ABSPATH') ) exit;
 
-$settings = get_option('adremm_clock_settings', adremm_clock_get_default_settings());
-$pos = $settings['position'];
+// $settings already parsed in adremm-clock-plugin.php
+$pos = $settings['position'] ?? 'bottom-right';
 
 // Determine layout type: Bar (Header/Footer) or Panel (Floating)
 $is_bar = ($pos === 'top-center' || $pos === 'bottom-center');
@@ -24,11 +24,16 @@ $style_vars = sprintf(
 <div id="adremm-clock-wrapper" class="<?php echo esc_attr($layout_class); ?> <?php echo esc_attr($position_class); ?> <?php echo esc_attr($theme_class); ?>" style="<?php echo esc_attr($style_vars); ?>">
 
     <div class="adremm-clock-container">
-        <?php if (!$is_bar): ?>
-            <button class="adremm-clock-close" title="<?php _e('Sluiten', 'adremm-clock-plugin'); ?>">&times;</button>
+        <?php if (!$is_bar && $settings['show_close_x'] === 'yes'): ?>
+            <button class="adremm-clock-close" title="<?php _e('Sluiten', 'adremm-clock-plugin'); ?>" style="color: <?php echo esc_attr($settings['color_close_x']); ?>;">&times;</button>
         <?php endif; ?>
 
         <div class="adremm-clock-main">
+            <!-- ABOVE ANALOG STATUS -->
+            <?php if ($settings['show_status'] === 'yes' && $settings['status_pos'] === 'above_analog'): ?>
+                 <div class="status-row" style="color: <?php echo ($status === 'open') ? esc_attr($settings['color_open']) : esc_attr($settings['color_closed']); ?>; font-family: '<?php echo esc_attr($settings['font_status']); ?>';"><?php echo ($status === 'open') ? esc_html($settings['text_open']) : esc_html($settings['text_closed']); ?></div>
+            <?php endif; ?>
+
             <!-- Analog Section -->
             <?php if ($settings['show_analog'] === 'yes'): ?>
                 <div class="adremm-clock-analog">
@@ -49,8 +54,18 @@ $style_vars = sprintf(
                 </div>
             <?php endif; ?>
 
+            <!-- BELOW ANALOG STATUS -->
+            <?php if ($settings['show_status'] === 'yes' && $settings['status_pos'] === 'below_analog'): ?>
+                 <div class="status-row" style="color: <?php echo ($status === 'open') ? esc_attr($settings['color_open']) : esc_attr($settings['color_closed']); ?>; font-family: '<?php echo esc_attr($settings['font_status']); ?>';"><?php echo ($status === 'open') ? esc_html($settings['text_open']) : esc_html($settings['text_closed']); ?></div>
+            <?php endif; ?>
+
             <!-- Digital & Info Section -->
             <div class="adremm-clock-info">
+                <!-- ABOVE DIGITAL STATUS -->
+                <?php if ($settings['show_status'] === 'yes' && $settings['status_pos'] === 'above_digital'): ?>
+                    <div class="status-row" style="color: <?php echo ($status === 'open') ? esc_attr($settings['color_open']) : esc_attr($settings['color_closed']); ?>; font-family: '<?php echo esc_attr($settings['font_status']); ?>';"><?php echo ($status === 'open') ? esc_html($settings['text_open']) : esc_html($settings['text_closed']); ?></div>
+                <?php endif; ?>
+
                 <?php if ($settings['show_digital'] === 'yes'): ?>
                     <div class="time-row digital-style-<?php echo esc_attr($settings['digital_style']); ?>" style="
                         font-family: '<?php echo esc_attr($settings['digital_font']); ?>';
@@ -60,20 +75,21 @@ $style_vars = sprintf(
                         <span class="time-digital"></span>
                     </div>
                 <?php endif; ?>
-                <div class="time-row">
-                    <span class="time-digital"></span>
-                </div>
 
-                <?php if ($settings['show_status'] === 'yes'): ?>
-                    <div class="status-row" style="color: <?php echo esc_attr($settings['color_open']); ?>; font-family: '<?php echo esc_attr($settings['font_status']); ?>';">
-                        <?php echo esc_html($settings['text_open']); ?>
-                    </div>
+                <!-- BELOW DIGITAL STATUS (DEFAULT) -->
+                <?php if ($settings['show_status'] === 'yes' && ($settings['status_pos'] === 'below_digital' || empty($settings['status_pos']))): ?>
+                    <div class="status-row" style="color: <?php echo ($status === 'open') ? esc_attr($settings['color_open']) : esc_attr($settings['color_closed']); ?>; font-family: '<?php echo esc_attr($settings['font_status']); ?>';"><?php echo ($status === 'open') ? esc_html($settings['text_open']) : esc_html($settings['text_closed']); ?></div>
                 <?php endif; ?>
 
                 <?php if ($settings['show_date'] === 'yes'): ?>
                     <div class="date-row" style="color: <?php echo esc_attr($settings['color_date']); ?>; font-family: '<?php echo esc_attr($settings['font_date']); ?>';">
                         <span class="date-text"></span>
                     </div>
+                <?php endif; ?>
+
+                <!-- BELOW DATE STATUS -->
+                <?php if ($settings['show_status'] === 'yes' && $settings['status_pos'] === 'below_date'): ?>
+                    <div class="status-row" style="color: <?php echo ($status === 'open') ? esc_attr($settings['color_open']) : esc_attr($settings['color_closed']); ?>; font-family: '<?php echo esc_attr($settings['font_status']); ?>';"><?php echo ($status === 'open') ? esc_html($settings['text_open']) : esc_html($settings['text_closed']); ?></div>
                 <?php endif; ?>
 
                 <?php if (!empty($settings['extra_message'])): ?>
@@ -87,7 +103,7 @@ $style_vars = sprintf(
 
     <?php if (!$is_bar && $settings['is_collapsible'] === 'yes'): ?>
         <!-- Collapsed Tab -->
-        <div class="adremm-clock-tab" style="display: none; background-color: <?php echo esc_attr($settings['tab_bg']); ?>; color: <?php echo esc_attr($settings['tab_color']); ?>; font-family: '<?php echo esc_attr($settings['tab_font']); ?>'; box-shadow: <?php echo esc_attr($settings['tab_shadow']); ?>;">
+        <div class="adremm-clock-tab" style="display: none; background-color: <?php echo esc_attr($settings['tab_bg']); ?>; color: <?php echo esc_attr($settings['tab_color']); ?>; font-family: '<?php echo esc_attr($settings['tab_font']); ?>'; box-shadow: <?php echo esc_attr($settings['tab_shadow']); ?>; z-index: 2147483647;">
             <?php if ($settings['tab_arrow'] === 'yes'): ?>
                 <span class="tab-arrow"></span>
             <?php endif; ?>

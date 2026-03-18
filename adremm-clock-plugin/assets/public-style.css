@@ -30,7 +30,7 @@
 .adremm-clock-bar {
     left: 0;
     width: 100%;
-    height: 60px;
+    height: 60px !important;
     background: var(--adremm-clock-bg);
     display: flex;
     align-items: center;
@@ -65,11 +65,20 @@
 .adremm-clock-analog { margin-bottom: 15px; }
 .adremm-clock-bar .adremm-clock-analog { margin-bottom: 0; }
 
-.face { width: 80px; height: 80px; border-radius: 50%; background: #000; border: 2px solid #3399ff; position: relative; margin: 0 auto; }
-.h-hour, .h-min, .h-sec { position: absolute; bottom: 50%; left: 50%; transform-origin: bottom center; background: #fff; border-radius: 4px; }
+.face { width: 80px; height: 80px; border-radius: 50%; background: #000; border: 2px solid #3399ff; position: relative; margin: 0 auto; overflow: hidden; }
+.h-hour, .h-min, .h-sec { position: absolute; bottom: 50%; left: 50%; transform-origin: bottom center; background: #fff; border-radius: 4px; z-index: 10; }
 .h-hour { height: 25px; width: 3px; margin-left: -1.5px; }
 .h-min { height: 35px; width: 2px; margin-left: -1px; }
 .h-sec { height: 38px; width: 1px; background: #ff3b30; margin-left: -0.5px; }
+
+/* Notations (Ticks) */
+.notations { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+.notations i { position: absolute; top: 0; left: 50%; width: 2px; height: 8px; background: currentColor; transform-origin: 0 40px; }
+.notations.dots i { width: 4px; height: 4px; border-radius: 50%; }
+
+/* Digital Styles */
+.time-row.digital-style-alarm { background: #000; color: #ff3b30; padding: 10px; border: 2px solid #333; border-radius: 4px; font-family: monospace; }
+.time-row.digital-style-wall { background: #fff; border: 4px solid #333; border-radius: 50%; width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; color: #000; }
 
 .time-digital { font-size: 24px; font-weight: 800; }
 .status-row { font-weight: bold; font-size: 18px; margin: 5px 0; }
@@ -87,8 +96,8 @@
 /* Tab Style */
 .adremm-clock-tab {
     position: fixed;
-    width: 25px;
-    height: 100px;
+    width: 25px !important;
+    height: 100px !important;
     background: var(--adremm-clock-bg);
     color: var(--adremm-clock-text);
     display: flex;
@@ -97,13 +106,20 @@
     cursor: pointer;
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     border: 1px solid rgba(0,0,0,0.1);
-    transition: width 0.3s;
+    transition: width 0.3s, background-color 0.3s;
+    z-index: 2147483647;
 }
-.adremm-clock-tab:hover { width: 35px; }
-.adremm-clock-tab .tab-label { transform: rotate(-90deg); white-space: nowrap; font-weight: bold; font-size: 11px; letter-spacing: 2px; }
+.adremm-clock-tab:hover { width: 35px !important; }
+.adremm-clock-tab .tab-label { transform: rotate(-90deg); white-space: nowrap; font-weight: bold; font-size: 11px; letter-spacing: 2px; font-family: inherit; }
 
-.adremm-clock-tab.tab-left { left: 0; border-radius: 0 10px 10px 0; }
-.adremm-clock-tab.tab-right { right: 0; border-radius: 10px 0 0 10px; }
+.adremm-clock-tab.tab-left { left: 0; border-radius: 0 10px 10px 0; top: 50%; transform: translateY(-50%); }
+.adremm-clock-tab.tab-right { right: 0; border-radius: 10px 0 0 10px; top: 50%; transform: translateY(-50%); }
+
+/* If position is bottom, tab should also be bottom-ish */
+.adremm-clock-pos-bottom-left ~ .adremm-clock-tab.tab-left { bottom: 100px; top: auto; transform: none; }
+.adremm-clock-pos-bottom-right ~ .adremm-clock-tab.tab-right { bottom: 100px; top: auto; transform: none; }
+.adremm-clock-pos-top-left ~ .adremm-clock-tab.tab-left { top: 100px; transform: none; }
+.adremm-clock-pos-top-right ~ .adremm-clock-tab.tab-right { top: 100px; transform: none; }
 
 /* Close Button */
 .adremm-clock-close {

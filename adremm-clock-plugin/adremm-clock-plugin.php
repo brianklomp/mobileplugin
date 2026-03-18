@@ -50,5 +50,7 @@ function adremm_clock_handle_activation_redirect() {
 add_action('wp_footer', 'adremm_clock_render_frontend');
 function adremm_clock_render_frontend() {
     if (is_admin()) return;
+    $settings = wp_parse_args(get_option('adremm_clock_settings', array()), adremm_clock_get_default_settings());
+    $status = adremm_clock_get_status(); // Initialize status for the template
     include ADREMM_CLOCK_PATH . 'clock-template.php';
 }

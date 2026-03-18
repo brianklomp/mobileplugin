@@ -28,6 +28,7 @@ jQuery(document).ready(function($) {
     $('.joy-item').on('click', function() {
         $('.joy-item').removeClass('active');
         $(this).addClass('active');
+        $(this).find('input').prop('checked', true).trigger('change');
     });
 
     // Color Pickers
@@ -59,6 +60,7 @@ jQuery(document).ready(function($) {
         const getRadioVal = (name) => $form.find(`[name="adremm_clock_settings[${name}]"]:checked`).val();
 
         const s = {
+            theme: getRadioVal('theme'),
             theme_font: getVal('theme_font'),
             bg_color: getVal('bg_color'),
             text_color: getVal('text_color'),
@@ -71,29 +73,37 @@ jQuery(document).ready(function($) {
             show_digital: getRadioVal('show_digital'),
             digital_color: getVal('digital_color'),
             digital_font: getVal('digital_font'),
-            show_status: getRadioVal('show_status'),
             text_open: getVal('text_open'),
             color_open: getVal('color_open'),
             font_status: getVal('font_status'),
-            show_date: getRadioVal('show_date'),
             color_date: getVal('color_date'),
             font_date: getVal('font_date'),
             extra_message: $form.find('textarea[name="adremm_clock_settings[extra_message]"]').val(),
             extra_color: getVal('extra_color'),
             extra_font_size: getVal('extra_font_size'),
             extra_marquee: getRadioVal('extra_marquee'),
+            digital_style: getVal('digital_style'),
             hand_hour_color: getVal('hand_hour_color'),
             hand_min_color: getVal('hand_min_color'),
             hand_sec_color: getVal('hand_sec_color')
         };
 
-        const $container = $('#adremm-clock-live-preview'); // Note: Make sure ID matches or use $liveView
+        // Root styles & Theme classes
+        $liveView.removeClass('theme-modern theme-classic theme-digital');
+        $liveView.addClass('theme-' + s.theme);
 
-        // Root styles
         $liveView.css({
-            'background-color': s.bg_color,
-            'color': s.text_color,
-            'font-family': s.theme_font
+            'background-color': s.bg_color || '#ffffff',
+            'color': s.text_color || '#000000',
+            'font-family': (s.theme_font && s.theme_font !== 'inherit') ? `"${s.theme_font}"` : 'inherit'
+        });
+
+        // Preload fonts
+        [s.theme_font, s.digital_font, s.font_status, s.font_date].forEach(font => {
+            if (font && font !== 'inherit') {
+                const url = 'https://fonts.googleapis.com/css2?family=' + font.replace(/ /g, '+') + '&display=swap';
+                if (!$('link[href="' + url + '"]').length) $('head').append('<link rel="stylesheet" href="' + url + '">');
+            }
         });
 
         // Analog
@@ -116,10 +126,11 @@ jQuery(document).ready(function($) {
 
         // Digital
         const $time = $liveView.find('.preview-time');
+        $time.removeClass('style-alarm style-wall style-custom');
         if (s.show_digital === 'yes') {
-            $time.show().css({
+            $time.show().addClass('style-' + s.digital_style).css({
                 'color': s.digital_color,
-                'font-family': s.digital_font
+                'font-family': (s.digital_font && s.digital_font !== 'inherit') ? `"${s.digital_font}"` : 'inherit'
             });
         } else {
             $time.hide();
@@ -127,25 +138,17 @@ jQuery(document).ready(function($) {
 
         // Status
         const $status = $liveView.find('.preview-status');
-        if (s.show_status === 'yes') {
-            $status.show().text(s.text_open).css({
-                'color': s.color_open,
-                'font-family': s.font_status
-            });
-        } else {
-            $status.hide();
-        }
+        $status.text(s.text_open).css({
+            'color': s.color_open,
+            'font-family': (s.font_status && s.font_status !== 'inherit') ? `"${s.font_status}"` : 'inherit'
+        });
 
         // Date
         const $date = $liveView.find('.preview-date');
-        if (s.show_date === 'yes') {
-            $date.show().css({
-                'color': s.color_date,
-                'font-family': s.font_date
-            });
-        } else {
-            $date.hide();
-        }
+        $date.css({
+            'color': s.color_date,
+            'font-family': (s.font_date && s.font_date !== 'inherit') ? `"${s.font_date}"` : 'inherit'
+        });
 
         // Extra
         const $extra = $liveView.find('.preview-extra');
@@ -160,16 +163,17 @@ jQuery(document).ready(function($) {
         $liveView.removeClass('size-small size-normal size-large').addClass('size-' + s.panel_size);
     }
 
-    // Font Preload
-    $('.adremm-font-select option').each(function() {
-        const f = $(this).val();
-        if (f && f !== 'inherit') {
-            const url = 'https://fonts.googleapis.com/css2?family=' + f.replace(/ /g, '+') + '&display=swap';
-            if (!$('link[href="' + url + '"]').length) $('head').append('<link rel="stylesheet" href="' + url + '">');
-        }
-    });
+    // Font Preload for select options and handle preview
+    $('.adremm-font-select').on('change', function() {
+        const font = $(this).val();
+        $(this).css('font-family', (font && font !== 'inherit') ? `"${font}"` : 'inherit');
+    }).trigger('change');
 
     $form.find('input, select, textarea').on('input change', updatePreview);
+
+    // Initial trigger to sync UI with loaded settings
+    $('.nav-tab.is-active').trigger('click');
+    $('.sub-tab-btn.active').trigger('click');
 
     function animateClock() {
         const now = new Date();
