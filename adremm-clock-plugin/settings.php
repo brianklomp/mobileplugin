@@ -127,8 +127,12 @@ function adremm_clock_get_default_settings() {
 }
 
 function adremm_clock_settings_validate($input) {
-    $output = array();
+    // Start with the existing settings from the database
+    $current_settings = get_option('adremm_clock_settings', array());
     $defaults = adremm_clock_get_default_settings();
+
+    // Merge existing settings with defaults to ensure completeness
+    $output = wp_parse_args($current_settings, $defaults);
 
     // Define specifically which keys are color fields that need color validation
     $color_keys = array(
@@ -138,22 +142,24 @@ function adremm_clock_settings_validate($input) {
         'color_close_x', 'color_close_label', 'tab_color', 'tab_bg'
     );
 
-    foreach($defaults as $key => $default_val) {
+    // Update the settings with the new input, validating as we go
+    foreach($input as $key => $val) {
+        if (!isset($defaults[$key])) continue; // Ignore unknown keys
+
         if (in_array($key, $color_keys)) {
              // Sanitization for colors (HEX, RGBA, or transparent)
-             $color = trim((string)($input[$key] ?? $default_val));
+             $color = trim((string)$val);
              if (preg_match('/^rgba\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*(0(\.\d+)?|1(\.0+)?)\s*\)$/', $color) ||
                  preg_match('/^#([A-Fa-f0-9]{3,8})$/', $color) ||
                  $color === 'transparent') {
                 $output[$key] = $color;
-             } else {
-                $output[$key] = $default_val;
              }
-        } elseif ($key === 'opening_hours') {
-            // Special handling for opening_hours JSON string
-            $output[$key] = isset($input[$key]) ? $input[$key] : $default_val;
+             // If invalid, keep the previous value in $output
+        } elseif ($key === 'opening_hours' || $key === 'extra_message') {
+            // Special handling for larger text/JSON
+            $output[$key] = $val;
         } else {
-            $output[$key] = isset($input[$key]) ? sanitize_text_field($input[$key]) : $default_val;
+            $output[$key] = sanitize_text_field($val);
         }
     }
 

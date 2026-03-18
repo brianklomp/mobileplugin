@@ -317,11 +317,15 @@ $fonts = adremm_clock_get_google_fonts();
                          <table class="form-table">
                             <tr>
                                 <th>Inklapbaar Panel</th>
-                                <td><input type="checkbox" name="adremm_clock_settings[is_collapsible]" value="yes" <?php checked($settings['is_collapsible'], 'yes'); ?>></td>
+                                <td>
+                                    <input type="hidden" name="adremm_clock_settings[is_collapsible]" value="no">
+                                    <input type="checkbox" name="adremm_clock_settings[is_collapsible]" value="yes" <?php checked($settings['is_collapsible'], 'yes'); ?>>
+                                </td>
                             </tr>
                             <tr>
                                 <th>Sluitkruis & Kleur</th>
                                 <td>
+                                    <input type="hidden" name="adremm_clock_settings[show_close_x]" value="no">
                                     <input type="checkbox" name="adremm_clock_settings[show_close_x]" value="yes" <?php checked($settings['show_close_x'], 'yes'); ?>>
                                     Grootte: <input type="number" name="adremm_clock_settings[close_x_size]" value="<?php echo esc_attr($settings['close_x_size']); ?>" style="width:50px;"> px
                                     <input type="text" name="adremm_clock_settings[color_close_x]" value="<?php echo esc_attr($settings['color_close_x']); ?>" class="adremm-color-picker" data-alpha="true">
@@ -330,6 +334,7 @@ $fonts = adremm_clock_get_google_fonts();
                             <tr>
                                 <th>Sluit Label</th>
                                 <td>
+                                    <input type="hidden" name="adremm_clock_settings[show_close_label]" value="no">
                                     <input type="checkbox" name="adremm_clock_settings[show_close_label]" value="yes" <?php checked($settings['show_close_label'], 'yes'); ?>>
                                     Tekst: <input type="text" name="adremm_clock_settings[close_label]" value="<?php echo esc_attr($settings['close_label']); ?>">
                                     <input type="text" name="adremm_clock_settings[color_close_label]" value="<?php echo esc_attr($settings['color_close_label']); ?>" class="adremm-color-picker" data-alpha="true">
@@ -353,7 +358,10 @@ $fonts = adremm_clock_get_google_fonts();
                             </tr>
                             <tr>
                                 <th><?php _e('Pijltje op tab', 'adremm-clock-plugin'); ?></th>
-                                <td><input type="checkbox" name="adremm_clock_settings[tab_arrow]" value="yes" <?php checked($settings['tab_arrow'], 'yes'); ?>></td>
+                                <td>
+                                    <input type="hidden" name="adremm_clock_settings[tab_arrow]" value="no">
+                                    <input type="checkbox" name="adremm_clock_settings[tab_arrow]" value="yes" <?php checked($settings['tab_arrow'], 'yes'); ?>>
+                                </td>
                             </tr>
                             <tr>
                                 <th><?php _e('Schaduw Tab', 'adremm-clock-plugin'); ?></th>

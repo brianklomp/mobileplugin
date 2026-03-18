@@ -34,17 +34,21 @@
 
             // Digital (Update every second or when ms is low)
             if (!isSmooth || ms < 100) {
-                let timeStr = now.toLocaleTimeString(locale);
                 const $timeRow = $root.find('.time-row');
+                const $timeTarget = $root.find('.time-digital');
 
-                if ($timeRow.hasClass('digital-style-blocks')) {
-                    // Blocks style: wrap each character or group?
-                    // Let's just use the string for now, CSS handles look.
-                } else if ($timeRow.hasClass('digital-style-dots')) {
-                    // Dots style often uses a specific font or spacing.
+                const hh = String(h).padStart(2, '0');
+                const mm = String(m).padStart(2, '0');
+                const ss = String(s).padStart(2, '0');
+
+                if ($timeRow.hasClass('digital-style-wall')) {
+                    $timeTarget.html(`${hh}:${mm}<span class="sec" style="opacity:${(ms > 500 ? 0.4 : 1)}">:${ss}</span>`);
+                } else if ($timeRow.hasClass('digital-style-blocks')) {
+                    $timeTarget.html(`<span class="b">${hh}</span>:<span class="b">${mm}</span>:<span class="b">${ss}</span>`);
+                } else {
+                    $timeTarget.text(`${hh}:${mm}:${ss}`);
                 }
 
-                $root.find('.time-digital').text(timeStr);
                 $root.find('.date-text').text(now.toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long' }));
             }
         }

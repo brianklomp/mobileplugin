@@ -157,9 +157,23 @@ jQuery(document).ready(function($) {
             $hNots.css({
                 'color': s.analog_hour_color,
                 '--not-thick': s.analog_hour_thick + 'px',
-                '--not-len': s.analog_hour_length + 'px'
+                '--not-len': s.analog_hour_length + 'px',
+                'display': 'block'
             });
             if (s.analog_not_above === 'yes') $hNots.addClass('above'); else $hNots.removeClass('above');
+
+            const $mNots = $face.find('.min-notations');
+            $mNots.html('');
+            for(let i=1; i<=60; i++) {
+                if(i%5!==0) $mNots.append(`<i style="transform: rotate(${i*6}deg)"></i>`);
+            }
+            $mNots.css({
+                'color': s.analog_min_color,
+                '--not-thick': s.analog_min_thick + 'px',
+                '--not-len': s.analog_min_length + 'px',
+                'display': 'block'
+            });
+            if (s.analog_not_above === 'yes') $mNots.addClass('above'); else $mNots.removeClass('above');
 
             $liveView.find('.hand.hour').css('background-color', s.hand_hour_color);
             $liveView.find('.hand.min').css('background-color', s.hand_min_color);

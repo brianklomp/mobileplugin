@@ -50,8 +50,10 @@ $style_vars = sprintf(
             <?php if ($settings['show_analog'] === 'yes'): ?>
                 <div class="adremm-clock-analog">
                     <div class="face" style="
-                        background-color: <?php echo ($settings['analog_bg_type'] === 'color') ? esc_attr($settings['analog_bg_color']) : 'transparent'; ?>;
-                        background-image: <?php echo ($settings['analog_bg_type'] === 'image' && $settings['analog_bg_image']) ? 'url('.esc_url($settings['analog_bg_image']).')' : 'none'; ?>;
+                        background-color: <?php echo esc_attr($settings['analog_bg_color'] ?? '#000'); ?>;
+                        background-image: <?php echo (!empty($settings['analog_bg_image'])) ? 'url('.esc_url($settings['analog_bg_image']).')' : 'none'; ?>;
+                        background-size: cover;
+                        background-position: center;
                         border-color: <?php echo esc_attr($settings['analog_ring_color']); ?>;
                         border-width: <?php echo esc_attr($settings['analog_ring_size']); ?>px;
                     ">

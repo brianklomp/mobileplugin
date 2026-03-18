@@ -25,9 +25,12 @@
 
 #adremm-clock-wrapper.panel-size-small .adremm-clock-container { min-width: 125px; padding: 10px; }
 #adremm-clock-wrapper.panel-size-small .face { width: 55px; height: 55px; }
-#adremm-clock-wrapper.panel-size-small .time-digital { font-size: 16px; }
-#adremm-clock-wrapper.panel-size-small .status-row { font-size: 12px; }
-#adremm-clock-wrapper.panel-size-small .date-row { font-size: 10px; }
+#adremm-clock-wrapper.panel-size-small .time-digital { font-size: 14px; }
+#adremm-clock-wrapper.panel-size-small .time-row.digital-style-wall { width: 80px !important; height: 80px !important; }
+#adremm-clock-wrapper.panel-size-small .time-row.digital-style-wall .time-digital { font-size: 14px; }
+#adremm-clock-wrapper.panel-size-small .status-row { font-size: 11px; }
+#adremm-clock-wrapper.panel-size-small .date-row { font-size: 9px; }
+#adremm-clock-wrapper.panel-size-small .extra-row { font-size: 8px; }
 #adremm-clock-wrapper.panel-size-large .adremm-clock-container { min-width: 400px; padding: 40px; }
 
 /* BAR LAYOUT (Header/Footer) */
@@ -76,7 +79,14 @@
 .h-sec { height: 38px; width: 1px; background: #ff3b30; margin-left: -0.5px; }
 
 /* Notations (Ticks) */
-.notations { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+.notations {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
 .notations i {
     position: absolute;
     top: 0;
@@ -84,29 +94,64 @@
     width: var(--not-thick);
     height: var(--not-len);
     background: currentColor;
-    transform-origin: 0 40px;
+    transform-origin: center 40px;
     margin-left: calc(var(--not-thick) / -2);
 }
-.panel-size-small .notations i { transform-origin: 0 27.5px; }
+.panel-size-small .notations i { transform-origin: center 27.5px; }
 .notations.above { z-index: 20; }
 
 /* Digital Styles */
 .time-row.has-glow .time-digital {
     text-shadow: 0 0 var(--digital-glow-spread) var(--digital-glow-color);
 }
-.time-row.digital-style-blocks .time-digital {
-    background: #000;
-    color: #0f0;
-    padding: 5px 10px;
-    border-radius: 4px;
-    letter-spacing: 2px;
+.time-row.digital-style-blocks .time-digital span.b {
+    background: #222;
+    color: #fff;
+    padding: 2px 6px;
+    border-radius: 3px;
+    border: 1px solid #444;
+    margin: 0 2px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.4);
 }
 .time-row.digital-style-dots .time-digital {
     font-family: 'Courier New', Courier, monospace;
     letter-spacing: 4px;
 }
-.time-row.digital-style-alarm { background: #000; color: #ff3b30; padding: 10px; border: 2px solid #333; border-radius: 4px; font-family: monospace; }
-.time-row.digital-style-wall { background: #fff; border: 4px solid #333; border-radius: 50%; width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; color: #000; }
+.time-row.digital-style-alarm {
+    background: #111;
+    color: #ff3b30;
+    padding: 15px;
+    border: 3px solid #444;
+    border-radius: 8px;
+    font-family: 'Courier New', Courier, monospace;
+    text-shadow: 0 0 10px rgba(255,59,48,0.7);
+    letter-spacing: 2px;
+    display: inline-block;
+    box-shadow: inset 0 0 15px #000;
+}
+.time-row.digital-style-wall {
+    background: #000 !important;
+    border: 6px solid #222 !important;
+    border-radius: 50% !important;
+    width: 140px !important;
+    height: 140px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 auto 15px !important;
+    color: #fff !important;
+    box-shadow: 0 0 20px rgba(0,0,0,0.4) !important;
+    position: relative;
+    overflow: hidden;
+}
+.time-row.digital-style-wall .time-digital {
+    font-size: 20px;
+}
+.time-row.digital-style-wall .time-digital span.sec {
+    opacity: 0.4;
+    font-size: 0.8em;
+    transition: opacity 0.5s;
+}
 
 .time-digital { font-size: 24px; font-weight: 800; }
 .status-row { font-weight: bold; font-size: 18px; margin: 5px 0; }
