@@ -6,18 +6,21 @@ if ( ! defined('ABSPATH') ) exit;
 
 $settings = wp_parse_args(get_option('adremm_clock_settings', array()), adremm_clock_get_default_settings());
 ?>
-<div class="wrap adremm-mobile-settings">
+<div class="wrap adremm-clock-v2 adremm-mobile-settings">
     <h1><?php _e('ADREMM Klok – Mobiel & Tablet', 'adremm-clock-plugin'); ?></h1>
+    <?php settings_errors(); ?>
 
     <div class="adremm-clock-editor">
         <div class="adremm-settings-panels">
             <form method="post" action="options.php" id="adremm-clock-mobile-form">
                 <?php settings_fields('adremm_clock_options'); ?>
-                <!-- Hidden fields for other settings to prevent overwriting -->
+
+                <!-- WE NEED ALL HIDDEN FIELDS HERE TO PREVENT WIPING MAIN SETTINGS -->
                 <?php
                 foreach($settings as $key => $val) {
                     if (strpos($key, 'mobile_') === false && $key !== 'tablet_breakpoint') {
-                        echo '<input type="hidden" name="adremm_clock_settings['.esc_attr($key).']" value="'.esc_attr($val).'">';
+                         if (is_array($val)) $val = json_encode($val);
+                         echo '<input type="hidden" name="adremm_clock_settings['.esc_attr($key).']" value="'.esc_attr($val).'">';
                     }
                 }
                 ?>

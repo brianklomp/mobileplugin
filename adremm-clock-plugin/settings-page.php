@@ -9,6 +9,7 @@ $fonts = adremm_clock_get_google_fonts();
 ?>
 <div class="wrap adremm-clock-v2">
     <h1><?php _e('ADREMM Klok – Instellingen', 'adremm-clock-plugin'); ?></h1>
+    <?php settings_errors(); ?>
 
     <div class="adremm-nav-tabs">
         <a href="#tab-thema" class="nav-tab is-active"><?php _e('Thema', 'adremm-clock-plugin'); ?></a>
@@ -89,6 +90,7 @@ $fonts = adremm_clock_get_google_fonts();
                         <tr>
                             <th><?php _e('Toon Analoge Klok', 'adremm-clock-plugin'); ?></th>
                             <td>
+                                <input type="hidden" name="adremm_clock_settings[show_analog]" value="no">
                                 <label><input type="radio" name="adremm_clock_settings[show_analog]" value="yes" <?php checked($settings['show_analog'], 'yes'); ?>> Ja</label>
                                 <label style="margin-left:15px;"><input type="radio" name="adremm_clock_settings[show_analog]" value="no" <?php checked($settings['show_analog'], 'no'); ?>> Nee</label>
                             </td>
@@ -183,6 +185,7 @@ $fonts = adremm_clock_get_google_fonts();
                         <tr>
                             <th><?php _e('Toon Digitale Klok', 'adremm-clock-plugin'); ?></th>
                             <td>
+                                <input type="hidden" name="adremm_clock_settings[show_digital]" value="no">
                                 <label><input type="radio" name="adremm_clock_settings[show_digital]" value="yes" <?php checked($settings['show_digital'], 'yes'); ?>> Ja</label>
                                 <label style="margin-left:15px;"><input type="radio" name="adremm_clock_settings[show_digital]" value="no" <?php checked($settings['show_digital'], 'no'); ?>> Nee</label>
                             </td>
@@ -195,7 +198,8 @@ $fonts = adremm_clock_get_google_fonts();
                                     <option value="wall" <?php selected($settings['digital_style'], 'wall'); ?>>2. Muurklok</option>
                                     <option value="blocks" <?php selected($settings['digital_style'], 'blocks'); ?>>3. Blokjes</option>
                                     <option value="dots" <?php selected($settings['digital_style'], 'dots'); ?>>4. Dots</option>
-                                    <option value="custom" <?php selected($settings['digital_style'], 'custom'); ?>>5. Custom</option>
+                                    <option value="design" <?php selected($settings['digital_style'], 'design'); ?>>5. Design</option>
+                                    <option value="custom" <?php selected($settings['digital_style'], 'custom'); ?>>6. Custom</option>
                                 </select>
                             </td>
                         </tr>
@@ -255,6 +259,7 @@ $fonts = adremm_clock_get_google_fonts();
                         <tr>
                             <th><?php _e('Lichtslang (Marquee)', 'adremm-clock-plugin'); ?></th>
                             <td>
+                                <input type="hidden" name="adremm_clock_settings[extra_marquee]" value="no">
                                 <label><input type="radio" name="adremm_clock_settings[extra_marquee]" value="yes" <?php checked($settings['extra_marquee'], 'yes'); ?>> Ja</label>
                                 <label style="margin-left:15px;"><input type="radio" name="adremm_clock_settings[extra_marquee]" value="no" <?php checked($settings['extra_marquee'], 'no'); ?>> Nee</label>
                             </td>

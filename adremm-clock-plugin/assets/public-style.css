@@ -102,47 +102,97 @@
 
 /* Digital Styles */
 .time-row.has-glow .time-digital {
-    text-shadow: 0 0 var(--digital-glow-spread) var(--digital-glow-color);
+    text-shadow: 0 0 var(--digital-glow-spread) var(--digital-glow-color) !important;
+}
+
+/* BLOKJES (Blocks) - Based on reference style */
+.time-row.digital-style-blocks .time-digital {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
 }
 .time-row.digital-style-blocks .time-digital span.b {
-    background: #222;
+    background: linear-gradient(180deg, #333 0%, #111 100%);
     color: #fff;
-    padding: 2px 6px;
-    border-radius: 3px;
-    border: 1px solid #444;
-    margin: 0 2px;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.4);
+    padding: 10px 8px;
+    border-radius: 4px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 24px;
+    font-weight: bold;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+    min-width: 40px;
+    display: inline-block;
+    position: relative;
 }
+.time-row.digital-style-blocks .time-digital span.b::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 100%;
+    height: 1px;
+    background: rgba(0,0,0,0.5);
+}
+
+/* DOTS (Matrix Look) */
 .time-row.digital-style-dots .time-digital {
     font-family: 'Courier New', Courier, monospace;
     letter-spacing: 4px;
+    color: #0f0;
+    background: #000;
+    padding: 10px 20px;
+    border-radius: 4px;
+    box-shadow: inset 0 0 10px rgba(0,255,0,0.2);
 }
+
+/* ALARM (Wekker) - Based on https://codepen.io/gau/pen/LjQwGp */
 .time-row.digital-style-alarm {
-    background: #111;
-    color: #ff3b30;
-    padding: 15px;
-    border: 3px solid #444;
-    border-radius: 8px;
+    background: #050505;
+    color: #ff0000;
+    padding: 15px 25px;
+    border: 8px solid #222;
+    border-radius: 12px;
     font-family: 'Courier New', Courier, monospace;
-    text-shadow: 0 0 10px rgba(255,59,48,0.7);
-    letter-spacing: 2px;
+    text-shadow: 0 0 12px #ff0000;
     display: inline-block;
-    box-shadow: inset 0 0 15px #000;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.5), inset 0 0 15px rgba(255,0,0,0.1);
+    letter-spacing: 2px;
 }
+
+/* WALL (Muurklok) - Black Rectangular as requested */
 .time-row.digital-style-wall {
-    background: #000 !important;
-    border: 6px solid #222 !important;
-    border-radius: 50% !important;
-    width: 140px !important;
-    height: 140px !important;
-    display: flex !important;
+    background: #111 !important;
+    border: 2px solid #444 !important;
+    border-radius: 4px !important;
+    width: auto !important;
+    min-width: 180px !important;
+    height: 70px !important;
+    display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
     margin: 0 auto 15px !important;
-    color: #fff !important;
-    box-shadow: 0 0 20px rgba(0,0,0,0.4) !important;
-    position: relative;
-    overflow: hidden;
+    color: #eee !important;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4) !important;
+    padding: 0 20px !important;
+}
+.time-row.digital-style-wall .time-digital { font-size: 26px; font-weight: 300; }
+.time-row.digital-style-wall .time-digital .sec { opacity: 0.3; transition: opacity 0.5s; font-size: 0.8em; }
+
+/* DESIGN (Minimalist) - Based on https://codepen.io/eehayman/pen/jVPKpN */
+.time-row.digital-style-design {
+    font-family: 'Inter', 'Helvetica Neue', Helvetica, sans-serif;
+    font-weight: 100;
+    font-size: 56px;
+    letter-spacing: -3px;
+    color: #fff;
+    line-height: 1;
+}
+.time-row.digital-style-design .sec {
+    font-size: 20px;
+    vertical-align: super;
+    margin-left: 2px;
+    opacity: 0.5;
+    font-weight: 300;
 }
 .time-row.digital-style-wall .time-digital {
     font-size: 20px;

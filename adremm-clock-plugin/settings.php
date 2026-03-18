@@ -64,7 +64,7 @@ function adremm_clock_get_default_settings() {
         'digital_weight' => '700',
         'digital_bg' => 'transparent',
         'digital_show_sec' => 'yes',
-        'digital_style' => 'custom', // alarm, wall, custom, blocks, dots
+        'digital_style' => 'custom', // alarm, wall, custom, blocks, dots, design
         'digital_glow' => 'no',
         'digital_glow_color' => '#ffffff',
         'digital_glow_spread' => '10',

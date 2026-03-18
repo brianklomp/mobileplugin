@@ -45,6 +45,8 @@
                     $timeTarget.html(`${hh}:${mm}<span class="sec" style="opacity:${(ms > 500 ? 0.4 : 1)}">:${ss}</span>`);
                 } else if ($timeRow.hasClass('digital-style-blocks')) {
                     $timeTarget.html(`<span class="b">${hh}</span>:<span class="b">${mm}</span>:<span class="b">${ss}</span>`);
+                } else if ($timeRow.hasClass('digital-style-design')) {
+                    $timeTarget.html(`${hh}:${mm}<span class="sec">${ss}</span>`);
                 } else {
                     $timeTarget.text(`${hh}:${mm}:${ss}`);
                 }

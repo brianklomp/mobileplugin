@@ -183,20 +183,46 @@ jQuery(document).ready(function($) {
         }
 
         // Digital
-        const $time = $liveView.find('.preview-time');
-        $time.removeClass('style-alarm style-wall style-custom style-blocks style-dots has-glow');
-        if (s.show_digital === 'yes') {
-            $time.show().addClass('style-' + s.digital_style);
-            if (s.digital_glow === 'yes') $time.addClass('has-glow');
+        const $timeWrap = $liveView.find('.clock-info');
+        let $time = $timeWrap.find('.preview-time');
+        if ($time.length === 0) {
+            $time = $('<div class="preview-time"></div>');
+            $timeWrap.prepend($time);
+        }
 
-            $time.css({
+        $time.parent().removeClass('digital-style-alarm digital-style-wall digital-style-custom digital-style-blocks digital-style-dots digital-style-design has-glow');
+        $time.parent().addClass('time-row'); // Ensure base class
+
+        if (s.show_digital === 'yes') {
+            $time.parent().show().addClass('digital-style-' + s.digital_style);
+            if (s.digital_glow === 'yes') $time.parent().addClass('has-glow');
+
+            $time.parent().css({
                 'color': s.digital_color,
                 'font-family': (s.digital_font && s.digital_font !== 'inherit') ? `"${s.digital_font}"` : 'inherit',
                 '--digital-glow-color': s.digital_glow_color,
                 '--digital-glow-spread': s.digital_glow_spread + 'px'
             });
+
+            // Update content based on style
+            const now = new Date();
+            const hh = String(now.getHours()).padStart(2, '0');
+            const mm = String(now.getMinutes()).padStart(2, '0');
+            const ss = String(now.getSeconds()).padStart(2, '0');
+
+            if (s.digital_style === 'blocks') {
+                $time.html(`<span class="b">${hh}</span>:<span class="b">${mm}</span>:<span class="b">${ss}</span>`);
+            } else if (s.digital_style === 'wall') {
+                $time.html(`${hh}:${mm}<span class="sec" style="opacity:0.4">:${ss}</span>`);
+            } else if (s.digital_style === 'design') {
+                $time.html(`${hh}:${mm}<span class="sec">${ss}</span>`);
+            } else if (s.digital_style === 'alarm') {
+                $time.html(`${hh}:${mm}:${ss}`);
+            } else {
+                $time.text(`${hh}:${mm}:${ss}`);
+            }
         } else {
-            $time.hide();
+            $time.parent().hide();
         }
 
         // Status
@@ -234,13 +260,18 @@ jQuery(document).ready(function($) {
         $(this).css('font-family', (font && font !== 'inherit') ? `"${font}"` : 'inherit');
     }).trigger('change');
 
-    $form.find('input, select, textarea').on('input change', function() {
+    $form.on('input change', 'input, select, textarea', function() {
+        updatePreview();
+    });
+
+    // Special listener for radio buttons and checkboxes to ensure they trigger on click
+    $form.on('click', 'input[type="radio"], input[type="checkbox"]', function() {
         updatePreview();
     });
 
     // Initial trigger to sync UI with loaded settings
-    $('.nav-tab.is-active').trigger('click');
-    $('.sub-tab-btn.active').trigger('click');
+        if ($('.nav-tab.is-active').length) $('.nav-tab.is-active').trigger('click');
+        if ($('.sub-tab-btn.active').length) $('.sub-tab-btn.active').trigger('click');
         updatePreview();
 
     // Close preview button logic
@@ -265,10 +296,31 @@ jQuery(document).ready(function($) {
         const s = now.getSeconds();
         const m = now.getMinutes();
         const h = now.getHours();
+        const ms = now.getMilliseconds();
+
         $liveView.find('.hand.sec').css('transform', `rotate(${s * 6}deg)`);
         $liveView.find('.hand.min').css('transform', `rotate(${m * 6 + s * 0.1}deg)`);
         $liveView.find('.hand.hour').css('transform', `rotate(${h * 30 + m * 0.5}deg)`);
-        $liveView.find('.preview-time').text(now.toLocaleTimeString('nl-NL'));
+
+        // Re-run the part of updatePreview that handles digital time logic
+        // but only if we are in the middle of a second to show "on the fly" updates
+        if (ms < 100) {
+            const style = getVal('digital_style');
+            const hh = String(h).padStart(2, '0');
+            const mm = String(m).padStart(2, '0');
+            const ss = String(s).padStart(2, '0');
+            const $time = $liveView.find('.preview-time');
+
+            if (style === 'blocks') {
+                $time.html(`<span class="b">${hh}</span>:<span class="b">${mm}</span>:<span class="b">${ss}</span>`);
+            } else if (style === 'wall') {
+                $time.html(`${hh}:${mm}<span class="sec" style="opacity:0.4">:${ss}</span>`);
+            } else if (style === 'design') {
+                $time.html(`${hh}:${mm}<span class="sec">${ss}</span>`);
+            } else {
+                $time.text(`${hh}:${mm}:${ss}`);
+            }
+        }
     }
     setInterval(animateClock, 1000);
     animateClock();
