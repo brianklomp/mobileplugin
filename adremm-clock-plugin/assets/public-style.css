@@ -161,9 +161,9 @@
 
 /* WALL (Muurklok) - Black Rectangular as requested */
 .time-row.digital-style-wall {
-    background: #111 !important;
-    border: 2px solid #444 !important;
-    border-radius: 4px !important;
+    background: #000 !important;
+    border: 2px solid #333 !important;
+    border-radius: 0 !important;
     width: auto !important;
     min-width: 180px !important;
     height: 70px !important;

@@ -131,7 +131,10 @@ $fonts = adremm_clock_get_google_fonts();
                         </tr>
                         <tr>
                             <th><?php _e('Notatie Boven Wijzers?', 'adremm-clock-plugin'); ?></th>
-                            <td><input type="checkbox" name="adremm_clock_settings[analog_not_above]" value="yes" <?php checked($settings['analog_not_above'], 'yes'); ?>></td>
+                            <td>
+                                <input type="hidden" name="adremm_clock_settings[analog_not_above]" value="no">
+                                <input type="checkbox" name="adremm_clock_settings[analog_not_above]" value="yes" <?php checked($settings['analog_not_above'], 'yes'); ?>>
+                            </td>
                         </tr>
                     </table>
                 </div>
@@ -206,6 +209,7 @@ $fonts = adremm_clock_get_google_fonts();
                         <tr>
                             <th><?php _e('Glow Effect (Font)', 'adremm-clock-plugin'); ?></th>
                             <td>
+                                <input type="hidden" name="adremm_clock_settings[digital_glow]" value="no">
                                 <input type="checkbox" name="adremm_clock_settings[digital_glow]" value="yes" <?php checked($settings['digital_glow'], 'yes'); ?>> Actief
                                 <input type="text" name="adremm_clock_settings[digital_glow_color]" value="<?php echo esc_attr($settings['digital_glow_color']); ?>" class="adremm-color-picker" data-alpha="true">
                                 <input type="number" name="adremm_clock_settings[digital_glow_spread]" value="<?php echo esc_attr($settings['digital_glow_spread']); ?>" style="width:60px;"> px

@@ -36,10 +36,12 @@ jQuery(document).ready(function($) {
         $('.adremm-color-picker').wpColorPicker({
             change: function(event, ui) {
                 // Ensure immediate update on color change
-                setTimeout(updatePreview, 10);
+                $(this).val(ui.color.toString());
+                setTimeout(updatePreview, 20);
             },
             clear: function() {
-                setTimeout(updatePreview, 10);
+                $(this).val('transparent');
+                setTimeout(updatePreview, 20);
             },
             alpha: true
         });
@@ -260,13 +262,13 @@ jQuery(document).ready(function($) {
         $(this).css('font-family', (font && font !== 'inherit') ? `"${font}"` : 'inherit');
     }).trigger('change');
 
-    $form.on('input change', 'input, select, textarea', function() {
+    $form.on('input change keyup', 'input, select, textarea', function() {
         updatePreview();
     });
 
     // Special listener for radio buttons and checkboxes to ensure they trigger on click
     $form.on('click', 'input[type="radio"], input[type="checkbox"]', function() {
-        updatePreview();
+        setTimeout(updatePreview, 10);
     });
 
     // Initial trigger to sync UI with loaded settings

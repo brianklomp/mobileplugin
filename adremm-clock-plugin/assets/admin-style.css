@@ -81,6 +81,20 @@
 .clock-face .hand.min { height: 35px; width: 2px; margin-left: -1px; }
 .clock-face .hand.sec { height: 38px; width: 1px; background: #ff3b30; margin-left: -0.5px; }
 
+/* Notations in Preview */
+.notations { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+.notations i {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: var(--not-thick);
+    height: var(--not-len);
+    background: currentColor;
+    transform-origin: center 40px;
+    margin-left: calc(var(--not-thick) / -2);
+}
+.notations.above { z-index: 20; }
+
 /* Admin Digital Styles - Mirrors Public Styles for consistency */
 #clock-live-view .time-row.has-glow .preview-time { text-shadow: 0 0 var(--digital-glow-spread) var(--digital-glow-color) !important; }
 

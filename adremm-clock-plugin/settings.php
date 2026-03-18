@@ -149,12 +149,12 @@ function adremm_clock_settings_validate($input) {
         if (in_array($key, $color_keys)) {
              // Sanitization for colors (HEX, RGBA, or transparent)
              $color = trim((string)$val);
-             if (preg_match('/^rgba\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*(0(\.\d+)?|1(\.0+)?)\s*\)$/', $color) ||
-                 preg_match('/^#([A-Fa-f0-9]{3,8})$/', $color) ||
-                 $color === 'transparent') {
+             if (empty($color) || $color === 'transparent' || $color === 'rgba(0,0,0,0)') {
+                 $output[$key] = 'transparent';
+             } elseif (preg_match('/^rgba\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*(0(\.\d+)?|1(\.0+)?)\s*\)$/', $color) ||
+                 preg_match('/^#([A-Fa-f0-9]{3,8})$/', $color)) {
                 $output[$key] = $color;
              }
-             // If invalid, keep the previous value in $output
         } elseif ($key === 'opening_hours' || $key === 'extra_message') {
             // Special handling for larger text/JSON
             $output[$key] = $val;
