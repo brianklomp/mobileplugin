@@ -20,9 +20,10 @@ $mobile_pos_class = 'mobile-pos-' . ($settings['mobile_position'] ?? 'bottom-rig
 $mobile_size_class = 'mobile-size-' . ($settings['mobile_size'] ?? 'small');
 
 $style_vars = sprintf(
-    '--adremm-clock-bg: %s; --adremm-clock-text: %s;',
+    '--user-bg: %s; --user-text: %s; font-family: %s;',
     $settings['bg_color'],
-    $settings['text_color']
+    $settings['text_color'],
+    ($settings['theme_font'] === 'inherit' ? 'inherit' : '"' . $settings['theme_font'] . '", sans-serif')
 );
 ?>
 
@@ -43,7 +44,7 @@ $style_vars = sprintf(
         <div class="adremm-clock-main">
             <!-- ABOVE ANALOG STATUS -->
             <?php if ($settings['show_status'] === 'yes' && $settings['status_pos'] === 'above_analog'): ?>
-                 <div class="status-row" style="color: <?php echo ($status === 'open') ? esc_attr($settings['color_open']) : esc_attr($settings['color_closed']); ?>; font-family: '<?php echo esc_attr($settings['font_status']); ?>';"><?php echo esc_html($status_text); ?></div>
+                 <div class="status-row" style="color: <?php echo ($status === 'open') ? esc_attr($settings['color_open']) : esc_attr($settings['color_closed']); ?>; font-family: <?php echo ($settings['font_status'] === 'Thema' ? 'inherit' : "'" . esc_attr($settings['font_status']) . "'"); ?>;"><?php echo esc_html($status_text); ?></div>
             <?php endif; ?>
 
             <!-- Analog Section -->
@@ -80,35 +81,48 @@ $style_vars = sprintf(
             <div class="adremm-clock-info">
                 <!-- ABOVE DIGITAL STATUS -->
                 <?php if ($settings['show_status'] === 'yes' && $settings['status_pos'] === 'above_digital'): ?>
-                    <div class="status-row" style="color: <?php echo ($status === 'open') ? esc_attr($settings['color_open']) : esc_attr($settings['color_closed']); ?>; font-family: '<?php echo esc_attr($settings['font_status']); ?>';"><?php echo esc_html($status_text); ?></div>
+                    <div class="status-row" style="color: <?php echo ($status === 'open') ? esc_attr($settings['color_open']) : esc_attr($settings['color_closed']); ?>; font-family: <?php echo ($settings['font_status'] === 'Thema' ? 'inherit' : "'" . esc_attr($settings['font_status']) . "'"); ?>;"><?php echo esc_html($status_text); ?></div>
                 <?php endif; ?>
 
                 <?php if ($settings['show_digital'] === 'yes'): ?>
                     <div class="time-row digital-style-<?php echo esc_attr($settings['digital_style']); ?> <?php echo ($settings['digital_glow'] === 'yes') ? 'has-glow' : ''; ?> <?php echo ($settings['digital_orientation'] === 'vertical') ? 'vertical' : ''; ?>" style="
-                        font-family: '<?php echo esc_attr($settings['digital_font']); ?>';
+                        font-family: <?php echo ($settings['digital_font'] === 'Thema' ? 'inherit' : "'" . esc_attr($settings['digital_font']) . "'"); ?>;
                         color: <?php echo esc_attr($settings['digital_color']); ?>;
                         background-color: <?php echo esc_attr($settings['digital_bg']); ?>;
                         --digital-glow-color: <?php echo esc_attr($settings['digital_glow_color']); ?>;
                         --digital-glow-spread: <?php echo esc_attr($settings['digital_glow_spread']); ?>px;
                     ">
                         <span class="time-digital"></span>
+
+                        <?php if ($settings['digital_style'] === 'alarm'): ?>
+                            <div class="radio-panel">
+                                <div class="radio-dial">
+                                    <div class="radio-scale">22 23 24 25 26 27</div>
+                                </div>
+                                <div class="radio-logo-wrap">
+                                    <div class="logo-a">A</div>
+                                    <div class="logo-text">Radio</div>
+                                </div>
+                                <div class="radio-switch" id="adremm-radio-toggle"></div>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 <?php endif; ?>
 
                 <!-- BELOW DIGITAL STATUS (DEFAULT) -->
                 <?php if ($settings['show_status'] === 'yes' && ($settings['status_pos'] === 'below_digital' || empty($settings['status_pos']))): ?>
-                    <div class="status-row" style="color: <?php echo ($status === 'open') ? esc_attr($settings['color_open']) : esc_attr($settings['color_closed']); ?>; font-family: '<?php echo esc_attr($settings['font_status']); ?>';"><?php echo esc_html($status_text); ?></div>
+                    <div class="status-row" style="color: <?php echo ($status === 'open') ? esc_attr($settings['color_open']) : esc_attr($settings['color_closed']); ?>; font-family: <?php echo ($settings['font_status'] === 'Thema' ? 'inherit' : "'" . esc_attr($settings['font_status']) . "'"); ?>;"><?php echo esc_html($status_text); ?></div>
                 <?php endif; ?>
 
                 <?php if ($settings['show_date'] === 'yes'): ?>
-                    <div class="date-row" style="color: <?php echo esc_attr($settings['color_date']); ?>; font-family: '<?php echo esc_attr($settings['font_date']); ?>';">
+                    <div class="date-row" style="color: <?php echo esc_attr($settings['color_date']); ?>; font-family: <?php echo ($settings['font_date'] === 'Thema' ? 'inherit' : "'" . esc_attr($settings['font_date']) . "'"); ?>;">
                         <span class="date-text"></span>
                     </div>
                 <?php endif; ?>
 
                 <!-- BELOW DATE STATUS -->
                 <?php if ($settings['show_status'] === 'yes' && $settings['status_pos'] === 'below_date'): ?>
-                    <div class="status-row" style="color: <?php echo ($status === 'open') ? esc_attr($settings['color_open']) : esc_attr($settings['color_closed']); ?>; font-family: '<?php echo esc_attr($settings['font_status']); ?>';"><?php echo esc_html($status_text); ?></div>
+                    <div class="status-row" style="color: <?php echo ($status === 'open') ? esc_attr($settings['color_open']) : esc_attr($settings['color_closed']); ?>; font-family: <?php echo ($settings['font_status'] === 'Thema' ? 'inherit' : "'" . esc_attr($settings['font_status']) . "'"); ?>;"><?php echo esc_html($status_text); ?></div>
                 <?php endif; ?>
 
                 <?php if (!empty($settings['extra_message'])): ?>

@@ -169,6 +169,8 @@ $fonts = adremm_clock_get_google_fonts();
                                             <option value="rounded" <?php selected($settings['hand_'.$h.'_style'], 'rounded'); ?>>Afgerond</option>
                                             <option value="point" <?php selected($settings['hand_'.$h.'_style'], 'point'); ?>>Punt</option>
                                             <option value="heart" <?php selected($settings['hand_'.$h.'_style'], 'heart'); ?>>Hart</option>
+                                            <option value="arrow" <?php selected($settings['hand_'.$h.'_style'], 'arrow'); ?>>Arrow</option>
+                                            <option value="steampunk" <?php selected($settings['hand_'.$h.'_style'], 'steampunk'); ?>>Steampunk</option>
                                         </select>
                                     </td>
                                 </tr>
@@ -222,10 +224,12 @@ $fonts = adremm_clock_get_google_fonts();
                         <tr>
                             <th><?php _e('Glow Effect (Font)', 'adremm-clock-plugin'); ?></th>
                             <td>
-                                <input type="hidden" name="adremm_clock_settings[digital_glow]" value="no">
-                                <input type="checkbox" name="adremm_clock_settings[digital_glow]" value="yes" <?php checked($settings['digital_glow'], 'yes'); ?>> Actief
-                                <input type="text" name="adremm_clock_settings[digital_glow_color]" value="<?php echo esc_attr($settings['digital_glow_color']); ?>" class="adremm-color-picker" data-alpha-enabled="true" data-alpha-color-type="rgba">
-                                <input type="number" name="adremm_clock_settings[digital_glow_spread]" value="<?php echo esc_attr($settings['digital_glow_spread']); ?>" style="width:60px;"> px
+                                <div>
+                                    <input type="hidden" name="adremm_clock_settings[digital_glow]" value="no">
+                                    <label><input type="checkbox" name="adremm_clock_settings[digital_glow]" value="yes" <?php checked($settings['digital_glow'], 'yes'); ?>> Actief</label>
+                                    <input type="text" name="adremm_clock_settings[digital_glow_color]" value="<?php echo esc_attr($settings['digital_glow_color']); ?>" class="adremm-color-picker" data-alpha-enabled="true" data-alpha-color-type="rgba">
+                                    <input type="number" name="adremm_clock_settings[digital_glow_spread]" value="<?php echo esc_attr($settings['digital_glow_spread']); ?>" style="width:60px;"> px
+                                </div>
                             </td>
                         </tr>
                         <tr>
@@ -242,15 +246,17 @@ $fonts = adremm_clock_get_google_fonts();
                             </td>
                         </tr>
                         <tr>
-                            <th><?php _e('Custom Font', 'adremm-clock-plugin'); ?></th>
+                            <th><?php _e('Font Overrides', 'adremm-clock-plugin'); ?></th>
                             <td>
-                                <select name="adremm_clock_settings[digital_font]" class="adremm-font-select">
-                                    <option value="Thema" <?php selected($settings['digital_font'], 'Thema'); ?>>Thema</option>
-                                    <?php foreach ($fonts as $font) : ?>
-                                        <option value="<?php echo esc_attr($font); ?>" <?php selected($settings['digital_font'], $font); ?>><?php echo esc_html($font); ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                                <input type="text" name="adremm_clock_settings[digital_color]" value="<?php echo esc_attr($settings['digital_color']); ?>" class="adremm-color-picker" data-alpha-enabled="true" data-alpha-color-type="rgba">
+                                <div>
+                                    <select name="adremm_clock_settings[digital_font]" class="adremm-font-select">
+                                        <option value="Thema" <?php selected($settings['digital_font'], 'Thema'); ?>>Thema</option>
+                                        <?php foreach ($fonts as $font) : ?>
+                                            <option value="<?php echo esc_attr($font); ?>" <?php selected($settings['digital_font'], $font); ?>><?php echo esc_html($font); ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                    <input type="text" name="adremm_clock_settings[digital_color]" value="<?php echo esc_attr($settings['digital_color']); ?>" class="adremm-color-picker" data-alpha-enabled="true" data-alpha-color-type="rgba">
+                                </div>
                             </td>
                         </tr>
                     </table>

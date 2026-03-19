@@ -15,7 +15,9 @@
 .form-table th { width: 220px; padding: 15px 10px 15px 0; font-weight: 600; color: #333; }
 .form-table td { padding: 10px 0; vertical-align: middle; }
 .adremm-panel { padding: 0 10px; }
-.adremm-color-picker + .wp-picker-container { vertical-align: middle; }
+.adremm-panel .form-table td > div { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.adremm-panel .wp-picker-container { vertical-align: middle; margin: 0; }
+.adremm-panel input[type="number"] { height: 30px; margin: 0; }
 .wrap.adremm-clock-v2 .adremm-panel { display: none !important; }
 .wrap.adremm-clock-v2 .adremm-panel.is-active { display: block !important; }
 .adremm-clock-section { margin-bottom: 30px; }
@@ -117,7 +119,34 @@
 #clock-live-view .time-row.digital-style-design .preview-time { font-family: sans-serif; font-weight: 100; font-size: 38px; letter-spacing: -2px; color: #000; line-height:1; }
 #clock-live-view .time-row.digital-style-design .preview-time .sec { font-size: 16px; vertical-align: super; opacity: 0.5; }
 
+/* Radio Dial (Admin Preview) */
+.radio-dial-wrap { display: flex; align-items: center; gap: 8px; background: #222; padding: 4px 8px; border-radius: 4px; border: 1px solid #444; margin-top: 10px; }
+.radio-dial { position: relative; width: 60px; height: 30px; background: #fff; overflow: hidden; border-radius: 2px; }
+.radio-dial::after { content: ""; position: absolute; left: 50%; top: 0; width: 2px; height: 100%; background: #f00; z-index: 5; }
+.radio-scale { display: flex; gap: 4px; font-size: 8px; color: #333; transform: translateX(-10px); }
+.radio-logo { font-size: 18px; font-weight: bold; color: #ff6600; font-family: serif; font-style: italic; }
+
 /* Preview themes */
+#clock-live-view {
+    --adremm-clock-bg: var(--user-bg);
+    --adremm-clock-text: var(--user-text);
+    background-color: var(--adremm-clock-bg) !important;
+    color: var(--adremm-clock-text) !important;
+}
+#clock-live-view.theme-mode-dark {
+    --adremm-clock-bg: #1a1a1a;
+    --adremm-clock-text: #ffffff;
+}
+#clock-live-view.theme-mode-auto {
+    /* In admin preview, we might want to simulate auto or just follow browser */
+}
+@media (prefers-color-scheme: dark) {
+    #clock-live-view.theme-mode-auto {
+        --adremm-clock-bg: #1a1a1a;
+        --adremm-clock-text: #ffffff;
+    }
+}
+
 #clock-live-view.theme-classic { border: 4px double currentColor !important; border-radius: 0 !important; }
 #clock-live-view.theme-digital { background: #000 !important; color: #0f0 !important; border: 2px solid #0f0 !important; box-shadow: 0 0 15px #0f0 !important; }
 

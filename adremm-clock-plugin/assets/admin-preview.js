@@ -103,6 +103,7 @@ jQuery(document).ready(function($) {
             digital_glow_color: getVal('digital_glow_color'),
             digital_glow_spread: getVal('digital_glow_spread'),
             digital_orientation: getVal('digital_orientation'),
+            radio_enabled: $form.find('[name="adremm_clock_settings[radio_enabled]"]').is(':checked') ? 'yes' : 'no',
             text_open: getVal('text_open'),
             color_open: getVal('color_open'),
             font_status: getVal('font_status'),
@@ -139,8 +140,10 @@ jQuery(document).ready(function($) {
         $liveView.addClass('theme-mode-' + s.theme_mode);
 
         $liveView.css({
-            'background-color': (s.bg_color && s.bg_color !== 'transparent') ? s.bg_color : 'transparent',
-            'color': s.text_color || '#000000',
+            '--user-bg': (s.bg_color && s.bg_color !== 'transparent') ? s.bg_color : 'transparent',
+            '--user-text': s.text_color || '#000000',
+            'background-color': 'var(--adremm-clock-bg)',
+            'color': 'var(--adremm-clock-text)',
             'font-family': (s.theme_font && s.theme_font !== 'inherit') ? `"${s.theme_font}"` : 'inherit',
             'box-shadow': s.panel_shadow || 'none',
             'border': s.panel_border || 'none'
@@ -204,18 +207,21 @@ jQuery(document).ready(function($) {
             });
             if (s.analog_not_above === 'yes') $mNots.addClass('above'); else $mNots.removeClass('above');
 
-            $liveView.find('.hand.hour').css({
-                'background-color': s.hand_hour_color,
+            $liveView.find('.hand.hour').attr('class', 'hand hour ' + s.hand_hour_style).css({
+                'background-color': (s.hand_hour_style === 'steampunk' ? 'transparent' : s.hand_hour_color),
+                'color': s.hand_hour_color,
                 'width': s.hand_hour_thick + 'px',
                 'height': s.hand_hour_len + '%'
             });
-            $liveView.find('.hand.min').css({
-                'background-color': s.hand_min_color,
+            $liveView.find('.hand.min').attr('class', 'hand min ' + s.hand_min_style).css({
+                'background-color': (s.hand_min_style === 'steampunk' ? 'transparent' : s.hand_min_color),
+                'color': s.hand_min_color,
                 'width': s.hand_min_thick + 'px',
                 'height': s.hand_min_len + '%'
             });
-            $liveView.find('.hand.sec').css({
-                'background-color': s.hand_sec_color,
+            $liveView.find('.hand.sec').attr('class', 'hand sec ' + s.hand_sec_style).css({
+                'background-color': (s.hand_sec_style === 'steampunk' ? 'transparent' : s.hand_sec_color),
+                'color': s.hand_sec_color,
                 'width': s.hand_sec_thick + 'px',
                 'height': s.hand_sec_len + '%'
             });
@@ -254,7 +260,13 @@ jQuery(document).ready(function($) {
             if (s.digital_style === 'blocks') {
                 $time.html(`<span class="b">${hh}</span>:<span class="b">${mm}</span>:<span class="b">${ss}</span>`);
             } else if (s.digital_style === 'wall') {
-                $time.html(`${hh}:${mm}<span class="sec" style="opacity:0.4">:${ss}</span>`);
+                const digits = (hh + mm).split('');
+                let html = '';
+                digits.forEach((d, i) => {
+                    html += `<div class="digit-col"><span style="transform: translateY(-${parseInt(d) * 32}px)">0\n1\n2\n3\n4\n5\n6\n7\n8\n9</span></div>`;
+                    if (i === 1) html += '<span>:</span>';
+                });
+                $time.html(`${html}<span class="sec" style="opacity:0.4">:${ss}</span>`);
             } else if (s.digital_style === 'design') {
                 $time.parent().toggleClass('vertical', s.digital_orientation === 'vertical');
                 $time.html(`<span class="day">MA</span> ${hh}:${mm}<span class="sec">${ss}</span>`);
@@ -311,6 +323,11 @@ jQuery(document).ready(function($) {
         $liveView.removeClass('size-small size-normal size-large').addClass('size-' + s.panel_size);
 
         updateCloseBtn(s);
+
+        // Ensure radio on/off visual in preview
+        if (s.digital_style === 'alarm') {
+             $liveView.find('#adremm-radio-toggle').toggleClass('on', s.radio_enabled === 'yes');
+        }
     }
 
     // Font Preload for select options and handle preview
@@ -389,7 +406,13 @@ jQuery(document).ready(function($) {
             if (style === 'blocks') {
                 $time.html(`<span class="b">${hh}</span>:<span class="b">${mm}</span>:<span class="b">${ss}</span>`);
             } else if (style === 'wall') {
-                $time.html(`${hh}:${mm}<span class="sec" style="opacity:0.4">:${ss}</span>`);
+                const digits = (hh + mm).split('');
+                let html = '';
+                digits.forEach((d, i) => {
+                    html += `<div class="digit-col"><span style="transform: translateY(-${parseInt(d) * 32}px)">0\n1\n2\n3\n4\n5\n6\n7\n8\n9</span></div>`;
+                    if (i === 1) html += '<span>:</span>';
+                });
+                $time.html(`${html}<span class="sec" style="opacity:0.4">:${ss}</span>`);
             } else if (style === 'design') {
                 $time.html(`<span class="day">MA</span> ${hh}:${mm}<span class="sec">${ss}</span>`);
             } else {

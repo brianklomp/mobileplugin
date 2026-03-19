@@ -45,9 +45,17 @@
                 const ss = String(s).padStart(2, '0');
 
                 if ($timeRow.hasClass('digital-style-wall')) {
-                    $timeTarget.html(`${hh}:${mm}<span class="sec" style="opacity:${(ms > 500 ? 0.4 : 1)}">:${ss}</span>`);
+                    const digits = (hh + mm).split('');
+                    let html = '';
+                    digits.forEach((d, i) => {
+                        html += `<div class="digit-col"><span style="transform: translateY(-${parseInt(d) * 32}px)">0\n1\n2\n3\n4\n5\n6\n7\n8\n9</span></div>`;
+                        if (i === 1) html += '<span>:</span>';
+                    });
+                    $timeTarget.html(`${html}<span class="sec" style="opacity:${(ms > 500 ? 0.4 : 1)}">:${ss}</span>`);
                 } else if ($timeRow.hasClass('digital-style-blocks')) {
                     $timeTarget.html(`<span class="b">${hh}</span>:<span class="b">${mm}</span>:<span class="b">${ss}</span>`);
+                } else if ($timeRow.hasClass('digital-style-alarm')) {
+                    $timeTarget.html(`<span class="time-digit-tube">${hh}</span>:<span class="time-digit-tube">${mm}</span>:<span class="time-digit-tube">${ss}</span>`);
                 } else if ($timeRow.hasClass('digital-style-design')) {
                     const dayName = now.toLocaleDateString(locale, { weekday: 'short' });
                     $timeTarget.html(`<span class="day">${dayName}</span> ${hh}:${mm}<span class="sec">${ss}</span>`);
@@ -100,6 +108,17 @@
         }
 
         // Toggle Logic
+        // Radio toggle UI
+        $root.on('click', '#adremm-radio-toggle', function(e) {
+            e.stopPropagation();
+            $(this).toggleClass('on');
+            if ($(this).hasClass('on')) {
+                if (window.adremmRadio) window.adremmRadio.play().catch(e => console.log('Autoplay blocked'));
+            } else {
+                if (window.adremmRadio) window.adremmRadio.pause();
+            }
+        });
+
         if ($root.hasClass('adremm-clock-panel')) {
              // Tab positioning logic
              let tabPos = 'tab-right';
