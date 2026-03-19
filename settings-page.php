@@ -72,7 +72,7 @@ $fonts = adremm_clock_get_google_fonts();
                                     <option value="large" <?php selected($settings['panel_size'], 'large'); ?>>Groot</option>
                                 </select>
                                 <span style="margin-left:15px;"><?php _e('Breedte:', 'adremm-clock-plugin'); ?></span>
-                                <input type="number" name="adremm_clock_settings[panel_width]" value="<?php echo esc_attr($settings['panel_width']); ?>" style="width:60px;"> px
+                                <input type="number" name="adremm_clock_settings[panel_width]" value="<?php echo esc_attr($settings['panel_width']); ?>" style="width:60px;" step="0.1"> px
                             </td>
                         </tr>
                         <tr>

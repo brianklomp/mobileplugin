@@ -2,7 +2,7 @@
 /**
  * Plugin Name: ADREMM Klok
  * Description: Een uiterst gebruiksvriendelijke, meertalige klokplugin met live previews, openingstijden en schaalbare weergave.
- * Version: 1.0.0
+ * Version: 1.0.2
  * Author: ADREMM
  * Author URI: https://adremm.nl
  * License: GPLv2 or later
@@ -13,7 +13,7 @@
 if ( ! defined('ABSPATH') ) exit;
 
 // Constants
-define('ADREMM_CLOCK_VERSION', '1.0.0');
+define('ADREMM_CLOCK_VERSION', '1.0.2');
 define('ADREMM_CLOCK_PATH', plugin_dir_path(__FILE__));
 define('ADREMM_CLOCK_URL', plugin_dir_url(__FILE__));
 
@@ -32,13 +32,15 @@ function adremm_clock_activate() {
 }
 
 // Handle Redirect
-add_action('admin_init', 'adremm_clock_handle_activation_redirect');
+add_action('admin_init', 'adremm_clock_handle_activation_redirect', 9999);
 function adremm_clock_handle_activation_redirect() {
     if (get_transient('adremm_clock_activation_redirect')) {
         delete_transient('adremm_clock_activation_redirect');
+
         if (defined('DOING_AJAX') && DOING_AJAX) return;
         if (isset($_GET['activate-multi'])) return;
 
+        // Use a slight delay or priority to ensure menu is registered
         wp_safe_redirect(admin_url('admin.php?page=adremm-clock-settings'));
         exit;
     }

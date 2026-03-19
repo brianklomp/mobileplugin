@@ -146,7 +146,7 @@ jQuery(document).ready(function($) {
             '--user-text': s.text_color || '#000000',
             'background-color': 'var(--adremm-clock-bg)',
             'color': 'var(--adremm-clock-text)',
-            'font-family': (s.theme_font && s.theme_font !== 'inherit') ? `"${s.theme_font}"` : 'inherit',
+            'font-family': (s.theme_font && s.theme_font !== 'inherit' && s.theme_font !== '') ? `"${s.theme_font}"` : 'inherit',
             'box-shadow': s.panel_shadow || 'none',
             'border': s.panel_border || 'none',
             'width': s.panel_width + 'px'
