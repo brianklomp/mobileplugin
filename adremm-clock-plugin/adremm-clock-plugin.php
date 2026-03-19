@@ -49,6 +49,8 @@ add_action('wp_footer', 'adremm_clock_render_frontend');
 function adremm_clock_render_frontend() {
     if (is_admin()) return;
     $settings = wp_parse_args(get_option('adremm_clock_settings', array()), adremm_clock_get_default_settings());
-    $status = adremm_clock_get_status(); // Initialize status for the template
+    $status_data = adremm_clock_get_status();
+    $status = $status_data['status'];
+    $status_text = $status_data['text'];
     include ADREMM_CLOCK_PATH . 'clock-template.php';
 }

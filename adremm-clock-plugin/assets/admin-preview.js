@@ -62,6 +62,7 @@ jQuery(document).ready(function($) {
     // Helpers
     const getVal = (name) => $form.find(`[name="adremm_clock_settings[${name}]"]`).val();
     const getRadioVal = (name) => $form.find(`[name="adremm_clock_settings[${name}]"]:checked`).val();
+    const getCheckboxVal = (name) => $form.find(`[name="adremm_clock_settings[${name}]"]:checked`).length > 0 ? 'yes' : 'no';
 
     // Force Color Pickers to trigger preview on manual input as well
     $form.on('keyup', '.adremm-color-picker', function() {
@@ -71,7 +72,7 @@ jQuery(document).ready(function($) {
     // Dynamic Updates
     function updatePreview() {
         const s = {
-            theme: getRadioVal('theme'),
+            theme_mode: getRadioVal('theme_mode'),
             theme_font: getVal('theme_font'),
             bg_color: getVal('bg_color'),
             text_color: getVal('text_color'),
@@ -83,6 +84,7 @@ jQuery(document).ready(function($) {
             analog_bg_color: getVal('analog_bg_color'),
             analog_ring_color: getVal('analog_ring_color'),
             analog_ring_size: getVal('analog_ring_size'),
+            analog_not_scale: getVal('analog_not_scale'),
             analog_hour_color: getVal('analog_hour_color'),
             analog_hour_thick: getVal('analog_hour_thick'),
             analog_hour_length: getVal('analog_hour_length'),
@@ -94,12 +96,17 @@ jQuery(document).ready(function($) {
             digital_color: getVal('digital_color'),
             digital_font: getVal('digital_font'),
             digital_style: getVal('digital_style'),
+            digital_width: getVal('digital_width'),
+            digital_height: getVal('digital_height'),
+            digital_show_sec: $form.find('[name="adremm_clock_settings[digital_show_sec]"]').is(':checked') ? 'yes' : 'no',
             digital_glow: $form.find('[name="adremm_clock_settings[digital_glow]"]').is(':checked') ? 'yes' : 'no',
             digital_glow_color: getVal('digital_glow_color'),
             digital_glow_spread: getVal('digital_glow_spread'),
+            digital_orientation: getVal('digital_orientation'),
             text_open: getVal('text_open'),
             color_open: getVal('color_open'),
             font_status: getVal('font_status'),
+            status_pos: getVal('status_pos'),
             color_date: getVal('color_date'),
             font_date: getVal('font_date'),
             extra_message: $form.find('textarea[name="adremm_clock_settings[extra_message]"]').val(),
@@ -107,8 +114,18 @@ jQuery(document).ready(function($) {
             extra_font_size: getVal('extra_font_size'),
             extra_marquee: getRadioVal('extra_marquee'),
             hand_hour_color: getVal('hand_hour_color'),
+            hand_hour_thick: getVal('hand_hour_thick'),
+            hand_hour_len: getVal('hand_hour_len'),
+            hand_hour_style: getVal('hand_hour_style'),
             hand_min_color: getVal('hand_min_color'),
+            hand_min_thick: getVal('hand_min_thick'),
+            hand_min_len: getVal('hand_min_len'),
+            hand_min_style: getVal('hand_min_style'),
             hand_sec_color: getVal('hand_sec_color'),
+            hand_sec_thick: getVal('hand_sec_thick'),
+            hand_sec_len: getVal('hand_sec_len'),
+            hand_sec_style: getVal('hand_sec_style'),
+            hand_sweep: getVal('hand_sweep'),
             show_close_x: $form.find('[name="adremm_clock_settings[show_close_x]"]').is(':checked') ? 'yes' : 'no',
             close_x_size: getVal('close_x_size'),
             color_close_x: getVal('color_close_x'),
@@ -118,8 +135,8 @@ jQuery(document).ready(function($) {
         };
 
         // Root styles & Theme classes
-        $liveView.removeClass('theme-modern theme-classic theme-digital');
-        $liveView.addClass('theme-' + s.theme);
+        $liveView.removeClass('theme-mode-light theme-mode-dark theme-mode-auto');
+        $liveView.addClass('theme-mode-' + s.theme_mode);
 
         $liveView.css({
             'background-color': (s.bg_color && s.bg_color !== 'transparent') ? s.bg_color : 'transparent',
@@ -167,7 +184,8 @@ jQuery(document).ready(function($) {
                 '--not-thick': s.analog_hour_thick + 'px',
                 '--not-len': s.analog_hour_length + 'px',
                 'display': 'block',
-                'z-index': (s.analog_not_above === 'yes' ? 20 : 5)
+                'z-index': (s.analog_not_above === 'yes' ? 20 : 5),
+                'transform': `scale(${s.analog_not_scale})`
             });
             if (s.analog_not_above === 'yes') $hNots.addClass('above'); else $hNots.removeClass('above');
 
@@ -181,13 +199,26 @@ jQuery(document).ready(function($) {
                 '--not-thick': s.analog_min_thick + 'px',
                 '--not-len': s.analog_min_length + 'px',
                 'display': 'block',
-                'z-index': (s.analog_not_above === 'yes' ? 20 : 5)
+                'z-index': (s.analog_not_above === 'yes' ? 20 : 5),
+                'transform': `scale(${s.analog_not_scale})`
             });
             if (s.analog_not_above === 'yes') $mNots.addClass('above'); else $mNots.removeClass('above');
 
-            $liveView.find('.hand.hour').css('background-color', s.hand_hour_color);
-            $liveView.find('.hand.min').css('background-color', s.hand_min_color);
-            $liveView.find('.hand.sec').css('background-color', s.hand_sec_color);
+            $liveView.find('.hand.hour').css({
+                'background-color': s.hand_hour_color,
+                'width': s.hand_hour_thick + 'px',
+                'height': s.hand_hour_len + '%'
+            });
+            $liveView.find('.hand.min').css({
+                'background-color': s.hand_min_color,
+                'width': s.hand_min_thick + 'px',
+                'height': s.hand_min_len + '%'
+            });
+            $liveView.find('.hand.sec').css({
+                'background-color': s.hand_sec_color,
+                'width': s.hand_sec_thick + 'px',
+                'height': s.hand_sec_len + '%'
+            });
         } else {
             $analog.hide();
         }
@@ -225,7 +256,8 @@ jQuery(document).ready(function($) {
             } else if (s.digital_style === 'wall') {
                 $time.html(`${hh}:${mm}<span class="sec" style="opacity:0.4">:${ss}</span>`);
             } else if (s.digital_style === 'design') {
-                $time.html(`${hh}:${mm}<span class="sec">${ss}</span>`);
+                $time.parent().toggleClass('vertical', s.digital_orientation === 'vertical');
+                $time.html(`<span class="day">MA</span> ${hh}:${mm}<span class="sec">${ss}</span>`);
             } else if (s.digital_style === 'alarm') {
                 $time.html(`${hh}:${mm}:${ss}`);
             } else {
@@ -235,16 +267,32 @@ jQuery(document).ready(function($) {
             $time.parent().hide();
         }
 
-        // Status
-        const $status = $liveView.find('.preview-status');
-        $status.text(s.text_open).css({
-            'color': s.color_open,
-            'font-family': (s.font_status && s.font_status !== 'inherit') ? `"${s.font_status}"` : 'inherit'
-        });
+        // Status & Date positioning in preview
+        const $info = $liveView.find('.clock-info');
+        const $pStatus = $info.find('.preview-status');
+        const $pDate = $info.find('.preview-date');
+        const $pTime = $info.find('.time-row');
 
-        // Date
-        const $date = $liveView.find('.preview-date');
-        $date.css({
+        // Reset positions
+        $pStatus.detach();
+        $pDate.detach();
+        $pTime.detach();
+
+        if (s.status_pos === 'above_digital') {
+            $info.append($pStatus).append($pTime).append($pDate);
+        } else if (s.status_pos === 'below_digital') {
+            $info.append($pTime).append($pStatus).append($pDate);
+        } else if (s.status_pos === 'below_date') {
+            $info.append($pTime).append($pDate).append($pStatus);
+        } else {
+             $info.append($pTime).append($pStatus).append($pDate);
+        }
+
+        $pStatus.text(s.text_open).css({
+            'color': s.color_open,
+            'font-family': (s.font_status && s.font_status !== 'inherit' && s.font_status !== 'Thema') ? `"${s.font_status}"` : 'inherit'
+        });
+        $pDate.css({
             'color': s.color_date,
             'font-family': (s.font_date && s.font_date !== 'inherit') ? `"${s.font_date}"` : 'inherit'
         });
@@ -253,7 +301,8 @@ jQuery(document).ready(function($) {
         const $extra = $liveView.find('.preview-extra');
         $extra.text(s.extra_message).css({
             'color': s.extra_color,
-            'font-size': s.extra_font_size + 'px'
+            'font-size': s.extra_font_size + 'px',
+            'display': s.extra_message ? 'block' : 'none'
         });
         if (s.extra_marquee === 'yes') $extra.addClass('marquee-preview');
         else $extra.removeClass('marquee-preview');
@@ -267,7 +316,15 @@ jQuery(document).ready(function($) {
     // Font Preload for select options and handle preview
     $('.adremm-font-select').on('change', function() {
         const font = $(this).val();
-        $(this).css('font-family', (font && font !== 'inherit') ? `"${font}"` : 'inherit');
+        $(this).css('font-family', (font && font !== 'inherit' && font !== 'Thema') ? `"${font}"` : 'inherit');
+    }).each(function() {
+        const $sel = $(this);
+        $sel.find('option').each(function() {
+            const f = $(this).val();
+            if (f && f !== 'inherit' && f !== 'Thema') {
+                $(this).css('font-family', `"${f}"`);
+            }
+        });
     }).trigger('change');
 
     $form.on('input change keyup', 'input, select, textarea', function() {
@@ -282,6 +339,7 @@ jQuery(document).ready(function($) {
     // Initial trigger to sync UI with loaded settings
         if ($('.nav-tab.is-active').length) $('.nav-tab.is-active').trigger('click');
         if ($('.sub-tab-btn.active').length) $('.sub-tab-btn.active').trigger('click');
+
 
         // Final force update
         setTimeout(updatePreview, 100);
@@ -310,7 +368,12 @@ jQuery(document).ready(function($) {
         const h = now.getHours();
         const ms = now.getMilliseconds();
 
-        $liveView.find('.hand.sec').css('transform', `rotate(${s * 6}deg)`);
+        const handSweep = getVal('hand_sweep');
+        let secDeg = s * 6;
+        if (handSweep === 'smooth') secDeg = s * 6 + ms * 0.006;
+        if (handSweep === 'classy') secDeg = s * 6 + ms * 0.003;
+
+        $liveView.find('.hand.sec').css('transform', `rotate(${secDeg}deg)`);
         $liveView.find('.hand.min').css('transform', `rotate(${m * 6 + s * 0.1}deg)`);
         $liveView.find('.hand.hour').css('transform', `rotate(${h * 30 + m * 0.5}deg)`);
 
@@ -328,7 +391,7 @@ jQuery(document).ready(function($) {
             } else if (style === 'wall') {
                 $time.html(`${hh}:${mm}<span class="sec" style="opacity:0.4">:${ss}</span>`);
             } else if (style === 'design') {
-                $time.html(`${hh}:${mm}<span class="sec">${ss}</span>`);
+                $time.html(`<span class="day">MA</span> ${hh}:${mm}<span class="sec">${ss}</span>`);
             } else {
                 $time.text(`${hh}:${mm}:${ss}`);
             }

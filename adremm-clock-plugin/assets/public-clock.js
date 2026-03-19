@@ -1,5 +1,5 @@
 /**
- * ADREMM Clock Frontend Logic V3
+ * ADREMM Clock Frontend Logic V4
  */
 (function($) {
     'use strict';
@@ -20,11 +20,14 @@
             const m = now.getMinutes();
             const h = now.getHours();
 
-            const isSmooth = (typeof adremmClockData !== 'undefined' && adremmClockData.handSweep === 'smooth');
+            const handSweep = (typeof adremmClockData !== 'undefined') ? adremmClockData.handSweep : 'smooth';
             const locale = (typeof adremmClockData !== 'undefined') ? adremmClockData.locale : 'nl-NL';
 
             // Analog Sweep Logic
-            const secDeg = isSmooth ? (s * 6 + ms * 0.006) : (s * 6);
+            let secDeg = s * 6;
+            if (handSweep === 'smooth') secDeg = s * 6 + ms * 0.006;
+            else if (handSweep === 'classy') secDeg = s * 6 + ms * 0.003;
+
             const minDeg = m * 6 + s * 0.1;
             const hourDeg = (h % 12) * 30 + m * 0.5;
 
@@ -33,7 +36,7 @@
             $root.find('.h-hour').css('transform', `rotate(${hourDeg}deg)`);
 
             // Digital (Update every second or when ms is low)
-            if (!isSmooth || ms < 100) {
+            if (handSweep === 'ticking' || ms < 100) {
                 const $timeRow = $root.find('.time-row');
                 const $timeTarget = $root.find('.time-digital');
 
@@ -46,7 +49,10 @@
                 } else if ($timeRow.hasClass('digital-style-blocks')) {
                     $timeTarget.html(`<span class="b">${hh}</span>:<span class="b">${mm}</span>:<span class="b">${ss}</span>`);
                 } else if ($timeRow.hasClass('digital-style-design')) {
-                    $timeTarget.html(`${hh}:${mm}<span class="sec">${ss}</span>`);
+                    const dayName = now.toLocaleDateString(locale, { weekday: 'short' });
+                    $timeTarget.html(`<span class="day">${dayName}</span> ${hh}:${mm}<span class="sec">${ss}</span>`);
+                } else if ($timeRow.hasClass('digital-style-pixels')) {
+                    $timeTarget.html(`<span>${hh}</span><span>${mm}</span><span>${ss}</span>`);
                 } else {
                     $timeTarget.text(`${hh}:${mm}:${ss}`);
                 }
@@ -55,7 +61,7 @@
             }
         }
 
-        const interval = (typeof adremmClockData !== 'undefined' && adremmClockData.handSweep === 'smooth') ? 50 : 1000;
+        const interval = (typeof adremmClockData !== 'undefined' && (adremmClockData.handSweep === 'smooth' || adremmClockData.handSweep === 'classy')) ? 50 : 1000;
         setInterval(updateClock, interval);
         updateClock();
 
@@ -69,11 +75,34 @@
             }
         }
 
+        // Radio Feature
+        if (typeof adremmClockData !== 'undefined' && adremmClockData.radioEnabled === 'yes') {
+            const streams = {
+                techno: 'https://mediaserv38.live-streams.nl:18002/techno',
+                disco: 'http://caster04.streampakket.com:8047/stream',
+                hits: 'https://zwollefm.beheerstream.nl/8018/stream',
+                concert: 'https://ice.cr5.streamzilla.xlcdn.com:8000/sz=RCOLiveWebradio=mp3-192',
+                classics: 'https://streams.pinguinradio.com/PinguinClassics192.mp3',
+                blues: 'https://19003.live.streamtheworld.com/SP_R2406394_SC'
+            };
+            const streamUrl = streams[adremmClockData.radioChannel] || streams.hits;
+            window.adremmRadio = new Audio(streamUrl);
+
+            $root.find('.time-row.digital-style-alarm').css('cursor', 'pointer').on('click', function() {
+                if (window.adremmRadio.paused) {
+                    window.adremmRadio.play().catch(e => console.log('Autoplay blocked'));
+                    $(this).css('box-shadow', '0 0 30px rgba(255,102,0,0.8)');
+                } else {
+                    window.adremmRadio.pause();
+                    $(this).css('box-shadow', '');
+                }
+            });
+        }
+
         // Toggle Logic
         if ($root.hasClass('adremm-clock-panel')) {
              // Tab positioning logic
              let tabPos = 'tab-right';
-             // If selected position is on the left side, tab also goes to the left.
              if ($root.hasClass('adremm-clock-pos-top-left') ||
                  $root.hasClass('adremm-clock-pos-middle-left') ||
                  $root.hasClass('adremm-clock-pos-bottom-left')) {
@@ -85,6 +114,7 @@
                  $container.fadeOut(300, function() {
                      $tab.css('display', 'flex').hide().fadeIn(300);
                  });
+                 if (window.adremmRadio) window.adremmRadio.pause();
              });
              $tab.on('click', function() {
                  $tab.fadeOut(300, function() { $container.fadeIn(300); });

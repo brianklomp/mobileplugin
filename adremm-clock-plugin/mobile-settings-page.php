@@ -67,10 +67,10 @@ $settings = wp_parse_args(get_option('adremm_clock_settings', array()), adremm_c
                             <th>Mobile Positie:</th>
                             <td>
                                 <select name="adremm_clock_settings[mobile_position]">
-                                    <option value="top-right" <?php selected($settings['mobile_position'], 'top-right'); ?>>Rechtsboven</option>
-                                    <option value="bottom-right" <?php selected($settings['mobile_position'], 'bottom-right'); ?>>Rechtsonder</option>
-                                    <option value="top-left" <?php selected($settings['mobile_position'], 'top-left'); ?>>Linksboven</option>
-                                    <option value="bottom-left" <?php selected($settings['mobile_position'], 'bottom-left'); ?>>Linksonder</option>
+                                    <option value="bottom-left" <?php selected($settings['mobile_position'], 'bottom-left'); ?>>a. Linksonder</option>
+                                    <option value="bottom-right" <?php selected($settings['mobile_position'], 'bottom-right'); ?>>b. Rechtsonder</option>
+                                    <option value="top-center" <?php selected($settings['mobile_position'], 'top-center'); ?>>c. Boven (Header)</option>
+                                    <option value="bottom-center" <?php selected($settings['mobile_position'], 'bottom-center'); ?>>d. Onder (Footer)</option>
                                 </select>
                             </td>
                         </tr>

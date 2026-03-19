@@ -8,19 +8,28 @@ if ( ! defined('ABSPATH') ) exit;
 /**
  * Return an array of Google Fonts
  */
-function adremm_clock_get_google_fonts() {
+function adremm_clock_get_google_fonts($include_theme_opt = false) {
     $fonts_file = ADREMM_CLOCK_PATH . 'assets/fonts.json';
+    $fonts = array();
     if (file_exists($fonts_file)) {
-        $fonts = json_decode(file_get_contents($fonts_file), true);
-        if (is_array($fonts)) {
-            return $fonts;
+        $json_fonts = json_decode(file_get_contents($fonts_file), true);
+        if (is_array($json_fonts)) {
+            $fonts = $json_fonts;
         }
     }
-    return array(
-        'Inter', 'Poppins', 'Outfit', 'Roboto', 'Montserrat', 'Open Sans', 'Lato',
-        'Nunito', 'Raleway', 'Ubuntu', 'Playfair Display', 'Oswald', 'Rubik',
-        'Manrope', 'DM Sans', 'Space Grotesk', 'Lexend', 'Questrial'
-    );
+    if (empty($fonts)) {
+        $fonts = array(
+            'Inter', 'Poppins', 'Outfit', 'Roboto', 'Montserrat', 'Open Sans', 'Lato',
+            'Nunito', 'Raleway', 'Ubuntu', 'Playfair Display', 'Oswald', 'Rubik',
+            'Manrope', 'DM Sans', 'Space Grotesk', 'Lexend', 'Questrial'
+        );
+    }
+
+    if ($include_theme_opt) {
+        array_unshift($fonts, 'Thema');
+    }
+
+    return $fonts;
 }
 
 /**
@@ -67,24 +76,50 @@ function adremm_clock_admin_enqueue($hook) {
 function adremm_clock_get_status() {
     $settings = wp_parse_args(get_option('adremm_clock_settings', array()), adremm_clock_get_default_settings());
     $opening_hours = !empty($settings['opening_hours']) ? json_decode($settings['opening_hours'], true) : array();
+    $exceptional_days = !empty($settings['exceptional_days']) ? json_decode($settings['exceptional_days'], true) : array();
 
-    if (empty($opening_hours)) return 'open';
+    if (empty($opening_hours) && empty($exceptional_days)) return array('status' => 'open', 'text' => $settings['text_open']);
 
     $now = current_time('timestamp');
+    $today_date = date('Y-m-d', $now);
     $day = strtolower(date('D', $now));
     $current_time = date('H:i', $now);
 
-    if (!isset($opening_hours[$day])) return 'open';
-    if (!empty($opening_hours[$day]['is_closed'])) return 'closed';
+    // Check Exceptions First (Holidays etc)
+    if (!empty($exceptional_days)) {
+        foreach($exceptional_days as $ex) {
+            if ($ex['date'] === $today_date) {
+                return array('status' => $ex['status'], 'text' => $ex['label']);
+            }
+        }
+    }
+
+    if (!isset($opening_hours[$day])) return array('status' => 'open', 'text' => $settings['text_open']);
+
+    // Check if it is a "Koopavond"
+    $is_koopavond = !empty($opening_hours[$day]['is_koopavond']);
+
+    if (!empty($opening_hours[$day]['is_closed'])) {
+        return array('status' => 'closed', 'text' => $settings['text_closed']);
+    }
 
     $open = $opening_hours[$day]['open'];
     $close = $opening_hours[$day]['close'];
 
-    if ($current_time >= $open && $current_time <= $close) {
-        return 'open';
+    // Check Break (Pauze)
+    if (!empty($opening_hours[$day]['break_start']) && !empty($opening_hours[$day]['break_end'])) {
+        if ($current_time >= $opening_hours[$day]['break_start'] && $current_time <= $opening_hours[$day]['break_end']) {
+            return array('status' => 'closed', 'text' => $opening_hours[$day]['break_label'] ?: 'Wij zijn even pauzeren');
+        }
     }
 
-    return 'closed';
+    if ($current_time >= $open && $current_time <= $close) {
+        $text = $settings['text_open'];
+        if ($is_koopavond) $text .= ' (Koopavond)';
+        return array('status' => 'open', 'text' => $text);
+    }
+
+    return array('status' => 'closed', 'text' => $settings['text_closed']);
 }
 
 /**
@@ -107,6 +142,8 @@ function adremm_clock_frontend_enqueue() {
         'handSweep' => $settings['hand_sweep'],
         'extraMarquee' => $settings['extra_marquee'],
         'extraSpeed' => $settings['extra_speed'],
+        'radioEnabled' => $settings['radio_enabled'],
+        'radioChannel' => $settings['radio_channel'],
     ));
 
     // Load Google Fonts

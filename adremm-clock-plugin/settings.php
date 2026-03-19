@@ -21,7 +21,7 @@ function adremm_clock_register_settings() {
 function adremm_clock_get_default_settings() {
     return array(
         'position' => 'bottom-right',
-        'theme' => 'modern',
+        'theme_mode' => 'light', // light, dark, auto
         'theme_font' => 'Inter',
         'panel_size' => 'normal', // small, normal, large
         'panel_padding' => '25',
@@ -44,18 +44,22 @@ function adremm_clock_get_default_settings() {
         'analog_min_thick' => '1',
         'analog_min_length' => '5',
         'analog_not_above' => 'yes',
+        'analog_not_scale' => '1.0',
 
         // Wijzers
         'hand_hour_thick' => '4',
+        'hand_hour_len' => '50',
         'hand_hour_color' => '#ffffff',
         'hand_hour_style' => 'rectangle', // rectangle, rounded, point, heart
         'hand_min_thick' => '3',
+        'hand_min_len' => '70',
         'hand_min_color' => '#ffffff',
         'hand_min_style' => 'rectangle',
         'hand_sec_thick' => '1',
+        'hand_sec_len' => '80',
         'hand_sec_color' => '#ff3b30',
         'hand_sec_style' => 'point',
-        'hand_sweep' => 'smooth', // smooth, ticking
+        'hand_sweep' => 'smooth', // smooth, classy, ticking
 
         // Digitale Tijd
         'show_digital' => 'yes',
@@ -64,10 +68,15 @@ function adremm_clock_get_default_settings() {
         'digital_weight' => '700',
         'digital_bg' => 'transparent',
         'digital_show_sec' => 'yes',
-        'digital_style' => 'custom', // alarm, wall, custom, blocks, dots, design
+        'digital_style' => 'custom', // alarm, wall, blocks (matrix), pixels, design, custom
         'digital_glow' => 'no',
         'digital_glow_color' => '#ffffff',
         'digital_glow_spread' => '10',
+        'digital_orientation' => 'horizontal', // for design style
+
+        // Radio
+        'radio_enabled' => 'no',
+        'radio_channel' => 'hits',
 
         // Status
         'show_status' => 'yes',
@@ -94,6 +103,7 @@ function adremm_clock_get_default_settings() {
         'is_collapsible' => 'yes',
         'show_close_x' => 'yes',
         'close_x_size' => '24',
+        'close_x_anim' => 'fade', // fade, rotate, bounce, pulse, zoom
         'color_close_x' => '#111111',
         'show_close_label' => 'yes',
         'close_label' => 'Sluiten',
@@ -107,6 +117,7 @@ function adremm_clock_get_default_settings() {
         'tab_bg' => '#ffffff',
         'tab_text' => 'KLOK',
         'tab_arrow' => 'yes',
+        'tab_arrow_img' => '',
         'tab_shadow' => '0 4px 15px rgba(0,0,0,0.2)',
         'tab_shadow_pos' => 'outer',
 
@@ -123,6 +134,7 @@ function adremm_clock_get_default_settings() {
 
         // Openingstijden (Placeholder for JSON)
         'opening_hours' => '',
+        'exceptional_days' => '', // JSON for special dates
     );
 }
 

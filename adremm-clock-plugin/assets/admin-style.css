@@ -10,6 +10,12 @@
 
 /* Editor Layout */
 .adremm-clock-editor { display: grid; grid-template-columns: 1fr 380px; gap: 30px; align-items: start; background: #fff; border: 1px solid #ccc; padding: 25px; border-top: none; }
+
+/* Alignment and UX Fixes */
+.form-table th { width: 220px; padding: 15px 10px 15px 0; font-weight: 600; color: #333; }
+.form-table td { padding: 10px 0; vertical-align: middle; }
+.adremm-panel { padding: 0 10px; }
+.adremm-color-picker + .wp-picker-container { vertical-align: middle; }
 .wrap.adremm-clock-v2 .adremm-panel { display: none !important; }
 .wrap.adremm-clock-v2 .adremm-panel.is-active { display: block !important; }
 .adremm-clock-section { margin-bottom: 30px; }
@@ -29,19 +35,20 @@
 .joy-item[title]:hover::before {
     content: attr(title);
     position: absolute;
-    bottom: 120%;
+    bottom: 130%;
     left: 50%;
     transform: translateX(-50%);
-    background: #333;
+    background: #111;
     color: #fff;
-    padding: 6px 12px;
-    border-radius: 4px;
-    font-size: 12px;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 13px;
     white-space: nowrap;
-    z-index: 999;
+    z-index: 1000;
     pointer-events: none;
-    font-weight: normal;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    font-weight: 500;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    opacity: 1;
 }
 .joy-item[title]:hover::after {
     content: '';
@@ -49,9 +56,9 @@
     bottom: 110%;
     left: 50%;
     transform: translateX(-50%);
-    border: 6px solid transparent;
-    border-top-color: #333;
-    z-index: 999;
+    border: 8px solid transparent;
+    border-top-color: #111;
+    z-index: 1000;
 }
 
 /* Theme Selector */

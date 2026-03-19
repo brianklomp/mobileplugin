@@ -31,36 +31,54 @@ $opening_hours = !empty($settings['opening_hours']) ? json_decode($settings['ope
             <?php endif; ?>
         <?php endforeach; ?>
 
-        <table class="widefat fixed striped" style="max-width: 600px; margin-top: 20px;">
+        <table class="widefat fixed striped" style="max-width: 1000px; margin-top: 20px;">
             <thead>
                 <tr>
                     <th><?php _e('Dag', 'adremm-clock-plugin'); ?></th>
-                    <th><?php _e('Open', 'adremm-clock-plugin'); ?></th>
-                    <th><?php _e('Gesloten', 'adremm-clock-plugin'); ?></th>
+                    <th><?php _e('Openingstijden', 'adremm-clock-plugin'); ?></th>
+                    <th><?php _e('Pauze', 'adremm-clock-plugin'); ?></th>
+                    <th><?php _e('Opties', 'adremm-clock-plugin'); ?></th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach($days as $key => $label):
-                    $open = $opening_hours[$key]['open'] ?? '09:00';
-                    $close = $opening_hours[$key]['close'] ?? '18:00';
-                    $is_closed = !empty($opening_hours[$key]['is_closed']);
+                    $day_data = $opening_hours[$key] ?? array();
+                    $open = $day_data['open'] ?? '09:00';
+                    $close = $day_data['close'] ?? '18:00';
+                    $is_closed = !empty($day_data['is_closed']);
+                    $is_koopavond = !empty($day_data['is_koopavond']);
+                    $break_start = $day_data['break_start'] ?? '';
+                    $break_end = $day_data['break_end'] ?? '';
+                    $break_label = $day_data['break_label'] ?? '';
                 ?>
                 <tr>
                     <td><strong><?php echo $label; ?></strong></td>
                     <td>
-                        <input type="time" name="adremm_clock_opening_hours[<?php echo $key; ?>][open]" value="<?php echo esc_attr($open); ?>" <?php disabled($is_closed); ?>>
+                        <input type="time" name="adremm_h[<?php echo $key; ?>][open]" value="<?php echo esc_attr($open); ?>" <?php disabled($is_closed); ?>> -
+                        <input type="time" name="adremm_h[<?php echo $key; ?>][close]" value="<?php echo esc_attr($close); ?>" <?php disabled($is_closed); ?>>
                     </td>
                     <td>
-                        <input type="time" name="adremm_clock_opening_hours[<?php echo $key; ?>][close]" value="<?php echo esc_attr($close); ?>" <?php disabled($is_closed); ?>>
-                        <label style="margin-left:10px;">
-                            <input type="checkbox" name="adremm_clock_opening_hours[<?php echo $key; ?>][is_closed]" value="1" <?php checked($is_closed); ?>>
-                            <?php _e('Gesloten', 'adremm-clock-plugin'); ?>
-                        </label>
+                        Van <input type="time" name="adremm_h[<?php echo $key; ?>][break_start]" value="<?php echo esc_attr($break_start); ?>" <?php disabled($is_closed); ?>>
+                        Tot <input type="time" name="adremm_h[<?php echo $key; ?>][break_end]" value="<?php echo esc_attr($break_end); ?>" <?php disabled($is_closed); ?>>
+                        Label <input type="text" name="adremm_h[<?php echo $key; ?>][break_label]" value="<?php echo esc_attr($break_label); ?>" placeholder="Pauze" <?php disabled($is_closed); ?>>
+                    </td>
+                    <td>
+                        <label><input type="checkbox" name="adremm_h[<?php echo $key; ?>][is_closed]" value="1" <?php checked($is_closed); ?>> Gesloten</label><br>
+                        <label><input type="checkbox" name="adremm_h[<?php echo $key; ?>][is_koopavond]" value="1" <?php checked($is_koopavond); ?>> Koopavond</label>
                     </td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
+
+        <div style="margin-top:40px; background:#fff; padding:20px; border:1px solid #ccd0d4;">
+            <h3><?php _e('Uitzonderlijke Dagen (Feestdagen)', 'adremm-clock-plugin'); ?></h3>
+            <div id="exceptional-days-wrap">
+                <!-- JS handles this -->
+            </div>
+            <button type="button" class="button" id="add-exceptional-day"><?php _e('Voeg dag toe', 'adremm-clock-plugin'); ?></button>
+            <input type="hidden" name="adremm_clock_settings[exceptional_days]" id="adremm_exceptional_json" value="<?php echo esc_attr($settings['exceptional_days']); ?>">
+        </div>
 
         <!-- We'll use a hidden field to store the JSON string to keep things compatible with our main settings array -->
         <input type="hidden" name="adremm_clock_settings[opening_hours]" id="adremm_opening_hours_json" value="<?php echo esc_attr($settings['opening_hours']); ?>">
@@ -73,26 +91,65 @@ $opening_hours = !empty($settings['opening_hours']) ? json_decode($settings['ope
 
 <script>
 jQuery(document).ready(function($) {
+    var exceptionalDays = JSON.parse($('#adremm_exceptional_json').val() || '[]');
+
+    function renderEx() {
+        var html = '';
+        exceptionalDays.forEach(function(ex, i) {
+            html += '<div style="display:flex; gap:10px; margin-bottom:10px;">';
+            html += '<input type="date" value="'+ex.date+'" class="ex-date" data-idx="'+i+'">';
+            html += '<input type="text" value="'+ex.label+'" class="ex-label" data-idx="'+i+'" placeholder="Omschrijving">';
+            html += '<select class="ex-status" data-idx="'+i+'"><option value="open" '+(ex.status==='open'?'selected':'')+'>Open</option><option value="closed" '+(ex.status==='closed'?'selected':'')+'>Gesloten</option></select>';
+            html += '<button type="button" class="button remove-ex" data-idx="'+i+'">Verwijder</button>';
+            html += '</div>';
+        });
+        $('#exceptional-days-wrap').html(html);
+        $('#adremm_exceptional_json').val(JSON.stringify(exceptionalDays));
+    }
+    renderEx();
+
+    $('#add-exceptional-day').on('click', function() {
+        exceptionalDays.push({date: '', label: '', status: 'closed'});
+        renderEx();
+    });
+
+    $(document).on('change', '.ex-date, .ex-label, .ex-status', function() {
+        var idx = $(this).data('idx');
+        if ($(this).hasClass('ex-date')) exceptionalDays[idx].date = $(this).val();
+        if ($(this).hasClass('ex-label')) exceptionalDays[idx].label = $(this).val();
+        if ($(this).hasClass('ex-status')) exceptionalDays[idx].status = $(this).val();
+        $('#adremm_exceptional_json').val(JSON.stringify(exceptionalDays));
+    });
+
+    $(document).on('click', '.remove-ex', function() {
+        exceptionalDays.splice($(this).data('idx'), 1);
+        renderEx();
+    });
+
     $('form').on('submit', function() {
         var hours = {};
-        $('tr').each(function() {
+        $('tbody tr').each(function() {
             var $row = $(this);
-            var dayKey = $row.find('input[type="time"]').first().attr('name');
-            if (dayKey) {
-                dayKey = dayKey.match(/\[(.*?)\]/)[1];
+            var dayMatch = $row.find('input[name*="adremm_h"]').attr('name').match(/\[(.*?)\]/);
+            if (dayMatch) {
+                var dayKey = dayMatch[1];
                 hours[dayKey] = {
                     open: $row.find('input[name*="[open]"]').val(),
                     close: $row.find('input[name*="[close]"]').val(),
-                    is_closed: $row.find('input[type="checkbox"]').is(':checked')
+                    break_start: $row.find('input[name*="[break_start]"]').val(),
+                    break_end: $row.find('input[name*="[break_end]"]').val(),
+                    break_label: $row.find('input[name*="[break_label]"]').val(),
+                    is_closed: $row.find('input[name*="[is_closed]"]').is(':checked'),
+                    is_koopavond: $row.find('input[name*="[is_koopavond]"]').is(':checked')
                 };
             }
         });
         $('#adremm_opening_hours_json').val(JSON.stringify(hours));
     });
 
-    $('input[type="checkbox"]').on('change', function() {
+    $('input[name*="[is_closed]"]').on('change', function() {
         var $row = $(this).closest('tr');
-        $row.find('input[type="time"]').prop('disabled', $(this).is(':checked'));
-    });
+        $row.find('input[type="time"], input[type="text"]').prop('disabled', $(this).is(':checked'));
+    }).trigger('change');
 });
 </script>
