@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Clock Verification</title>
+    <link rel="stylesheet" href="adremm-clock-plugin/assets/public-style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body { background: #f0f0f0; margin: 0; height: 100vh; }
+        #controls { position: fixed; top: 10px; left: 10px; z-index: 100000; background: white; padding: 10px; border: 1px solid #ccc; }
+    </style>
+</head>
+<body>
+
+<div id="controls">
+    <button onclick="toggleTheme('alarm')">Vintage Radio</button>
+    <button onclick="toggleTheme('blocks')">Matrix</button>
+    <button onclick="toggleTheme('pixels')">Pixels</button>
+    <button onclick="toggleTheme('design')">Minimalist</button>
+    <button onclick="toggleTheme('wall')">Wall</button>
+</div>
+
+<script>
+    // Mock adremmClockData
+    window.adremmClockData = {
+        locale: 'nl-NL',
+        panelSize: 'normal',
+        handSweep: 'smooth',
+        extraMarquee: 'no',
+        extraSpeed: '5',
+        radioEnabled: 'yes',
+        radioChannel: 'hits'
+    };
+
+    function toggleTheme(style) {
+        $('.time-row').removeClass(function (index, className) {
+            return (className.match (/(^|\s)digital-style-\S+/g) || []).join(' ');
+        }).addClass('digital-style-' + style);
+
+        // Reset radio panel for non-alarm styles
+        if (style !== 'alarm') {
+            $('.radio-panel').hide();
+        } else {
+            $('.radio-panel').show();
+        }
+    }
+</script>
+
+<!-- Mock Template Structure -->
+<div id="adremm-clock-wrapper" class="adremm-clock-panel adremm-clock-pos-bottom-right theme-mode-light panel-size-normal" style="--user-bg: #ffffff; --user-text: #111111; --panel-width: 320px;">
+    <div class="adremm-clock-container" style="width: var(--panel-width);">
+        <button class="adremm-clock-close anim-fade">
+            <span class="close-label">Sluiten</span>
+            <span class="close-x" style="font-size: 24px;">&times;</span>
+        </button>
+        <div class="adremm-clock-main">
+            <div class="adremm-clock-analog">
+                <div class="face" style="background-color: #000; border-color: #3399ff; border-width: 2px;">
+                    <div class="h-hour rounded" style="background-color: #ffffff; width: 4px; height: 50%;"></div>
+                    <div class="h-min rounded" style="background-color: #ffffff; width: 3px; height: 70%;"></div>
+                    <div class="h-sec point" style="background-color: #ff3b30; width: 1px; height: 80%;"></div>
+                </div>
+            </div>
+            <div class="adremm-clock-info">
+                <div class="time-row digital-style-alarm">
+                    <span class="time-digital"></span>
+                    <div class="radio-panel">
+                        <div class="radio-dial">
+                            <div class="radio-scale-scroll">
+                                <span>00</span><span>01</span><span>02</span><span>03</span><span>04</span><span>05</span>
+                                <span>06</span><span>07</span><span>08</span><span>09</span><span>10</span><span>11</span>
+                            </div>
+                            <div class="radio-indicator"></div>
+                        </div>
+                        <div class="radio-logo-wrap">
+                            <div class="logo-a">A</div>
+                            <div class="logo-text">Radio</div>
+                        </div>
+                        <div class="radio-switch" id="adremm-radio-toggle"></div>
+                        <div class="radio-volume-wrap">
+                            <div class="volume-knob-visual"></div>
+                            <input type="range" id="adremm-volume-knob" min="0" max="100" value="80">
+                        </div>
+                    </div>
+                </div>
+                <div class="status-row" style="color: #28a745;">Wij zijn geopend</div>
+                <div class="date-row" style="color: #a690d5;"><span class="date-text"></span></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="adremm-clock-plugin/assets/public-clock.js"></script>
+
+</body>
+</html>

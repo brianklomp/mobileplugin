@@ -27,9 +27,9 @@ $style_vars = sprintf(
 );
 ?>
 
-<div id="adremm-clock-wrapper" class="<?php echo esc_attr($layout_class); ?> <?php echo esc_attr($position_class); ?> <?php echo esc_attr($theme_class); ?> panel-size-<?php echo esc_attr($settings['panel_size']); ?> <?php echo esc_attr($mobile_vis_class); ?> <?php echo esc_attr($mobile_pos_class); ?> <?php echo esc_attr($mobile_size_class); ?>" style="<?php echo esc_attr($style_vars); ?>">
+<div id="adremm-clock-wrapper" class="<?php echo esc_attr($layout_class); ?> <?php echo esc_attr($position_class); ?> <?php echo esc_attr($theme_class); ?> panel-size-<?php echo esc_attr($settings['panel_size']); ?> <?php echo esc_attr($mobile_vis_class); ?> <?php echo esc_attr($mobile_pos_class); ?> <?php echo esc_attr($mobile_size_class); ?>" style="<?php echo esc_attr($style_vars); ?> --panel-width: <?php echo esc_attr($settings['panel_width']); ?>px;">
 
-    <div class="adremm-clock-container" style="box-shadow: <?php echo esc_attr($settings['panel_shadow']); ?>; border: <?php echo esc_attr($settings['panel_border']); ?>;">
+    <div class="adremm-clock-container" style="box-shadow: <?php echo esc_attr($settings['panel_shadow']); ?>; border: <?php echo esc_attr($settings['panel_border']); ?>; width: var(--panel-width);">
         <?php if (!$is_bar && ($settings['show_close_x'] === 'yes' || $settings['show_close_label'] === 'yes')): ?>
             <button class="adremm-clock-close anim-<?php echo esc_attr($settings['close_x_anim'] ?? 'fade'); ?>" title="<?php _e('Sluiten', 'adremm-clock-plugin'); ?>" style="color: <?php echo esc_attr($settings['color_close_x'] ?? $settings['color_close_label'] ?? '#000'); ?>;">
                 <?php if ($settings['show_close_label'] === 'yes'): ?>
@@ -65,9 +65,9 @@ $style_vars = sprintf(
                         <div class="notations min-notations <?php echo ($settings['analog_not_above'] === 'yes') ? 'above' : ''; ?>" style="color: <?php echo esc_attr($settings['analog_min_color']); ?>; --not-thick: <?php echo esc_attr($settings['analog_min_thick']); ?>px; --not-len: <?php echo esc_attr($settings['analog_min_length']); ?>px; transform: scale(<?php echo esc_attr($settings['analog_not_scale'] ?? '1.0'); ?>);">
                             <?php for($i=1; $i<=60; $i++): if($i%5!==0): ?><i style="transform: rotate(<?php echo $i*6; ?>deg)"></i><?php endif; endfor; ?>
                         </div>
-                        <div class="h-hour <?php echo esc_attr($settings['hand_hour_style']); ?>" style="background-color: <?php echo esc_attr($settings['hand_hour_color']); ?>; width: <?php echo esc_attr($settings['hand_hour_thick']); ?>px; height: <?php echo esc_attr($settings['hand_hour_len']); ?>%;"></div>
-                        <div class="h-min <?php echo esc_attr($settings['hand_min_style']); ?>" style="background-color: <?php echo esc_attr($settings['hand_min_color']); ?>; width: <?php echo esc_attr($settings['hand_min_thick']); ?>px; height: <?php echo esc_attr($settings['hand_min_len']); ?>%;"></div>
-                        <div class="h-sec <?php echo esc_attr($settings['hand_sec_style']); ?>" style="background-color: <?php echo esc_attr($settings['hand_sec_color']); ?>; width: <?php echo esc_attr($settings['hand_sec_thick']); ?>px; height: <?php echo esc_attr($settings['hand_sec_len']); ?>%;"></div>
+                        <div class="h-hour <?php echo esc_attr($settings['hand_hour_style']); ?>" style="background-color: <?php echo esc_attr($settings['hand_hour_color']); ?>; width: <?php echo esc_attr($settings['hand_hour_thick']); ?>px; height: <?php echo esc_attr($settings['hand_hour_len']); ?>%; transform: scale(<?php echo esc_attr($settings['analog_hand_scale'] ?? '1.0'); ?>);"></div>
+                        <div class="h-min <?php echo esc_attr($settings['hand_min_style']); ?>" style="background-color: <?php echo esc_attr($settings['hand_min_color']); ?>; width: <?php echo esc_attr($settings['hand_min_thick']); ?>px; height: <?php echo esc_attr($settings['hand_min_len']); ?>%; transform: scale(<?php echo esc_attr($settings['analog_hand_scale'] ?? '1.0'); ?>);"></div>
+                        <div class="h-sec <?php echo esc_attr($settings['hand_sec_style']); ?>" style="background-color: <?php echo esc_attr($settings['hand_sec_color']); ?>; width: <?php echo esc_attr($settings['hand_sec_thick']); ?>px; height: <?php echo esc_attr($settings['hand_sec_len']); ?>%; transform: scale(<?php echo esc_attr($settings['analog_hand_scale'] ?? '1.0'); ?>);"></div>
                     </div>
                 </div>
             <?php endif; ?>
@@ -97,13 +97,22 @@ $style_vars = sprintf(
                         <?php if ($settings['digital_style'] === 'alarm'): ?>
                             <div class="radio-panel">
                                 <div class="radio-dial">
-                                    <div class="radio-scale">22 23 24 25 26 27</div>
+                                    <div class="radio-scale-scroll">
+                                        <?php for($i=0; $i<=60; $i++): ?>
+                                            <span><?php echo str_pad($i, 2, '0', STR_PAD_LEFT); ?></span>
+                                        <?php endfor; ?>
+                                    </div>
+                                    <div class="radio-indicator"></div>
                                 </div>
                                 <div class="radio-logo-wrap">
                                     <div class="logo-a">A</div>
                                     <div class="logo-text">Radio</div>
                                 </div>
                                 <div class="radio-switch" id="adremm-radio-toggle"></div>
+                                <div class="radio-volume-wrap">
+                                    <div class="volume-knob-visual"></div>
+                                    <input type="range" id="adremm-volume-knob" min="0" max="100" value="80">
+                                </div>
                             </div>
                         <?php endif; ?>
                     </div>

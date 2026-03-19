@@ -77,6 +77,7 @@ jQuery(document).ready(function($) {
             bg_color: getVal('bg_color'),
             text_color: getVal('text_color'),
             panel_size: getVal('panel_size'),
+            panel_width: getVal('panel_width'),
             panel_shadow: getVal('panel_shadow'),
             panel_border: getVal('panel_border'),
             show_analog: getRadioVal('show_analog'),
@@ -92,6 +93,7 @@ jQuery(document).ready(function($) {
             analog_min_thick: getVal('analog_min_thick'),
             analog_min_length: getVal('analog_min_length'),
             analog_not_above: $form.find('[name="adremm_clock_settings[analog_not_above]"]').is(':checked') ? 'yes' : 'no',
+            analog_hand_scale: getVal('analog_hand_scale'),
             show_digital: getRadioVal('show_digital'),
             digital_color: getVal('digital_color'),
             digital_font: getVal('digital_font'),
@@ -146,7 +148,8 @@ jQuery(document).ready(function($) {
             'color': 'var(--adremm-clock-text)',
             'font-family': (s.theme_font && s.theme_font !== 'inherit') ? `"${s.theme_font}"` : 'inherit',
             'box-shadow': s.panel_shadow || 'none',
-            'border': s.panel_border || 'none'
+            'border': s.panel_border || 'none',
+            'width': s.panel_width + 'px'
         });
 
         // Preload fonts
@@ -211,19 +214,22 @@ jQuery(document).ready(function($) {
                 'background-color': (s.hand_hour_style === 'steampunk' ? 'transparent' : s.hand_hour_color),
                 'color': s.hand_hour_color,
                 'width': s.hand_hour_thick + 'px',
-                'height': s.hand_hour_len + '%'
+                'height': s.hand_hour_len + '%',
+                'transform': `scale(${s.analog_hand_scale})`
             });
             $liveView.find('.hand.min').attr('class', 'hand min ' + s.hand_min_style).css({
                 'background-color': (s.hand_min_style === 'steampunk' ? 'transparent' : s.hand_min_color),
                 'color': s.hand_min_color,
                 'width': s.hand_min_thick + 'px',
-                'height': s.hand_min_len + '%'
+                'height': s.hand_min_len + '%',
+                'transform': `scale(${s.analog_hand_scale})`
             });
             $liveView.find('.hand.sec').attr('class', 'hand sec ' + s.hand_sec_style).css({
                 'background-color': (s.hand_sec_style === 'steampunk' ? 'transparent' : s.hand_sec_color),
                 'color': s.hand_sec_color,
                 'width': s.hand_sec_thick + 'px',
-                'height': s.hand_sec_len + '%'
+                'height': s.hand_sec_len + '%',
+                'transform': `scale(${s.analog_hand_scale})`
             });
         } else {
             $analog.hide();
@@ -271,7 +277,27 @@ jQuery(document).ready(function($) {
                 $time.parent().toggleClass('vertical', s.digital_orientation === 'vertical');
                 $time.html(`<span class="day">MA</span> ${hh}:${mm}<span class="sec">${ss}</span>`);
             } else if (s.digital_style === 'alarm') {
-                $time.html(`${hh}:${mm}:${ss}`);
+                $time.html(`<span class="time-digit-tube">${hh}</span>:<span class="time-digit-tube">${mm}</span>:<span class="time-digit-tube">${ss}</span>`);
+
+                // Admin Preview Radio Scale Scroll
+                let $rDial = $time.parent().find('.radio-dial');
+                if (!$rDial.length) {
+                    $rDial = $(`<div class="radio-panel">
+                                <div class="radio-dial">
+                                    <div class="radio-scale-scroll"></div>
+                                    <div class="radio-indicator"></div>
+                                </div>
+                                <div class="radio-logo-wrap"><div class="logo-a">A</div><div class="logo-text">Radio</div></div>
+                                <div class="radio-switch" id="adremm-radio-toggle"></div>
+                            </div>`);
+                    $time.after($rDial);
+                    const $scroll = $rDial.find('.radio-scale-scroll');
+                    for(let i=0; i<=60; i++) $scroll.append(`<span>${String(i).padStart(2, '0')}</span>`);
+                }
+                const $scale = $rDial.find('.radio-scale-scroll');
+                const itemWidth = 30;
+                $scale.css('transform', `translateX(${-now.getSeconds() * itemWidth}px)`);
+
             } else {
                 $time.text(`${hh}:${mm}:${ss}`);
             }

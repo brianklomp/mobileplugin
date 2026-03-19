@@ -56,6 +56,14 @@
                     $timeTarget.html(`<span class="b">${hh}</span>:<span class="b">${mm}</span>:<span class="b">${ss}</span>`);
                 } else if ($timeRow.hasClass('digital-style-alarm')) {
                     $timeTarget.html(`<span class="time-digit-tube">${hh}</span>:<span class="time-digit-tube">${mm}</span>:<span class="time-digit-tube">${ss}</span>`);
+
+                    // Vintage Radio Scrolling Scale Logic
+                    const $scale = $root.find('.radio-scale-scroll');
+                    if ($scale.length) {
+                        const itemWidth = 30; // pixels per second mark
+                        const offset = (s + ms/1000) * itemWidth;
+                        $scale.css('transform', `translateX(${-offset}px)`);
+                    }
                 } else if ($timeRow.hasClass('digital-style-design')) {
                     const dayName = now.toLocaleDateString(locale, { weekday: 'short' });
                     $timeTarget.html(`<span class="day">${dayName}</span> ${hh}:${mm}<span class="sec">${ss}</span>`);
@@ -105,6 +113,15 @@
                     $(this).css('box-shadow', '');
                 }
             });
+
+            // Volume Control Logic
+            $root.on('input', '#adremm-volume-knob', function() {
+                const vol = $(this).val() / 100;
+                if (window.adremmRadio) window.adremmRadio.volume = vol;
+                // Rotate knob visually
+                const rotation = ($(this).val() * 2.4) - 120; // -120 to +120 deg
+                $root.find('.volume-knob-visual').css('transform', `rotate(${rotation}deg)`);
+            });
         }
 
         // Toggle Logic
@@ -133,7 +150,8 @@
                  $container.fadeOut(300, function() {
                      $tab.css('display', 'flex').hide().fadeIn(300);
                  });
-                 if (window.adremmRadio) window.adremmRadio.pause();
+                 // Audio should continue playing when collapsed per requirement
+                 // if (window.adremmRadio) window.adremmRadio.pause();
              });
              $tab.on('click', function() {
                  $tab.fadeOut(300, function() { $container.fadeIn(300); });

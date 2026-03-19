@@ -25,6 +25,7 @@ function adremm_clock_get_default_settings() {
         'theme_font' => 'Inter',
         'panel_size' => 'normal', // small, normal, large
         'panel_padding' => '25',
+        'panel_width' => '320',
         'bg_color' => '#ffffff',
         'text_color' => '#111111',
 
@@ -45,6 +46,7 @@ function adremm_clock_get_default_settings() {
         'analog_min_length' => '5',
         'analog_not_above' => 'yes',
         'analog_not_scale' => '1.0',
+        'analog_hand_scale' => '1.0',
 
         // Wijzers
         'hand_hour_thick' => '4',
@@ -154,24 +156,33 @@ function adremm_clock_settings_validate($input) {
         'color_close_x', 'color_close_label', 'tab_color', 'tab_bg'
     );
 
-    // Update the settings with the new input, validating as we go
-    foreach($input as $key => $val) {
-        if (!isset($defaults[$key])) continue; // Ignore unknown keys
+    $float_keys = array(
+        'analog_not_scale', 'analog_hand_scale', 'analog_hour_thick', 'analog_min_thick',
+        'hand_hour_thick', 'hand_min_thick', 'hand_sec_thick', 'analog_ring_size'
+    );
 
-        if (in_array($key, $color_keys)) {
-             // Sanitization for colors (HEX, RGBA, or transparent)
-             $color = trim((string)$val);
-             if (empty($color) || $color === 'transparent' || $color === 'rgba(0,0,0,0)') {
-                 $output[$key] = 'transparent';
-             } elseif (preg_match('/^rgba\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*(0(\.\d+)?|1(\.0+)?)\s*\)$/', $color) ||
-                 preg_match('/^#([A-Fa-f0-9]{3,8})$/', $color)) {
-                $output[$key] = $color;
-             }
-        } elseif ($key === 'opening_hours' || $key === 'extra_message') {
-            // Special handling for larger text/JSON
-            $output[$key] = $val;
-        } else {
-            $output[$key] = sanitize_text_field($val);
+    // Update the settings with the new input, validating as we go
+    if (is_array($input)) {
+        foreach($input as $key => $val) {
+            if (!isset($defaults[$key])) continue; // Ignore unknown keys
+
+            if (in_array($key, $color_keys)) {
+                 // Sanitization for colors (HEX, RGBA, or transparent)
+                 $color = trim((string)$val);
+                 if (empty($color) || $color === 'transparent' || $color === 'rgba(0,0,0,0)') {
+                     $output[$key] = 'transparent';
+                 } elseif (preg_match('/^rgba\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*(0(\.\d+)?|1(\.0+)?)\s*\)$/', $color) ||
+                     preg_match('/^#([A-Fa-f0-9]{3,8})$/', $color)) {
+                    $output[$key] = $color;
+                 }
+            } elseif (in_array($key, $float_keys)) {
+                $output[$key] = filter_var($val, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+            } elseif ($key === 'opening_hours' || $key === 'extra_message') {
+                // Special handling for larger text/JSON
+                $output[$key] = $val;
+            } else {
+                $output[$key] = sanitize_text_field($val);
+            }
         }
     }
 

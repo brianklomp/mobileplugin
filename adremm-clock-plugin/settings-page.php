@@ -71,6 +71,8 @@ $fonts = adremm_clock_get_google_fonts();
                                     <option value="normal" <?php selected($settings['panel_size'], 'normal'); ?>>Normaal</option>
                                     <option value="large" <?php selected($settings['panel_size'], 'large'); ?>>Groot</option>
                                 </select>
+                                <span style="margin-left:15px;"><?php _e('Breedte:', 'adremm-clock-plugin'); ?></span>
+                                <input type="number" name="adremm_clock_settings[panel_width]" value="<?php echo esc_attr($settings['panel_width']); ?>" style="width:60px;"> px
                             </td>
                         </tr>
                         <tr>
@@ -91,6 +93,8 @@ $fonts = adremm_clock_get_google_fonts();
                             <th><?php _e('Notatie Schalen', 'adremm-clock-plugin'); ?></th>
                             <td>
                                 <input type="range" name="adremm_clock_settings[analog_not_scale]" min="0.6" max="1.2" step="0.05" value="<?php echo esc_attr($settings['analog_not_scale']); ?>">
+                                <span style="margin-left:15px;"><?php _e('Wijzer Schaal:', 'adremm-clock-plugin'); ?></span>
+                                <input type="range" name="adremm_clock_settings[analog_hand_scale]" min="0.5" max="1.5" step="0.05" value="<?php echo esc_attr($settings['analog_hand_scale'] ?? '1.0'); ?>">
                             </td>
                         </tr>
                         <tr>
@@ -116,23 +120,23 @@ $fonts = adremm_clock_get_google_fonts();
                             <th><?php _e('Ringkleur & Grootte', 'adremm-clock-plugin'); ?></th>
                             <td>
                                 <input type="text" name="adremm_clock_settings[analog_ring_color]" value="<?php echo esc_attr($settings['analog_ring_color']); ?>" class="adremm-color-picker" data-alpha-enabled="true" data-alpha-color-type="rgba">
-                                <input type="number" name="adremm_clock_settings[analog_ring_size]" value="<?php echo esc_attr($settings['analog_ring_size']); ?>" style="width:60px;"> px
+                                <input type="number" name="adremm_clock_settings[analog_ring_size]" value="<?php echo esc_attr($settings['analog_ring_size']); ?>" style="width:60px;" step="0.1"> px
                             </td>
                         </tr>
                         <tr>
                             <th><?php _e('Uur Notatie', 'adremm-clock-plugin'); ?></th>
                             <td>
                                 <input type="text" name="adremm_clock_settings[analog_hour_color]" value="<?php echo esc_attr($settings['analog_hour_color']); ?>" class="adremm-color-picker" data-alpha-enabled="true" data-alpha-color-type="rgba">
-                                Dikte: <input type="number" name="adremm_clock_settings[analog_hour_thick]" value="<?php echo esc_attr($settings['analog_hour_thick']); ?>" style="width:50px;">
-                                Lengte: <input type="number" name="adremm_clock_settings[analog_hour_length]" value="<?php echo esc_attr($settings['analog_hour_length']); ?>" style="width:50px;">
+                                Dikte: <input type="number" name="adremm_clock_settings[analog_hour_thick]" value="<?php echo esc_attr($settings['analog_hour_thick']); ?>" style="width:50px;" step="0.1">
+                                Lengte: <input type="number" name="adremm_clock_settings[analog_hour_length]" value="<?php echo esc_attr($settings['analog_hour_length']); ?>" style="width:50px;" step="0.1">
                             </td>
                         </tr>
                         <tr>
                             <th><?php _e('Minuut Notatie', 'adremm-clock-plugin'); ?></th>
                             <td>
                                 <input type="text" name="adremm_clock_settings[analog_min_color]" value="<?php echo esc_attr($settings['analog_min_color']); ?>" class="adremm-color-picker" data-alpha-enabled="true" data-alpha-color-type="rgba">
-                                Dikte: <input type="number" name="adremm_clock_settings[analog_min_thick]" value="<?php echo esc_attr($settings['analog_min_thick']); ?>" style="width:50px;">
-                                Lengte: <input type="number" name="adremm_clock_settings[analog_min_length]" value="<?php echo esc_attr($settings['analog_min_length']); ?>" style="width:50px;">
+                                Dikte: <input type="number" name="adremm_clock_settings[analog_min_thick]" value="<?php echo esc_attr($settings['analog_min_thick']); ?>" style="width:50px;" step="0.1">
+                                Lengte: <input type="number" name="adremm_clock_settings[analog_min_length]" value="<?php echo esc_attr($settings['analog_min_length']); ?>" style="width:50px;" step="0.1">
                             </td>
                         </tr>
                         <tr>
@@ -158,7 +162,7 @@ $fonts = adremm_clock_get_google_fonts();
                                     <th>Kleur & Dikte</th>
                                     <td>
                                         <input type="text" name="adremm_clock_settings[hand_<?php echo $h; ?>_color]" value="<?php echo esc_attr($settings['hand_'.$h.'_color']); ?>" class="adremm-color-picker" data-alpha-enabled="true" data-alpha-color-type="rgba">
-                                        <input type="number" name="adremm_clock_settings[hand_<?php echo $h; ?>_thick]" value="<?php echo esc_attr($settings['hand_'.$h.'_thick']); ?>" style="width:60px;"> px
+                                        <input type="number" name="adremm_clock_settings[hand_<?php echo $h; ?>_thick]" value="<?php echo esc_attr($settings['hand_'.$h.'_thick']); ?>" style="width:60px;" step="0.1"> px
                                     </td>
                                 </tr>
                                 <tr>
@@ -177,7 +181,7 @@ $fonts = adremm_clock_get_google_fonts();
                         <tr>
                             <th>Lengte</th>
                             <td>
-                                <input type="number" name="adremm_clock_settings[hand_<?php echo $h; ?>_len]" value="<?php echo esc_attr($settings['hand_'.$h.'_len']); ?>" style="width:60px;"> %
+                                <input type="number" name="adremm_clock_settings[hand_<?php echo $h; ?>_len]" value="<?php echo esc_attr($settings['hand_'.$h.'_len']); ?>" style="width:60px;" step="0.1"> %
                             </td>
                         </tr>
                             </table>
