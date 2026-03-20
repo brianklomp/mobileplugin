@@ -86,7 +86,9 @@ function adremm_clock_get_status() {
                     $status_data['status'] = 'closed';
                     $status_data['text'] = $ex['label'] ?: $settings['text_closed'];
                 } else {
-                    if ($current_time >= $ex['open'] && $current_time <= $ex['close']) {
+                    $open = isset($ex['open']) ? $ex['open'] : '00:00';
+                    $close = isset($ex['close']) ? $ex['close'] : '23:59';
+                    if ($current_time >= $open && $current_time <= $close) {
                         $status_data['status'] = 'open';
                         $status_data['text'] = $ex['label'] ?: $settings['text_open'];
                     } else {

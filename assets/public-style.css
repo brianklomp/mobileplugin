@@ -46,11 +46,29 @@
     }
 }
 
-/* SIZES (Transform scaling based on position) */
-#adremm-clock-wrapper.panel-size-small:not(.custom-width-active) { transform: scale(0.75); }
-#adremm-clock-wrapper.panel-size-normal:not(.custom-width-active) { transform: scale(1); }
-#adremm-clock-wrapper.panel-size-large:not(.custom-width-active) { transform: scale(1.25); }
+/* SIZES (Strict scaling) */
+#adremm-clock-wrapper.panel-size-small:not(.custom-width-active) { --panel-width: 280px; }
+#adremm-clock-wrapper.panel-size-normal:not(.custom-width-active) { --panel-width: 380px; }
+#adremm-clock-wrapper.panel-size-large:not(.custom-width-active) { --panel-width: 480px; }
 #adremm-clock-wrapper.custom-width-active { transform: none !important; }
+
+/* Digital Clock Sizing based on Panel Size */
+#adremm-clock-wrapper.panel-size-small .time-row { --digital-w: 250px; --digital-h: 100px; }
+#adremm-clock-wrapper.panel-size-normal .time-row { --digital-w: 310px; --digital-h: 125px; }
+#adremm-clock-wrapper.panel-size-large .time-row { --digital-w: 440px; --digital-h: 176px; }
+
+/* Apply sizes to digital styles */
+.time-row.digital-style-custom,
+.time-row.digital-style-alarm,
+.time-row.digital-style-wall,
+.time-row.digital-style-blocks,
+.time-row.digital-style-pixels,
+.time-row.digital-style-design {
+    width: var(--digital-w, 310px) !important;
+    height: var(--digital-h, 125px) !important;
+    margin-left: auto;
+    margin-right: auto;
+}
 
 #adremm-clock-wrapper.adremm-clock-pos-bottom-right { transform-origin: bottom right; }
 #adremm-clock-wrapper.adremm-clock-pos-bottom-left { transform-origin: bottom left; }
@@ -101,12 +119,25 @@
 .notations.above { z-index: 20; }
 
 .h-hour, .h-min, .h-sec {
-    position: absolute; bottom: 50%; left: 50%; transform-origin: bottom center;
-    border-radius: 4px; z-index: 10;
+    position: absolute; bottom: 50%; left: 50%; transform-origin: 50% 100%;
+    border-radius: 4px; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
 }
 .h-hour.has-overshoot, .h-min.has-overshoot, .h-sec.has-overshoot {
-    bottom: 40%;
-    transform-origin: center 90%;
+    bottom: 50%;
+    transform: translateY(10%); /* Shifts the whole hand so 90% is at the pivot point */
+}
+
+/* Center Rings per hand */
+.center-ring {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    z-index: 15;
+}
+.has-overshoot .center-ring {
+    top: 90%;
 }
 /* Ensure currentColor works for styles */
 .h-hour { height: 35px; width: 3px; margin-left: -1.5px; }
@@ -127,20 +158,22 @@
 }
 .time-row.digital-style-blocks .time-digital::before {
     content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    background: repeating-linear-gradient(0deg, rgba(0,0,0,0.15) 0px, rgba(0,0,0,0.15) 1px, transparent 1px, transparent 2px),
-                repeating-linear-gradient(90deg, rgba(0,0,0,0.15) 0px, rgba(0,0,0,0.15) 1px, transparent 1px, transparent 2px);
+    background: repeating-linear-gradient(0deg, rgba(0,0,0,0.3) 0px, rgba(0,0,0,0.3) 1px, transparent 1px, transparent 2px);
     pointer-events: none; z-index: 5;
 }
 .time-row.digital-style-blocks .time-digital span.b {
-    background: #111; color: #44ff44; padding: 15px 8px; border-radius: 6px; font-size: 38px; font-weight: bold; min-width: 55px; display: inline-block; position: relative; box-shadow: inset 0 0 10px #000;
+    background: #000; color: #44ff44; padding: 15px 8px; border-radius: 6px; font-size: 42px; font-weight: bold; min-width: 60px; display: inline-block; position: relative; box-shadow: inset 0 0 15px #000;
+    background-image: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    background-size: 100% 2px, 3px 100%;
 }
-.time-row.digital-style-blocks .time-digital span.glitch { animation: matrixGlitch 0.2s infinite; }
+.time-row.digital-style-blocks .time-digital span.glitch { animation: matrixGlitch 0.15s infinite; filter: blur(0.5px); }
 @keyframes matrixGlitch {
-    0% { opacity: 1; transform: translate(0); }
-    20% { opacity: 0.8; transform: translate(-2px, 2px); color: #00ff00; }
-    40% { opacity: 1; transform: translate(2px, -2px); }
-    60% { opacity: 0.9; transform: translate(-1px, -1px); color: #88ff88; }
-    80% { opacity: 1; transform: translate(1px, 1px); }
+    0% { opacity: 1; transform: translate(0); filter: hue-rotate(0deg); }
+    10% { opacity: 0.8; transform: translate(-3px, 1px); color: #00ff00; }
+    30% { opacity: 1; transform: translate(3px, -2px); filter: blur(1px); }
+    50% { opacity: 0.7; transform: translate(-5px, 3px); color: #ff00ff; }
+    70% { opacity: 1; transform: translate(4px, -1px); filter: hue-rotate(90deg); }
+    90% { opacity: 0.9; transform: translate(-2px, -2px); }
     100% { opacity: 1; transform: translate(0); }
 }
 
@@ -186,17 +219,17 @@
 
 /* WALL CLOCK - Rolling 6 digits */
 .time-row.digital-style-wall {
-    background: #111 !important; border: 4px solid #333 !important; border-radius: 8px !important; width: 100% !important; max-width: 340px !important; height: 100px !important; display: flex !important; align-items: center !important; justify-content: center !important; margin: 0 auto 15px !important; color: #fff !important; box-shadow: inset 0 0 20px rgba(0,0,0,0.9), 0 10px 25px rgba(0,0,0,0.5) !important; padding: 0 15px !important; font-family: 'Courier New', Courier, monospace !important; overflow: hidden; position: relative;
+    background: #111 !important; border: 4px solid #333 !important; border-radius: 8px !important; display: flex !important; align-items: center !important; justify-content: center !important; margin: 0 auto 15px !important; color: #fff !important; box-shadow: inset 0 0 20px rgba(0,0,0,0.9), 0 10px 25px rgba(0,0,0,0.5) !important; padding: 0 15px !important; font-family: 'Courier New', Courier, monospace !important; overflow: hidden; position: relative;
 }
 .time-row.digital-style-wall::before, .time-row.digital-style-wall::after {
-    content: ""; position: absolute; left: 0; width: 100%; height: 45px; z-index: 10; pointer-events: none;
+    content: ""; position: absolute; left: 0; width: 100%; height: 30% !important; z-index: 10; pointer-events: none;
 }
-.time-row.digital-style-wall::before { top: 0; background: linear-gradient(to bottom, #111 0%, rgba(17,17,17,0.9) 30%, transparent 100%); }
-.time-row.digital-style-wall::after { bottom: 0; background: linear-gradient(to top, #111 0%, rgba(17,17,17,0.9) 30%, transparent 100%); }
+.time-row.digital-style-wall::before { top: 0; background: linear-gradient(180deg, #111 0%, rgba(17,17,17,0) 100%) !important; }
+.time-row.digital-style-wall::after { bottom: 0; background: linear-gradient(0deg, #111 0%, rgba(17,17,17,0) 100%) !important; }
 
-.time-row.digital-style-wall .time-digital { font-size: 52px; font-weight: 300; display: flex; align-items: center; gap: 2px; position: relative; z-index: 5; height: 52px; overflow: hidden; }
-.time-row.digital-style-wall .digit-col { display: flex; flex-direction: column; height: 52px; overflow: visible; position: relative; }
-.time-row.digital-style-wall .digit-col span { display: block; width: 34px; line-height: 52px; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); text-align: center; white-space: pre; }
+.time-row.digital-style-wall .time-digital { font-size: 52px; font-weight: 300; display: flex; align-items: center; gap: 2px; position: relative; z-index: 5; height: 52px; overflow: hidden; width: 100%; justify-content: center; }
+.time-row.digital-style-wall .digit-col { display: flex; flex-direction: column; height: 52px; overflow: visible; position: relative; flex-shrink: 0; }
+.time-row.digital-style-wall .digit-col span { display: block; width: 34px; line-height: 52px; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); text-align: center; white-space: pre; flex-shrink: 0; }
 .time-row.digital-style-wall .sep { width: 15px; text-align: center; opacity: 0.5; }
 
 /* Hand Styles */

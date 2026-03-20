@@ -59,15 +59,15 @@ jQuery(document).ready(function($) {
         const $customInput = $('#adremm-panel-width-custom');
         const $hiddenWidth = $('#adremm-panel-width-hidden');
 
-        let width = 350;
+        let width = 380;
         if (customOverride) {
             $customInput.prop('disabled', false);
-            width = parseFloat($customInput.val()) || 350;
+            width = parseFloat($customInput.val()) || 380;
         } else {
             $customInput.prop('disabled', true);
-            if (size === 'small') width = 250;
-            else if (size === 'normal') width = 350;
-            else if (size === 'large') width = 450;
+            if (size === 'small') width = 280;
+            else if (size === 'normal') width = 380;
+            else if (size === 'large') width = 480;
         }
         $hiddenWidth.val(width);
         return width;
@@ -198,11 +198,8 @@ jQuery(document).ready(function($) {
                 'border-width': (s.analog_theme === 'mondriaan') ? '3px' : s.analog_ring_size + 'px'
             });
 
-            // Center Ring
+            // Center Ring - now handled inside hand divs in preview for 1:1
             $face.find('.center-ring').remove();
-            if (s.analog_center_ring === 'yes') {
-                $face.append(`<div class="center-ring" style="width:${s.analog_center_ring_size}px; height:${s.analog_center_ring_size}px; background:${s.analog_center_ring_color}; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); border-radius:50%; z-index:15;"></div>`);
-            }
 
             // Notations
             if ($face.find('.hour-notations').length === 0) {
@@ -216,17 +213,17 @@ jQuery(document).ready(function($) {
 
             const overshootClass = (s.analog_overshoot === 'yes') ? ' has-overshoot' : '';
 
-            $liveView.find('.h-hour').attr('class', 'h-hour ' + s.hand_hour_style + overshootClass).css({
-                'background-color': s.hand_hour_color, 'color': s.hand_hour_color,
-                'width': s.hand_hour_thick + 'px', 'height': s.hand_hour_len + '%', 'transform': `scale(${s.analog_hand_scale})`
-            });
-            $liveView.find('.h-min').attr('class', 'h-min ' + s.hand_min_style + overshootClass).css({
-                'background-color': s.hand_min_color, 'color': s.hand_min_color,
-                'width': s.hand_min_thick + 'px', 'height': s.hand_min_len + '%', 'transform': `scale(${s.analog_hand_scale})`
-            });
-            $liveView.find('.h-sec').attr('class', 'h-sec ' + s.hand_sec_style + overshootClass).css({
-                'background-color': s.hand_sec_color, 'color': s.hand_sec_color,
-                'width': s.hand_sec_thick + 'px', 'height': s.hand_sec_len + '%', 'transform': `scale(${s.analog_hand_scale})`
+            ['hour', 'min', 'sec'].forEach(h => {
+                const $h = $liveView.find('.h-' + h);
+                $h.attr('class', 'h-' + h + ' ' + s['hand_' + h + '_style'] + overshootClass).css({
+                    'background-color': s['hand_' + h + '_color'], 'color': s['hand_' + h + '_color'],
+                    'width': s['hand_' + h + '_thick'] + 'px', 'height': s['hand_' + h + '_len'] + '%',
+                    'transform-origin': '50% ' + (s.analog_overshoot === 'yes' ? '90%' : '100%'),
+                    'transform': `scale(${s.analog_hand_scale})`
+                });
+                if (s.analog_center_ring === 'yes') {
+                    $h.append(`<div class="center-ring" style="width:${s.analog_center_ring_size}px; height:${s.analog_center_ring_size}px; background:${s['hand_' + h + '_color']};"></div>`);
+                }
             });
         } else { $analog.hide(); }
 
@@ -256,19 +253,6 @@ jQuery(document).ready(function($) {
                 'border-radius': (s.digital_style === 'custom') ? s.digital_border_radius + 'px' : ''
             });
 
-            if (s.digital_style === 'custom') {
-                $time.parent().css({
-                    'width': s.digital_width + 'px',
-                    'height': s.digital_height + 'px',
-                    'display': 'flex',
-                    'align-items': 'center',
-                    'justify-content': 'center',
-                    'margin': '0 auto 10px'
-                });
-            } else {
-                $time.parent().css({ 'width': '', 'height': '', 'display': '', 'margin': '' });
-            }
-
             const now = new Date();
             const hh = String(now.getHours()).padStart(2, '0');
             const mm = String(now.getMinutes()).padStart(2, '0');
@@ -276,21 +260,24 @@ jQuery(document).ready(function($) {
 
             if (s.digital_style === 'alarm') {
                 const logoHtml = s.vintage_logo ? `<img src="${s.vintage_logo}" class="logo-circle" style="object-fit:cover;">` : `<div class="logo-circle">A</div>`;
-                $time.html(`<div class="radio-vintage-body"><div class="nixie-tubes"><div class="nixie-tube">${hh[0]}</div><div class="nixie-tube">${hh[1]}</div><div class="nixie-tube-gap">:</div><div class="nixie-tube">${mm[0]}</div><div class="nixie-tube">${mm[1]}</div></div><div class="radio-scale-container"><div class="scale-indicator"></div><div class="radio-scale-scroll-v"></div></div><div class="radio-side-panel">${logoHtml}<div class="radio-controls-grid"><div class="power-btn on">X</div><div class="volume-knob on"><div class="knob-line"></div></div></div></div></div>`);
+                $time.html(`<div class="radio-vintage-body"><div class="nixie-tubes"><div class="nixie-tube">${hh[0]}</div><div class="nixie-tube">${hh[1]}</div><div class="nixie-tube-gap">:</div><div class="nixie-tube">${mm[0]}</div><div class="nixie-tube">${mm[1]}</div></div><div class="radio-scale-container" style="height:80px;"><div class="scale-indicator"></div><div class="radio-scale-scroll-v" style="padding-top:30px;"></div></div><div class="radio-side-panel">${logoHtml}<div class="radio-controls-grid"><div class="power-btn on">X</div><div class="volume-knob on"><div class="knob-line"></div></div></div></div></div>`);
                 const $scroll = $time.find('.radio-scale-scroll-v');
                 for(let i=0; i<=60; i++) $scroll.append(`<div class="scale-mark"><span>-</span>${String(i).padStart(2, '0')}</div>`);
                 $scroll.css('transform', `translateY(${-now.getSeconds() * 20}px)`);
             } else if (s.digital_style === 'wall') {
                 const digits = (hh + mm + ss).split('');
-                let html = '<div class="wall-clock-container">';
+                let html = '';
                 digits.forEach((d, i) => { html += `<div class="digit-col"><span>0\n1\n2\n3\n4\n5\n6\n7\n8\n9\n0</span></div>`; if (i === 1 || i === 3) html += '<div class="sep">:</div>'; });
-                html += '</div>';
-                $time.html(html);
-                $time.find('.digit-col').each(function(i) { $(this).find('span').css('transform', `translateY(-${parseInt(digits[i]) * 24}px)`); });
+                $time.html(html).css('display', 'flex');
+                $time.find('.digit-col').each(function(i) { $(this).find('span').css('transform', `translateY(-${parseInt(digits[i]) * 52}px)`); });
             } else if (s.digital_style === 'design') {
-                $time.html(`<div class="minimalist-container" style="background:#000; color:#fff; padding:10px; border-radius:4px; display:inline-block; font-family:monospace; transform:scale(0.8);">
-                    <div class="time-main" style="font-size:24px; line-height:1; display:flex; align-items:center; gap:3px;">
-                        <span>${hh}</span><span style="color:#666">:</span><span>${mm}</span><span style="color:#666">:</span><span>${ss}</span>
+                const dayName = now.toLocaleDateString('nl-NL', { weekday: 'short' }).toUpperCase();
+                $time.html(`<div class="minimalist-container" style="background:#000; color:#fff; padding:15px; border-radius:8px; display:inline-block; font-family:monospace; width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+                    <div class="time-main" style="font-size:42px; line-height:1; display:flex; align-items:center; gap:5px;">
+                        <span style="color:#ff3b30; margin-right:5px;">${dayName}:</span><span>${hh}</span><span style="color:#666">:</span><span>${mm}</span><span style="color:#666">:</span><span>${ss}</span>
+                    </div>
+                    <div class="time-labels" style="color:#666; font-size:12px; display:flex; justify-content:flex-end; gap:15px; margin-top:5px; text-transform:uppercase; width:100%; padding-right:10px;">
+                        <span>uur</span><span>min</span><span>sec</span>
                     </div>
                 </div>`);
             } else { $time.text(`${hh}:${mm}:${ss}`); }
@@ -327,7 +314,7 @@ jQuery(document).ready(function($) {
 
         if (getVal('digital_style') === 'wall') {
             const digits = (String(h).padStart(2, '0') + String(m).padStart(2, '0') + String(s).padStart(2, '0')).split('');
-            $liveView.find('.digit-col').each(function(i) { $(this).find('span').css('transform', `translateY(-${parseInt(digits[i]) * 24}px)`); });
+            $liveView.find('.digit-col').each(function(i) { $(this).find('span').css('transform', `translateY(-${parseInt(digits[i]) * 52}px)`); });
         }
     }
     setInterval(animateClock, 50);

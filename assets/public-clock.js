@@ -95,13 +95,13 @@
                     const glitchClass = isGlitch ? ' glitch' : '';
                     $timeTarget.html(`<span class="b${glitchClass}">${hh}</span>:<span class="b${glitchClass}">${mm}</span>:<span class="b${glitchClass}">${ss}</span>`);
                 } else if ($timeRow.hasClass('digital-style-design')) {
-                    const dayName = now.toLocaleDateString(locale, { weekday: 'short' });
+                    const dayName = now.toLocaleDateString(locale, { weekday: 'short' }).toUpperCase();
                     $timeTarget.html(`<div class="minimalist-container" style="background:#000; color:#fff; padding:15px; border-radius:8px; display:inline-block; font-family:monospace;">
                         <div class="time-main" style="font-size:42px; line-height:1; display:flex; align-items:center; gap:5px;">
-                            <span>${hh}</span><span style="color:#666">:</span><span>${mm}</span><span style="color:#666">:</span><span>${ss}</span>
+                            <span style="color:#ff3b30; margin-right:5px;">${dayName}:</span><span>${hh}</span><span style="color:#666">:</span><span>${mm}</span><span style="color:#666">:</span><span>${ss}</span>
                         </div>
-                        <div class="time-labels" style="color:#666; font-size:12px; display:flex; justify-content:space-between; margin-top:5px; text-transform:uppercase;">
-                            <span>${dayName}</span><span>uur</span><span>min</span><span>sec</span>
+                        <div class="time-labels" style="color:#666; font-size:12px; display:flex; justify-content:flex-end; gap:15px; margin-top:5px; text-transform:uppercase;">
+                            <span>uur</span><span>min</span><span>sec</span>
                         </div>
                     </div>`);
                 } else if ($timeRow.hasClass('digital-style-pixels')) {

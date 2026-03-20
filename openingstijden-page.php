@@ -134,14 +134,35 @@ jQuery(document).ready(function($) {
     $('.copy-day').on('click', function() {
         if(!confirm('Weet je zeker dat je de tijden van deze dag naar ALLE andere dagen wilt kopiëren?')) return;
         var $row = $(this).closest('.day-row');
-        var slotsHtml = $row.find('.slots-list').html();
         var isClosed = $row.find('.day-closed-toggle').is(':checked');
 
-        $('.day-row').not($row).each(function() {
-            $(this).find('.slots-list').html(slotsHtml);
-            $(this).find('.day-closed-toggle').prop('checked', isClosed);
-            $(this).find('.slots-wrap').toggle(!isClosed);
+        // Collect current values from original row
+        var slots = [];
+        $row.find('.slot-item').each(function() {
+            slots.push({
+                open: $(this).find('.slot-open').val(),
+                close: $(this).find('.slot-close').val()
+            });
         });
+
+        $('.day-row').not($row).each(function() {
+            var $targetRow = $(this);
+            $targetRow.find('.day-closed-toggle').prop('checked', isClosed);
+            $targetRow.find('.slots-wrap').toggle(!isClosed);
+
+            var $list = $targetRow.find('.slots-list');
+            $list.empty();
+            slots.forEach(function(slot) {
+                var html = '<div class="slot-item" style="display:inline-flex; gap:10px; align-items:center; margin-right:15px; margin-bottom:10px; background:#f0f0f1; padding:8px 12px; border-radius:4px;">' +
+                           '<input type="time" class="slot-open" value="'+slot.open+'"> ' +
+                           '<span>tot</span>' +
+                           '<input type="time" class="slot-close" value="'+slot.close+'">' +
+                           '<button type="button" class="remove-slot" style="color:#d63638; cursor:pointer; background:none; border:none; font-size:20px; padding:0; line-height:1;">&times;</button>' +
+                           '</div>';
+                $list.append(html);
+            });
+        });
+        serializeHours();
     });
 
     // Special Days Logic
