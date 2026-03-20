@@ -95,7 +95,15 @@
 }
 .radio-vintage-body { display: flex; align-items: center; justify-content: center; gap: 10px; }
 .nixie-tubes { display: flex; gap: 4px; background: #1a0f0a; padding: 8px; border-radius: 10px; align-items: center; }
-.nixie-tube { width: 35px; height: 55px; background: #2a1b15; border-radius: 6px; color: #ff6600; font-size: 36px; display: flex; align-items: center; justify-content: center; font-family: monospace; text-shadow: 0 0 10px #ff6600; }
+.nixie-tube {
+    width: 35px; height: 55px;
+    background:
+        linear-gradient(rgba(255,255,255,0.12) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.12) 1px, transparent 1px),
+        #2a1b15;
+    background-size: 6px 6px, 6px 6px, 100% 100%;
+    border-radius: 6px; color: #ff6600; font-size: 36px; display: flex; align-items: center; justify-content: center; font-family: monospace; text-shadow: 0 0 10px #ff6600;
+}
 .nixie-tube-gap { color: #ff6600; font-weight: bold; }
 
 .radio-scale-container { width: 30px; height: 55px; background: #fff; border-radius: 4px; position: relative; overflow: hidden; border: 1px solid #5a3d31; }

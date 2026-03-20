@@ -3,7 +3,7 @@ Contributors: ADREMM
 Tags: clock, widget, opening hours, radio
 Requires at least: 5.0
 Tested up to: 6.4
-Stable tag: 1.0.5
+Stable tag: 1.0.6
 License: GPLv2 or later
 
 Een uiterst gebruiksvriendelijke, meertalige klokplugin met live previews, openingstijden en schaalbare weergave.
@@ -20,6 +20,10 @@ Hij heeft 3 thema's en kan op 8 wijzes getoond worden op de front.
 3. Go to ADREMM Klok in the admin menu to configure.
 
 == Changelog ==
+
+= 1.0.6 =
+* Restored Nixie tube grid (raster) with improved visibility.
+* Fixed installation issue by incrementing version to 1.0.6.
 
 = 1.0.5 =
 * Overhauled architecture to Singleton class.
