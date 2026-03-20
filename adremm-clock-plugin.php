@@ -2,7 +2,7 @@
 /**
  * Plugin Name: ADREMM Klok
  * Description: Een uiterst gebruiksvriendelijke, meertalige klokplugin met live previews, openingstijden en schaalbare weergave.
- * Version: 1.0.7
+ * Version: 1.1.1
  * Author: ADREMM
  * Author URI: https://adremm.nl
  * License: GPLv2 or later
@@ -19,7 +19,7 @@ class Adremm_Clock_Plugin {
     /**
      * @var string
      */
-    public $version = '1.0.7';
+    public $version = '1.1.1';
 
     /**
      * @var Adremm_Clock_Plugin
@@ -70,7 +70,7 @@ class Adremm_Clock_Plugin {
      */
     private function init_hooks() {
         register_activation_hook( __FILE__, array( $this, 'activate' ) );
-        add_action( 'admin_init', array( $this, 'handle_activation_redirect' ), 9999 );
+        add_action( 'activated_plugin', array( $this, 'handle_activation_redirect' ) );
         add_action( 'wp_footer', array( $this, 'render_frontend' ) );
     }
 
@@ -82,16 +82,13 @@ class Adremm_Clock_Plugin {
         if ( ! get_option( 'adremm_clock_settings' ) ) {
             update_option( 'adremm_clock_settings', $default_settings );
         }
-        set_transient( 'adremm_clock_activation_redirect', true, 30 );
     }
 
     /**
      * Redirect to settings on activation.
      */
-    public function handle_activation_redirect() {
-        if ( get_transient( 'adremm_clock_activation_redirect' ) ) {
-            delete_transient( 'adremm_clock_activation_redirect' );
-
+    public function handle_activation_redirect($plugin) {
+        if ( $plugin == ADREMM_CLOCK_BASENAME ) {
             if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) return;
             if ( isset( $_GET['activate-multi'] ) ) return;
 
