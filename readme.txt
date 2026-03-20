@@ -3,7 +3,7 @@ Contributors: ADREMM
 Tags: clock, widget, opening hours, radio
 Requires at least: 5.0
 Tested up to: 6.4
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 License: GPLv2 or later
 
 Een uiterst gebruiksvriendelijke, meertalige klokplugin met live previews, openingstijden en schaalbare weergave.
@@ -20,6 +20,14 @@ Hij heeft 3 thema's en kan op 8 wijzes getoond worden op de front.
 3. Go to ADREMM Klok in the admin menu to configure.
 
 == Changelog ==
+
+= 1.0.7 =
+* Implemented standard sizing system (250/350/450px) with scaling.
+* Restored Nixie and Matrix grid effects.
+* Added custom logo support for Vintage theme.
+* Added fade effect to Wall Clock digits.
+* Added styling options (padding, background) to Minimalist clock.
+* Fixed live preview reliability.
 
 = 1.0.6 =
 * Restored Nixie tube grid (raster) with improved visibility.

@@ -1,0 +1,134 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="file:///app/assets/public-style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="file:///app/assets/public-clock.js"></script>
+    <style>
+        body { background: #eee; padding: 50px; font-family: sans-serif; }
+        .test-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 40px; }
+        .clock-sample { background: #fff; padding: 20px; border-radius: 12px; border: 1px solid #ccc; position: relative; min-height: 300px; }
+        h2 { margin-top: 0; font-size: 18px; }
+        .pos-marker { position: absolute; top: 0; left: 0; background: #f00; color: #fff; font-size: 10px; padding: 2px; }
+    </style>
+</head>
+<body>
+    <h1>ADREMM Clock V1.1.0 High-Fidelity Verification</h1>
+
+    <div class="test-grid">
+        <!-- Matrix Theme -->
+        <div class="clock-sample">
+            <h2>Matrix Theme (Glitch & Font Check)</h2>
+            <div id="adremm-clock-wrapper" class="adremm-clock-panel theme-mode-light panel-size-normal">
+                <div class="adremm-clock-container" style="width: 350px;">
+                    <div class="time-row digital-style-blocks">
+                        <span class="time-digital"><span class="b glitch">13</span>:<span class="b">07</span>:<span class="b">20</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Wall Clock Theme -->
+        <div class="clock-sample" style="background: #333; color: #fff;">
+            <h2>Wall Clock (Continuous Roll & Fade)</h2>
+            <div id="adremm-clock-wrapper-wall" class="adremm-clock-panel theme-mode-light panel-size-normal">
+                <div class="adremm-clock-container" style="width: 350px; background: #000;">
+                    <div class="time-row digital-style-wall">
+                        <div class="time-digital">
+                            <div class="digit-col"><span>0
+1</span></div>
+                            <div class="digit-col"><span>2
+3</span></div>
+                            <div class="sep">:</div>
+                            <div class="digit-col"><span>3
+4</span></div>
+                            <div class="digit-col"><span>4
+5</span></div>
+                            <div class="sep">:</div>
+                            <div class="digit-col"><span>5
+6</span></div>
+                            <div class="digit-col"><span>9
+0</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mondriaan Analog -->
+        <div class="clock-sample">
+            <h2>Mondriaan Analog (Overshoot & Center Ring)</h2>
+            <div id="adremm-clock-wrapper-mond" class="adremm-clock-panel theme-mode-light panel-size-normal">
+                <div class="adremm-clock-container" style="width: 300px;">
+                    <div class="face theme-mondriaan" style="width:150px; height:150px; margin: 0 auto;">
+                        <div class="mondriaan-block block-red"></div>
+                        <div class="mondriaan-block block-blue"></div>
+                        <div class="mondriaan-block block-yellow"></div>
+                        <div class="h-hour rectangle has-overshoot" style="background:#000; width:6px; height:40%; transform: rotate(45deg); position:absolute; bottom:40%; left:50%;"></div>
+                        <div class="h-min rectangle has-overshoot" style="background:#000; width:4px; height:60%; transform: rotate(180deg); position:absolute; bottom:40%; left:50%;"></div>
+                        <div class="center-ring" style="width:10px; height:10px; background:#fff; border:2px solid #000; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); border-radius:50%; z-index:15;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Minimalist Digital -->
+        <div class="clock-sample">
+            <h2>Minimalist Theme (Labels & Alignment)</h2>
+            <div id="adremm-clock-wrapper-min" class="adremm-clock-panel theme-mode-light panel-size-normal">
+                <div class="adremm-clock-container" style="width: 350px;">
+                    <div class="time-row digital-style-design">
+                         <div class="minimalist-container" style="background:#000; color:#fff; padding:15px; border-radius:8px; display:inline-block; font-family:monospace;">
+                            <div class="time-main" style="font-size:42px; line-height:1; display:flex; align-items:center; gap:5px;">
+                                <span>12</span><span style="color:#666">:</span><span>34</span><span style="color:#666">:</span><span>56</span>
+                            </div>
+                            <div class="time-labels" style="color:#666; font-size:12px; display:flex; justify-content:space-between; margin-top:5px; text-transform:uppercase;">
+                                <span>MA</span><span>uur</span><span>min</span><span>sec</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vintage Radio Scaling -->
+        <div class="clock-sample">
+            <h2>Vintage Radio (Scaling & Logo Check)</h2>
+            <div id="adremm-clock-wrapper-radio" class="adremm-clock-panel theme-mode-light panel-size-small">
+                <div class="adremm-clock-container" style="width: 250px;">
+                    <div class="time-row digital-style-alarm">
+                        <div class="radio-vintage-body">
+                            <div class="nixie-tubes">
+                                <div class="nixie-tube">1</div>
+                                <div class="nixie-tube">2</div>
+                            </div>
+                            <div class="radio-side-panel">
+                                <div class="logo-circle">A</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Position Fix Check -->
+        <div class="clock-sample" style="height: 400px; border: 2px dashed #999;">
+            <h2>Positioning Check (Middle-Right)</h2>
+            <div id="adremm-clock-wrapper-pos" class="adremm-clock-panel theme-mode-light adremm-clock-pos-middle-right" style="position:absolute;">
+                <div class="adremm-clock-container" style="width: 150px; background:#fff; border:1px solid #000;">
+                    FLOAT RIGHT
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.adremmClockData = {
+            locale: 'nl-NL',
+            handSweep: 'classy',
+            radioEnabled: 'no'
+        };
+    </script>
+</body>
+</html>

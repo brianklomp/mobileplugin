@@ -25,7 +25,9 @@ function adremm_clock_get_default_settings() {
         'theme_font' => 'Inter',
         'panel_size' => 'normal',
         'panel_padding' => '25',
-        'panel_width' => '320',
+        'panel_width' => '350',
+        'panel_width_custom' => '350',
+        'panel_custom_override' => 'no',
         'bg_color' => '#ffffff',
         'text_color' => '#111111',
 
@@ -47,6 +49,10 @@ function adremm_clock_get_default_settings() {
         'analog_not_above' => 'yes',
         'analog_not_scale' => '1.0',
         'analog_hand_scale' => '1.0',
+        'analog_center_ring' => 'yes',
+        'analog_center_ring_size' => '8',
+        'analog_center_ring_color' => '#ffffff',
+        'analog_overshoot' => 'no',
 
         // Wijzers
         'hand_hour_thick' => '4',
@@ -77,10 +83,23 @@ function adremm_clock_get_default_settings() {
         'digital_orientation' => 'horizontal',
         'digital_width' => '200',
         'digital_height' => '60',
+        'digital_font_size' => '32',
+        'digital_font_weight' => '700',
+        'digital_italic' => 'no',
+        'digital_border_size' => '0',
+        'digital_border_color' => '#cccccc',
+        'digital_border_radius' => '0',
+        'digital_font_url' => '',
 
         // Radio
         'radio_enabled' => 'no',
         'radio_channel' => 'hits',
+        'vintage_logo' => '',
+
+        // Minimalist Theme Style
+        'minimalist_padding' => '10',
+        'minimalist_radius' => '5',
+        'minimalist_bg' => 'transparent',
 
         // Status
         'show_status' => 'yes',
@@ -124,6 +143,7 @@ function adremm_clock_get_default_settings() {
         'tab_arrow_img' => '',
         'tab_shadow' => '0 4px 15px rgba(0,0,0,0.2)',
         'tab_shadow_pos' => 'outer',
+        'close_label_font_size' => '14',
 
         // Mobile / Tablet Settings
         'mobile_visibility' => 'both',
@@ -149,13 +169,16 @@ function adremm_clock_settings_validate($input) {
         'bg_color', 'analog_bg_color', 'analog_ring_color', 'hand_hour_color',
         'hand_min_color', 'hand_sec_color', 'digital_color', 'digital_bg',
         'digital_glow_color', 'color_open', 'color_closed', 'color_date',
-        'color_close_x', 'color_close_label', 'tab_color', 'tab_bg'
+        'color_close_x', 'color_close_label', 'tab_color', 'tab_bg',
+        'minimalist_bg'
     );
 
     $float_keys = array(
         'analog_not_scale', 'analog_hand_scale', 'analog_hour_thick', 'analog_min_thick',
         'hand_hour_thick', 'hand_min_thick', 'hand_sec_thick', 'analog_ring_size', 'panel_width',
-        'digital_width', 'digital_height'
+        'panel_width_custom', 'digital_width', 'digital_height', 'minimalist_padding', 'minimalist_radius',
+        'analog_center_ring_size', 'digital_font_size', 'digital_border_size', 'digital_border_radius',
+        'close_label_font_size'
     );
 
     if (is_array($input)) {

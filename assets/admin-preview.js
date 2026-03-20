@@ -14,6 +14,25 @@ jQuery(document).ready(function($) {
         $(target).addClass('is-active');
     });
 
+    // Handle percentage inputs for analog scale
+    $form.on('input', 'input[name="adremm_clock_settings[analog_not_scale_pct]"]', function() {
+        const val = parseFloat($(this).val()) / 100;
+        $form.find('input[name="adremm_clock_settings[analog_not_scale]"]').val(val);
+    });
+    $form.on('input', 'input[name="adremm_clock_settings[analog_hand_scale_pct]"]', function() {
+        const val = parseFloat($(this).val()) / 100;
+        $form.find('input[name="adremm_clock_settings[analog_hand_scale]"]').val(val);
+    });
+
+    $form.on('input', 'input[name="adremm_clock_settings[extra_speed]"]', function() {
+        const ms = (21 - $(this).val()) * 100;
+        $('#extra-speed-val').text(ms + ' ms');
+    });
+
+    $form.on('change', 'select[name="adremm_clock_settings[analog_theme]"]', function() {
+        updatePreview();
+    });
+
     $('.joy-item').on('click', function() {
         $('.joy-item').removeClass('active');
         $(this).addClass('active');
@@ -34,14 +53,35 @@ jQuery(document).ready(function($) {
     const getVal = (name) => $form.find(`[name="adremm_clock_settings[${name}]"]`).val();
     const getRadioVal = (name) => $form.find(`[name="adremm_clock_settings[${name}]"]:checked`).val();
 
+    function updateWidthLogic() {
+        const size = getVal('panel_size');
+        const customOverride = $form.find('#adremm-panel-custom-check').is(':checked');
+        const $customInput = $('#adremm-panel-width-custom');
+        const $hiddenWidth = $('#adremm-panel-width-hidden');
+
+        let width = 350;
+        if (customOverride) {
+            $customInput.prop('disabled', false);
+            width = parseFloat($customInput.val()) || 350;
+        } else {
+            $customInput.prop('disabled', true);
+            if (size === 'small') width = 250;
+            else if (size === 'normal') width = 350;
+            else if (size === 'large') width = 450;
+        }
+        $hiddenWidth.val(width);
+        return width;
+    }
+
     function updatePreview() {
+        const currentWidth = updateWidthLogic();
         const s = {
             theme_mode: getRadioVal('theme_mode'),
             theme_font: getVal('theme_font'),
             bg_color: getVal('bg_color'),
             text_color: getVal('text_color'),
             panel_size: getVal('panel_size'),
-            panel_width: getVal('panel_width'),
+            panel_width: currentWidth,
             panel_shadow: getVal('panel_shadow'),
             panel_border: getVal('panel_border'),
             show_analog: getRadioVal('show_analog'),
@@ -58,15 +98,27 @@ jQuery(document).ready(function($) {
             analog_min_length: getVal('analog_min_length'),
             analog_not_above: $form.find('[name="adremm_clock_settings[analog_not_above]"]').is(':checked') ? 'yes' : 'no',
             analog_hand_scale: getVal('analog_hand_scale'),
+            analog_theme: getVal('analog_theme'),
             show_digital: getRadioVal('show_digital'),
             digital_color: getVal('digital_color'),
             digital_font: getVal('digital_font'),
             digital_style: getVal('digital_style'),
             digital_width: getVal('digital_width'),
             digital_height: getVal('digital_height'),
+            digital_font_size: getVal('digital_font_size'),
+            digital_font_weight: getVal('digital_font_weight'),
+            digital_italic: $form.find('[name="adremm_clock_settings[digital_italic]"]').is(':checked') ? 'yes' : 'no',
+            digital_border_size: getVal('digital_border_size'),
+            digital_border_color: getVal('digital_border_color'),
+            digital_border_radius: getVal('digital_border_radius'),
+            digital_font_url: getVal('digital_font_url'),
             digital_glow: $form.find('[name="adremm_clock_settings[digital_glow]"]').is(':checked') ? 'yes' : 'no',
             digital_glow_color: getVal('digital_glow_color'),
             digital_glow_spread: getVal('digital_glow_spread'),
+            minimalist_padding: getVal('minimalist_padding'),
+            minimalist_radius: getVal('minimalist_radius'),
+            minimalist_bg: getVal('minimalist_bg'),
+            vintage_logo: getVal('vintage_logo'),
             text_open: getVal('text_open'),
             color_open: getVal('color_open'),
             font_status: getVal('font_status'),
@@ -77,6 +129,10 @@ jQuery(document).ready(function($) {
             extra_color: getVal('extra_color'),
             extra_font_size: getVal('extra_font_size'),
             extra_marquee: getRadioVal('extra_marquee'),
+            analog_center_ring: $form.find('[name="adremm_clock_settings[analog_center_ring]"]').is(':checked') ? 'yes' : 'no',
+            analog_center_ring_size: getVal('analog_center_ring_size'),
+            analog_center_ring_color: getVal('analog_center_ring_color'),
+            analog_overshoot: $form.find('[name="adremm_clock_settings[analog_overshoot]"]').is(':checked') ? 'yes' : 'no',
             hand_hour_color: getVal('hand_hour_color'),
             hand_hour_thick: getVal('hand_hour_thick'),
             hand_hour_len: getVal('hand_hour_len'),
@@ -95,7 +151,8 @@ jQuery(document).ready(function($) {
             color_close_x: getVal('color_close_x'),
             show_close_label: $form.find('[name="adremm_clock_settings[show_close_label]"]').is(':checked') ? 'yes' : 'no',
             close_label: getVal('close_label'),
-            color_close_label: getVal('color_close_label')
+            color_close_label: getVal('color_close_label'),
+            close_label_font_size: getVal('close_label_font_size'),
         };
 
         $liveView.removeClass('theme-mode-light theme-mode-dark theme-mode-auto panel-size-small panel-size-normal panel-size-large');
@@ -108,17 +165,44 @@ jQuery(document).ready(function($) {
             'width': s.panel_width + 'px'
         });
 
+        // Set system font preview globally in preview container
+        if (s.theme_font && s.theme_font !== 'inherit') {
+            $('head').append(`<link href="https://fonts.googleapis.com/css2?family=${s.theme_font.replace(/ /g, '+')}&display=swap" rel="stylesheet">`);
+        }
+
+        // Digital Glitch Mock
+        if (s.digital_style === 'blocks') {
+            const isGlitch = Math.random() > 0.9;
+            $liveView.find('.preview-time span.b').toggleClass('glitch', isGlitch);
+        }
+
         // Analog
         const $analog = $liveView.find('.analog-preview');
         const $face = $liveView.find('.clock-face');
         if (s.show_analog === 'yes') {
             $analog.show();
+            $face.removeClass('theme-mondriaan');
+            if (s.analog_theme === 'mondriaan') {
+                $face.addClass('theme-mondriaan');
+                if ($face.find('.mondriaan-block').length === 0) {
+                    $face.append('<div class="mondriaan-block block-red"></div><div class="mondriaan-block block-blue"></div><div class="mondriaan-block block-yellow"></div>');
+                }
+            } else {
+                $face.find('.mondriaan-block').remove();
+            }
+
             $face.css({
                 'background-image': s.analog_bg_image ? `url(${s.analog_bg_image})` : 'none',
-                'background-color': s.analog_bg_image ? 'transparent' : s.analog_bg_color,
-                'border-color': s.analog_ring_color,
-                'border-width': s.analog_ring_size + 'px'
+                'background-color': (s.analog_theme === 'mondriaan') ? '#fff' : (s.analog_bg_image ? 'transparent' : s.analog_bg_color),
+                'border-color': (s.analog_theme === 'mondriaan') ? '#000' : s.analog_ring_color,
+                'border-width': (s.analog_theme === 'mondriaan') ? '3px' : s.analog_ring_size + 'px'
             });
+
+            // Center Ring
+            $face.find('.center-ring').remove();
+            if (s.analog_center_ring === 'yes') {
+                $face.append(`<div class="center-ring" style="width:${s.analog_center_ring_size}px; height:${s.analog_center_ring_size}px; background:${s.analog_center_ring_color}; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); border-radius:50%; z-index:15;"></div>`);
+            }
 
             // Notations
             if ($face.find('.hour-notations').length === 0) {
@@ -130,15 +214,17 @@ jQuery(document).ready(function($) {
             $face.find('.min-notations').html('').css({ 'color': s.analog_min_color, '--not-thick': s.analog_min_thick + 'px', '--not-len': s.analog_min_length + 'px', 'transform': `scale(${s.analog_not_scale})` });
             for(let i=1; i<=60; i++) if(i%5!==0) $face.find('.min-notations').append(`<i style="transform: rotate(${i*6}deg)"></i>`);
 
-            $liveView.find('.h-hour').attr('class', 'h-hour ' + s.hand_hour_style).css({
+            const overshootClass = (s.analog_overshoot === 'yes') ? ' has-overshoot' : '';
+
+            $liveView.find('.h-hour').attr('class', 'h-hour ' + s.hand_hour_style + overshootClass).css({
                 'background-color': s.hand_hour_color, 'color': s.hand_hour_color,
                 'width': s.hand_hour_thick + 'px', 'height': s.hand_hour_len + '%', 'transform': `scale(${s.analog_hand_scale})`
             });
-            $liveView.find('.h-min').attr('class', 'h-min ' + s.hand_min_style).css({
+            $liveView.find('.h-min').attr('class', 'h-min ' + s.hand_min_style + overshootClass).css({
                 'background-color': s.hand_min_color, 'color': s.hand_min_color,
                 'width': s.hand_min_thick + 'px', 'height': s.hand_min_len + '%', 'transform': `scale(${s.analog_hand_scale})`
             });
-            $liveView.find('.h-sec').attr('class', 'h-sec ' + s.hand_sec_style).css({
+            $liveView.find('.h-sec').attr('class', 'h-sec ' + s.hand_sec_style + overshootClass).css({
                 'background-color': s.hand_sec_color, 'color': s.hand_sec_color,
                 'width': s.hand_sec_thick + 'px', 'height': s.hand_sec_len + '%', 'transform': `scale(${s.analog_hand_scale})`
             });
@@ -151,9 +237,23 @@ jQuery(document).ready(function($) {
         $time.parent().attr('class', 'time-row digital-style-' + s.digital_style + (s.digital_glow === 'yes' ? ' has-glow' : ''));
 
         if (s.show_digital === 'yes') {
+            let fontFamily = (s.digital_font && s.digital_font !== 'inherit') ? `"${s.digital_font}"` : 'inherit';
+            if (s.digital_style === 'custom' && s.digital_font_url) {
+                const customFontName = 'CustomPreviewFont';
+                const style = document.createElement('style');
+                style.innerHTML = `@font-face { font-family: "${customFontName}"; src: url("${s.digital_font_url}"); }`;
+                document.head.appendChild(style);
+                fontFamily = `"${customFontName}"`;
+            }
+
             $time.parent().show().css({
                 'color': s.digital_color,
-                'font-family': (s.digital_font && s.digital_font !== 'inherit') ? `"${s.digital_font}"` : 'inherit'
+                'font-family': fontFamily,
+                'font-size': (s.digital_style === 'custom' || s.digital_style === 'pixels' || s.digital_style === 'blocks') ? s.digital_font_size + 'px' : '',
+                'font-weight': s.digital_font_weight,
+                'font-style': (s.digital_italic === 'yes') ? 'italic' : 'normal',
+                'border': (s.digital_style === 'custom') ? s.digital_border_size + 'px solid ' + s.digital_border_color : '',
+                'border-radius': (s.digital_style === 'custom') ? s.digital_border_radius + 'px' : ''
             });
 
             if (s.digital_style === 'custom') {
@@ -175,16 +275,24 @@ jQuery(document).ready(function($) {
             const ss = String(now.getSeconds()).padStart(2, '0');
 
             if (s.digital_style === 'alarm') {
-                $time.html(`<div class="radio-vintage-body"><div class="nixie-tubes"><div class="nixie-tube">${hh[0]}</div><div class="nixie-tube">${hh[1]}</div><div class="nixie-tube-gap">:</div><div class="nixie-tube">${mm[0]}</div><div class="nixie-tube">${mm[1]}</div></div><div class="radio-scale-container"><div class="scale-indicator"></div><div class="radio-scale-scroll-v"></div></div><div class="radio-side-panel"><div class="logo-circle">A</div><div class="radio-controls-grid"><div class="power-btn on">X</div><div class="volume-knob on"><div class="knob-line"></div></div></div></div></div>`);
+                const logoHtml = s.vintage_logo ? `<img src="${s.vintage_logo}" class="logo-circle" style="object-fit:cover;">` : `<div class="logo-circle">A</div>`;
+                $time.html(`<div class="radio-vintage-body"><div class="nixie-tubes"><div class="nixie-tube">${hh[0]}</div><div class="nixie-tube">${hh[1]}</div><div class="nixie-tube-gap">:</div><div class="nixie-tube">${mm[0]}</div><div class="nixie-tube">${mm[1]}</div></div><div class="radio-scale-container"><div class="scale-indicator"></div><div class="radio-scale-scroll-v"></div></div><div class="radio-side-panel">${logoHtml}<div class="radio-controls-grid"><div class="power-btn on">X</div><div class="volume-knob on"><div class="knob-line"></div></div></div></div></div>`);
                 const $scroll = $time.find('.radio-scale-scroll-v');
                 for(let i=0; i<=60; i++) $scroll.append(`<div class="scale-mark"><span>-</span>${String(i).padStart(2, '0')}</div>`);
                 $scroll.css('transform', `translateY(${-now.getSeconds() * 20}px)`);
             } else if (s.digital_style === 'wall') {
                 const digits = (hh + mm + ss).split('');
-                let html = '';
-                digits.forEach((d, i) => { html += `<div class="digit-col"><span>0\n1\n2\n3\n4\n5\n6\n7\n8\n9</span></div>`; if (i === 1 || i === 3) html += '<div class="sep">:</div>'; });
+                let html = '<div class="wall-clock-container">';
+                digits.forEach((d, i) => { html += `<div class="digit-col"><span>0\n1\n2\n3\n4\n5\n6\n7\n8\n9\n0</span></div>`; if (i === 1 || i === 3) html += '<div class="sep">:</div>'; });
+                html += '</div>';
                 $time.html(html);
-                $time.find('.digit-col').each(function(i) { $(this).find('span').css('transform', `translateY(-${parseInt(digits[i]) * 48}px)`); });
+                $time.find('.digit-col').each(function(i) { $(this).find('span').css('transform', `translateY(-${parseInt(digits[i]) * 24}px)`); });
+            } else if (s.digital_style === 'design') {
+                $time.html(`<div class="minimalist-container" style="background:#000; color:#fff; padding:10px; border-radius:4px; display:inline-block; font-family:monospace; transform:scale(0.8);">
+                    <div class="time-main" style="font-size:24px; line-height:1; display:flex; align-items:center; gap:3px;">
+                        <span>${hh}</span><span style="color:#666">:</span><span>${mm}</span><span style="color:#666">:</span><span>${ss}</span>
+                    </div>
+                </div>`);
             } else { $time.text(`${hh}:${mm}:${ss}`); }
         } else { $time.parent().hide(); }
 
@@ -197,9 +305,9 @@ jQuery(document).ready(function($) {
     function updateCloseBtn(s) {
         let $btn = $liveView.find('.preview-close');
         if ($btn.length === 0) { $btn = $('<div class="preview-close"></div>'); $liveView.prepend($btn); }
-        $btn.html('');
-        if (s.show_close_label === 'yes') $btn.append(`<span class="close-label" style="color:${s.color_close_label}">${s.close_label}</span>`);
-        if (s.show_close_x === 'yes') $btn.append(`<span class="close-x" style="font-size:${s.close_x_size}px; color:${s.color_close_x}">&times;</span>`);
+        $btn.html('').attr('style', 'position:absolute; top:10px; right:10px; display:flex; align-items:center; gap:5px; z-index:20;');
+        if (s.show_close_label === 'yes') $btn.append(`<span class="close-label" style="color:${s.color_close_label}; font-size:${s.close_label_font_size}px;">${s.close_label}</span>`);
+        if (s.show_close_x === 'yes') $btn.append(`<span class="close-x" style="font-size:${s.close_x_size}px; color:${s.color_close_x}; line-height:1;">&times;</span>`);
         if (s.show_close_x !== 'yes' && s.show_close_label !== 'yes') $btn.hide(); else $btn.show();
     }
 
@@ -219,7 +327,7 @@ jQuery(document).ready(function($) {
 
         if (getVal('digital_style') === 'wall') {
             const digits = (String(h).padStart(2, '0') + String(m).padStart(2, '0') + String(s).padStart(2, '0')).split('');
-            $liveView.find('.digit-col').each(function(i) { $(this).find('span').css('transform', `translateY(-${parseInt(digits[i]) * 48}px)`); });
+            $liveView.find('.digit-col').each(function(i) { $(this).find('span').css('transform', `translateY(-${parseInt(digits[i]) * 24}px)`); });
         }
     }
     setInterval(animateClock, 50);

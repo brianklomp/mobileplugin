@@ -66,13 +66,18 @@ $fonts = adremm_clock_get_google_fonts();
                         <tr>
                             <th><?php _e('Tijdpaneel grootte', 'adremm-clock-plugin'); ?></th>
                             <td>
-                                <select name="adremm_clock_settings[panel_size]">
-                                    <option value="small" <?php selected($settings['panel_size'], 'small'); ?>>Klein</option>
-                                    <option value="normal" <?php selected($settings['panel_size'], 'normal'); ?>>Normaal</option>
-                                    <option value="large" <?php selected($settings['panel_size'], 'large'); ?>>Groot</option>
+                                <select name="adremm_clock_settings[panel_size]" id="adremm-panel-size-select">
+                                    <option value="small" <?php selected($settings['panel_size'], 'small'); ?>>Klein (250px)</option>
+                                    <option value="normal" <?php selected($settings['panel_size'], 'normal'); ?>>Normaal (350px)</option>
+                                    <option value="large" <?php selected($settings['panel_size'], 'large'); ?>>Groot (450px)</option>
                                 </select>
-                                <span style="margin-left:15px;"><?php _e('Breedte:', 'adremm-clock-plugin'); ?></span>
-                                <input type="number" name="adremm_clock_settings[panel_width]" value="<?php echo esc_attr($settings['panel_width']); ?>" style="width:60px;" step="0.1"> px
+                                <div style="margin-top:10px;">
+                                    <input type="hidden" name="adremm_clock_settings[panel_custom_override]" value="no">
+                                    <label><input type="checkbox" name="adremm_clock_settings[panel_custom_override]" id="adremm-panel-custom-check" value="yes" <?php checked(isset($settings['panel_custom_override']) ? $settings['panel_custom_override'] : 'no', 'yes'); ?>> <?php _e('Custom Override (vinkje aan voor handmatig)', 'adremm-clock-plugin'); ?></label>
+                                    <span style="margin-left:15px;"><?php _e('Breedte:', 'adremm-clock-plugin'); ?></span>
+                                    <input type="number" name="adremm_clock_settings[panel_width_custom]" id="adremm-panel-width-custom" value="<?php echo esc_attr(isset($settings['panel_width_custom']) ? $settings['panel_width_custom'] : $settings['panel_width']); ?>" style="width:60px;" step="0.1" <?php disabled(isset($settings['panel_custom_override']) ? $settings['panel_custom_override'] : 'no', 'no'); ?>> px
+                                    <input type="hidden" name="adremm_clock_settings[panel_width]" id="adremm-panel-width-hidden" value="<?php echo esc_attr($settings['panel_width']); ?>">
+                                </div>
                             </td>
                         </tr>
                         <tr>
@@ -90,11 +95,22 @@ $fonts = adremm_clock_get_google_fonts();
                 <div id="tab-analoog" class="adremm-panel">
                     <table class="form-table">
                         <tr>
-                            <th><?php _e('Notatie Schalen', 'adremm-clock-plugin'); ?></th>
+                            <th><?php _e('Analoge Klok Thema', 'adremm-clock-plugin'); ?></th>
                             <td>
-                                <input type="range" name="adremm_clock_settings[analog_not_scale]" min="0.6" max="1.2" step="0.05" value="<?php echo esc_attr($settings['analog_not_scale']); ?>">
-                                <span style="margin-left:15px;"><?php _e('Wijzer Schaal:', 'adremm-clock-plugin'); ?></span>
-                                <input type="range" name="adremm_clock_settings[analog_hand_scale]" min="0.5" max="1.5" step="0.05" value="<?php echo esc_attr(isset($settings['analog_hand_scale']) ? $settings['analog_hand_scale'] : '1.0'); ?>">
+                                <select name="adremm_clock_settings[analog_theme]">
+                                    <option value="classic" <?php selected(isset($settings['analog_theme']) ? $settings['analog_theme'] : 'classic', 'classic'); ?>>Classic</option>
+                                    <option value="mondriaan" <?php selected(isset($settings['analog_theme']) ? $settings['analog_theme'] : '', 'mondriaan'); ?>>Mondriaan</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><?php _e('Notatie & Wijzer Schaal (%)', 'adremm-clock-plugin'); ?></th>
+                            <td>
+                                Notatie: <input type="number" name="adremm_clock_settings[analog_not_scale_pct]" value="<?php echo esc_attr(isset($settings['analog_not_scale']) ? $settings['analog_not_scale']*100 : '100'); ?>" style="width:60px;"> %
+                                <input type="hidden" name="adremm_clock_settings[analog_not_scale]" value="<?php echo esc_attr($settings['analog_not_scale']); ?>">
+                                <span style="margin-left:15px;">Wijzer:</span>
+                                <input type="number" name="adremm_clock_settings[analog_hand_scale_pct]" value="<?php echo esc_attr(isset($settings['analog_hand_scale']) ? $settings['analog_hand_scale']*100 : '100'); ?>" style="width:60px;"> %
+                                <input type="hidden" name="adremm_clock_settings[analog_hand_scale]" value="<?php echo esc_attr($settings['analog_hand_scale']); ?>">
                             </td>
                         </tr>
                         <tr>
@@ -144,6 +160,16 @@ $fonts = adremm_clock_get_google_fonts();
                             <td>
                                 <input type="hidden" name="adremm_clock_settings[analog_not_above]" value="no">
                                 <input type="checkbox" name="adremm_clock_settings[analog_not_above]" value="yes" <?php checked($settings['analog_not_above'], 'yes'); ?>>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><?php _e('Middenring & Overshoot', 'adremm-clock-plugin'); ?></th>
+                            <td>
+                                <label><input type="checkbox" name="adremm_clock_settings[analog_center_ring]" value="yes" <?php checked(isset($settings['analog_center_ring']) ? $settings['analog_center_ring'] : 'yes', 'yes'); ?>> Middenring</label>
+                                Grootte: <input type="number" name="adremm_clock_settings[analog_center_ring_size]" value="<?php echo esc_attr(isset($settings['analog_center_ring_size']) ? $settings['analog_center_ring_size'] : '8'); ?>" style="width:50px;">
+                                Kleur: <input type="text" name="adremm_clock_settings[analog_center_ring_color]" value="<?php echo esc_attr(isset($settings['analog_center_ring_color']) ? $settings['analog_center_ring_color'] : '#ffffff'); ?>" class="adremm-color-picker" data-alpha-enabled="true">
+                                <br><br>
+                                <label><input type="checkbox" name="adremm_clock_settings[analog_overshoot]" value="yes" <?php checked(isset($settings['analog_overshoot']) ? $settings['analog_overshoot'] : 'no', 'yes'); ?>> Overshoot (wijzers steken door center)</label>
                             </td>
                         </tr>
                     </table>
@@ -237,16 +263,35 @@ $fonts = adremm_clock_get_google_fonts();
                             </td>
                         </tr>
                         <tr>
-                            <th><?php _e('Digital Custom Instellingen', 'adremm-clock-plugin'); ?></th>
+                            <th><?php _e('Digital Custom & Minimalist', 'adremm-clock-plugin'); ?></th>
                             <td>
                                  Breedte: <input type="number" name="adremm_clock_settings[digital_width]" value="<?php echo esc_attr(isset($settings['digital_width']) ? $settings['digital_width'] : '200'); ?>" style="width:60px;">
                                  Hoogte: <input type="number" name="adremm_clock_settings[digital_height]" value="<?php echo esc_attr(isset($settings['digital_height']) ? $settings['digital_height'] : '60'); ?>" style="width:60px;">
                                  Toon Sec: <input type="checkbox" name="adremm_clock_settings[digital_show_sec]" value="yes" <?php checked($settings['digital_show_sec'], 'yes'); ?>>
-                                 Oriëntatie (Design):
+                                 Oriëntatie:
                                  <select name="adremm_clock_settings[digital_orientation]">
                                      <option value="horizontal" <?php selected($settings['digital_orientation'], 'horizontal'); ?>>Horizontaal</option>
                                      <option value="vertical" <?php selected($settings['digital_orientation'], 'vertical'); ?>>Verticaal</option>
                                  </select>
+                                 <div style="margin-top:10px; border-top:1px solid #eee; padding-top:10px;">
+                                     <strong>Custom & Minimalist Design:</strong><br>
+                                     <em>(In thema Custom kun je een eigen font URL (.woff) opgeven:)</em><br>
+                                     Font URL: <input type="text" name="adremm_clock_settings[digital_font_url]" value="<?php echo esc_attr(isset($settings['digital_font_url']) ? $settings['digital_font_url'] : ''); ?>" class="regular-text"><br>
+                                     Font Size: <input type="number" name="adremm_clock_settings[digital_font_size]" value="<?php echo esc_attr(isset($settings['digital_font_size']) ? $settings['digital_font_size'] : '32'); ?>" style="width:50px;"> px
+                                     Weight: <select name="adremm_clock_settings[digital_font_weight]">
+                                        <option value="300" <?php selected(isset($settings['digital_font_weight']) && $settings['digital_font_weight'] == '300'); ?>>300 (Light)</option>
+                                        <option value="400" <?php selected(isset($settings['digital_font_weight']) && $settings['digital_font_weight'] == '400'); ?>>400 (Normal)</option>
+                                        <option value="700" <?php selected(isset($settings['digital_font_weight']) && $settings['digital_font_weight'] == '700'); ?>>700 (Bold)</option>
+                                     </select>
+                                     Italic: <input type="checkbox" name="adremm_clock_settings[digital_italic]" value="yes" <?php checked(isset($settings['digital_italic']) && $settings['digital_italic'] == 'yes'); ?>>
+                                     <br>
+                                     Padding: <input type="number" name="adremm_clock_settings[minimalist_padding]" value="<?php echo esc_attr(isset($settings['minimalist_padding']) ? $settings['minimalist_padding'] : '10'); ?>" style="width:50px;">
+                                     Radius: <input type="number" name="adremm_clock_settings[minimalist_radius]" value="<?php echo esc_attr(isset($settings['minimalist_radius']) ? $settings['minimalist_radius'] : '5'); ?>" style="width:50px;">
+                                     BG: <input type="text" name="adremm_clock_settings[minimalist_bg]" value="<?php echo esc_attr(isset($settings['minimalist_bg']) ? $settings['minimalist_bg'] : 'transparent'); ?>" class="adremm-color-picker" data-alpha-enabled="true">
+                                     <br>
+                                     Border Size: <input type="number" name="adremm_clock_settings[digital_border_size]" value="<?php echo esc_attr(isset($settings['digital_border_size']) ? $settings['digital_border_size'] : '0'); ?>" style="width:50px;">
+                                     Border Color: <input type="text" name="adremm_clock_settings[digital_border_color]" value="<?php echo esc_attr(isset($settings['digital_border_color']) ? $settings['digital_border_color'] : '#cccccc'); ?>" class="adremm-color-picker" data-alpha-enabled="true">
+                                 </div>
                             </td>
                         </tr>
                         <tr>
@@ -314,11 +359,11 @@ $fonts = adremm_clock_get_google_fonts();
                 <div id="tab-extra" class="adremm-panel">
                     <table class="form-table">
                         <tr>
-                            <th>Radio Feature</th>
+                            <th>Radio kanaal & Logo</th>
                             <td>
                                 <input type="hidden" name="adremm_clock_settings[radio_enabled]" value="no">
                                 <input type="checkbox" name="adremm_clock_settings[radio_enabled]" value="yes" <?php checked($settings['radio_enabled'], 'yes'); ?>> Actief
-                                <select name="adremm_clock_settings[radio_channel]">
+                                <select name="adremm_clock_settings[radio_channel]" style="margin-left:10px;">
                                     <option value="techno" <?php selected($settings['radio_channel'], 'techno'); ?>>TECHNO</option>
                                     <option value="disco" <?php selected($settings['radio_channel'], 'disco'); ?>>DISCO</option>
                                     <option value="hits" <?php selected($settings['radio_channel'], 'hits'); ?>>HITS</option>
@@ -326,6 +371,12 @@ $fonts = adremm_clock_get_google_fonts();
                                     <option value="classics" <?php selected($settings['radio_channel'], 'classics'); ?>>Classics</option>
                                     <option value="blues" <?php selected($settings['radio_channel'], 'blues'); ?>>Blues</option>
                                 </select>
+                                <div style="margin-top:10px;">
+                                    <span>Logo (Vintage):</span>
+                                    <input type="text" name="adremm_clock_settings[vintage_logo]" value="<?php echo esc_attr(isset($settings['vintage_logo']) ? $settings['vintage_logo'] : ''); ?>" class="adremm-media-url regular-text" style="width:150px;">
+                                    <button type="button" class="button adremm-media-upload">Kies Logo</button>
+                                    <p class="description"><?php _e('Aangeraden maat: 48x48px.', 'adremm-clock-plugin'); ?></p>
+                                </div>
                             </td>
                         </tr>
                         <tr>
@@ -339,8 +390,10 @@ $fonts = adremm_clock_get_google_fonts();
                         <tr>
                             <th><?php _e('Snelheid & Grootte', 'adremm-clock-plugin'); ?></th>
                             <td>
-                                <input type="range" name="adremm_clock_settings[extra_speed]" min="1" max="20" value="<?php echo esc_attr($settings['extra_speed']); ?>">
-                                <input type="number" name="adremm_clock_settings[extra_font_size]" value="<?php echo esc_attr($settings['extra_font_size']); ?>" style="width:60px;"> px
+                                Snelheid: <input type="range" name="adremm_clock_settings[extra_speed]" min="1" max="20" value="<?php echo esc_attr($settings['extra_speed']); ?>">
+                                <span id="extra-speed-val"><?php echo (21 - esc_attr($settings['extra_speed'])) * 100; ?> ms</span>
+                                <br>
+                                Grootte: <input type="number" name="adremm_clock_settings[extra_font_size]" value="<?php echo esc_attr($settings['extra_font_size']); ?>" style="width:60px;"> px
                             </td>
                         </tr>
                         <tr>
@@ -384,10 +437,10 @@ $fonts = adremm_clock_get_google_fonts();
 
                 <!-- TIJDPANEEL TAB -->
                 <div id="tab-paneel" class="adremm-panel">
-                    <h3>Inklapbaar & Styling</h3>
+                    <h3>Inklapbaar paneel & Styling</h3>
                     <table class="form-table">
                         <tr>
-                            <th>Inklapbaar Panel</th>
+                            <th>Inklapbaar paneel</th>
                             <td>
                                 <input type="hidden" name="adremm_clock_settings[is_collapsible]" value="no">
                                 <input type="checkbox" name="adremm_clock_settings[is_collapsible]" value="yes" <?php checked($settings['is_collapsible'], 'yes'); ?>>
@@ -420,7 +473,8 @@ $fonts = adremm_clock_get_google_fonts();
                                 <input type="hidden" name="adremm_clock_settings[show_close_label]" value="no">
                                 <input type="checkbox" name="adremm_clock_settings[show_close_label]" value="yes" <?php checked($settings['show_close_label'], 'yes'); ?>>
                                 Tekst: <input type="text" name="adremm_clock_settings[close_label]" value="<?php echo esc_attr($settings['close_label']); ?>">
-                                <input type="text" name="adremm_clock_settings[color_close_label]" value="<?php echo esc_attr($settings['color_close_label']); ?>" class="adremm-color-picker" data-alpha-enabled="true" data-alpha-color-type="rgba">
+                                <input type="text" name="adremm_clock_settings[color_close_label]" value="<?php echo esc_attr($settings['color_close_label']); ?>" class="adremm-color-picker" data-alpha-enabled="true">
+                                Grootte: <input type="number" name="adremm_clock_settings[close_label_font_size]" value="<?php echo esc_attr(isset($settings['close_label_font_size']) ? $settings['close_label_font_size'] : '14'); ?>" style="width:50px;"> px
                             </td>
                         </tr>
                         <tr>

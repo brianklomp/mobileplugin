@@ -18,6 +18,26 @@
 .wrap.adremm-clock-v2 .adremm-panel { display: none !important; }
 .wrap.adremm-clock-v2 .adremm-panel.is-active { display: block !important; }
 
+/* THEME ADAPTIVE (Auto) in Preview */
+#clock-live-view.theme-mode-light {
+    --user-bg-final: var(--user-bg, #ffffff);
+    --user-text-final: var(--user-text, #111111);
+}
+#clock-live-view.theme-mode-dark {
+    --user-bg-final: #1a1a1a;
+    --user-text-final: #ffffff;
+}
+#clock-live-view.theme-mode-auto {
+    --user-bg-final: var(--user-bg, #ffffff);
+    --user-text-final: var(--user-text, #111111);
+}
+@media (prefers-color-scheme: dark) {
+    #clock-live-view.theme-mode-auto {
+        --user-bg-final: #1a1a1a;
+        --user-text-final: #ffffff;
+    }
+}
+
 /* Joystick Box */
 .adremm-joystick-box { background: #f0f0f1; padding: 25px; display: inline-block; border-radius: 12px; border: 1px solid #ddd; }
 .joy-grid { display: grid; grid-template-columns: repeat(3, 60px); grid-template-rows: repeat(3, 60px); gap: 12px; }
@@ -71,15 +91,32 @@
     border-radius: 12px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.15);
     text-align: center;
-    background-color: var(--user-bg, #fff);
-    color: var(--user-text, #111);
+    background-color: var(--user-bg-final, #fff);
+    color: var(--user-text-final, #111);
     border: 1px solid rgba(0,0,0,0.05);
     overflow: hidden;
 }
 
 /* Admin Analog Preview */
 .clock-face { width: 80px; height: 80px; border-radius: 50%; background: #000; border: 2px solid #3399ff; position: relative; margin: 0 auto 15px; overflow: hidden; }
+.clock-face.theme-mondriaan { border-radius: 0; background: #fff; border: 3px solid #000 !important; }
+.clock-face.theme-mondriaan::before {
+    content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background:
+        linear-gradient(90deg, #000 1px, transparent 1px) 30% 0,
+        linear-gradient(90deg, #000 1px, transparent 1px) 70% 0,
+        linear-gradient(0deg, #000 1px, transparent 1px) 0 40%,
+        linear-gradient(0deg, #000 1px, transparent 1px) 0 80%;
+    background-size: 100% 100%;
+    z-index: 1;
+}
+.clock-face.theme-mondriaan .mondriaan-block { position: absolute; z-index: 0; }
+.clock-face.theme-mondriaan .block-red { top: 0; left: 0; width: 30%; height: 40%; background: #ff0000; }
+.clock-face.theme-mondriaan .block-blue { bottom: 0; right: 0; width: 30%; height: 20%; background: #0000ff; }
+.clock-face.theme-mondriaan .block-yellow { top: 40%; right: 0; width: 30%; height: 40%; background: #ffff00; }
+
 .clock-face .hand { position: absolute; bottom: 50%; left: 50%; transform-origin: bottom center; background: #fff; border-radius: 4px; z-index: 10; }
+.clock-face .hand.has-overshoot { bottom: 40%; transform-origin: center 90%; }
 .clock-face .hand.hour { height: 25px; width: 3px; margin-left: -1.5px; }
 .clock-face .hand.min { height: 35px; width: 2px; margin-left: -1px; }
 .clock-face .hand.sec { height: 38px; width: 1px; background: #ff3b30; margin-left: -0.5px; }

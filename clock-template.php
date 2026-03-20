@@ -28,7 +28,7 @@ $style_vars = sprintf(
 );
 ?>
 
-<div id="adremm-clock-wrapper" class="<?php echo esc_attr($layout_class); ?> <?php echo esc_attr($position_class); ?> <?php echo esc_attr($theme_class); ?> panel-size-<?php echo esc_attr($settings['panel_size']); ?> <?php echo esc_attr($mobile_vis_class); ?> <?php echo esc_attr($mobile_pos_class); ?> <?php echo esc_attr($mobile_size_class); ?>" style="<?php echo esc_attr($style_vars); ?> --panel-width: <?php echo esc_attr($settings['panel_width']); ?>px;">
+<div id="adremm-clock-wrapper" class="<?php echo esc_attr($layout_class); ?> <?php echo esc_attr($position_class); ?> <?php echo esc_attr($theme_class); ?> panel-size-<?php echo esc_attr($settings['panel_size']); ?> <?php echo esc_attr($mobile_vis_class); ?> <?php echo esc_attr($mobile_pos_class); ?> <?php echo esc_attr($mobile_size_class); ?> <?php echo (isset($settings['panel_custom_override']) && $settings['panel_custom_override'] === 'yes') ? 'custom-width-active' : ''; ?>" style="<?php echo esc_attr($style_vars); ?> --panel-width: <?php echo esc_attr($settings['panel_width']); ?>px;">
 
     <div class="adremm-clock-container" style="box-shadow: <?php echo esc_attr($settings['panel_shadow']); ?>; border: <?php echo esc_attr($settings['panel_border']); ?>; width: var(--panel-width);">
         <?php if (!$is_bar && ($settings['show_close_x'] === 'yes' || $settings['show_close_label'] === 'yes')): ?>
@@ -42,37 +42,63 @@ $style_vars = sprintf(
             </button>
         <?php endif; ?>
 
-        <div class="adremm-clock-main">
+        <div class="adremm-clock-main" style="display: flex; flex-direction: column; <?php
+            if (isset($settings['status_pos']) && $settings['status_pos'] === 'above_digital') { echo 'order: 0;'; }
+        ?>">
             <!-- Analog Section -->
             <?php if ($settings['show_analog'] === 'yes'): ?>
-                <div class="adremm-clock-analog">
-                    <div class="face" style="
-                        background-color: <?php echo esc_attr(isset($settings['analog_bg_color']) ? $settings['analog_bg_color'] : '#000'); ?>;
-                        background-image: <?php echo (!empty($settings['analog_bg_image'])) ? 'url('.esc_url($settings['analog_bg_image']).')' : 'none'; ?>;
+                <div class="adremm-clock-analog" style="<?php
+                    if (isset($settings['status_pos']) && $settings['status_pos'] === 'above_analog') { echo 'order: -1;'; }
+                    elseif (isset($settings['status_pos']) && $settings['status_pos'] === 'below_analog') { echo 'order: 0;'; }
+                ?>">
+                    <div class="face <?php echo (isset($settings['analog_theme']) && $settings['analog_theme'] === 'mondriaan') ? 'theme-mondriaan' : ''; ?>" style="
+                        background-color: <?php echo (isset($settings['analog_theme']) && $settings['analog_theme'] === 'mondriaan') ? '#fff' : esc_attr(isset($settings['analog_bg_color']) ? $settings['analog_bg_color'] : '#000'); ?>;
+                        background-image: <?php echo (!empty($settings['analog_bg_image']) && $settings['analog_theme'] !== 'mondriaan') ? 'url('.esc_url($settings['analog_bg_image']).')' : 'none'; ?>;
                         background-size: cover;
                         background-position: center;
-                        border-color: <?php echo esc_attr($settings['analog_ring_color']); ?>;
-                        border-width: <?php echo esc_attr($settings['analog_ring_size']); ?>px;
+                        border-color: <?php echo (isset($settings['analog_theme']) && $settings['analog_theme'] === 'mondriaan') ? '#000' : esc_attr($settings['analog_ring_color']); ?>;
+                        border-width: <?php echo (isset($settings['analog_theme']) && $settings['analog_theme'] === 'mondriaan') ? '4px' : esc_attr($settings['analog_ring_size']); ?>px;
                     ">
+                        <?php if (isset($settings['analog_theme']) && $settings['analog_theme'] === 'mondriaan'): ?>
+                            <div class="mondriaan-block block-red"></div>
+                            <div class="mondriaan-block block-blue"></div>
+                            <div class="mondriaan-block block-yellow"></div>
+                        <?php endif; ?>
                         <div class="notations hour-notations <?php echo ($settings['analog_not_above'] === 'yes') ? 'above' : ''; ?>" style="color: <?php echo esc_attr($settings['analog_hour_color']); ?>; --not-thick: <?php echo esc_attr($settings['analog_hour_thick']); ?>px; --not-len: <?php echo esc_attr($settings['analog_hour_length']); ?>px; transform: scale(<?php echo esc_attr(isset($settings['analog_not_scale']) ? $settings['analog_not_scale'] : '1.0'); ?>);">
                             <?php for($i=1; $i<=12; $i++): ?><i style="transform: rotate(<?php echo $i*30; ?>deg)"></i><?php endfor; ?>
                         </div>
                         <div class="notations min-notations <?php echo ($settings['analog_not_above'] === 'yes') ? 'above' : ''; ?>" style="color: <?php echo esc_attr($settings['analog_min_color']); ?>; --not-thick: <?php echo esc_attr($settings['analog_min_thick']); ?>px; --not-len: <?php echo esc_attr($settings['analog_min_length']); ?>px; transform: scale(<?php echo esc_attr(isset($settings['analog_not_scale']) ? $settings['analog_not_scale'] : '1.0'); ?>);">
                             <?php for($i=1; $i<=60; $i++): if($i%5!==0): ?><i style="transform: rotate(<?php echo $i*6; ?>deg)"></i><?php endif; endfor; ?>
                         </div>
-                        <div class="h-hour <?php echo esc_attr($settings['hand_hour_style']); ?>" style="background-color: <?php echo esc_attr($settings['hand_hour_color']); ?>; color: <?php echo esc_attr($settings['hand_hour_color']); ?>; width: <?php echo esc_attr($settings['hand_hour_thick']); ?>px; height: <?php echo esc_attr($settings['hand_hour_len']); ?>%; transform: scale(<?php echo esc_attr(isset($settings['analog_hand_scale']) ? $settings['analog_hand_scale'] : '1.0'); ?>);"></div>
-                        <div class="h-min <?php echo esc_attr($settings['hand_min_style']); ?>" style="background-color: <?php echo esc_attr($settings['hand_min_color']); ?>; color: <?php echo esc_attr($settings['hand_min_color']); ?>; width: <?php echo esc_attr($settings['hand_min_thick']); ?>px; height: <?php echo esc_attr($settings['hand_min_len']); ?>%; transform: scale(<?php echo esc_attr(isset($settings['analog_hand_scale']) ? $settings['analog_hand_scale'] : '1.0'); ?>);"></div>
-                        <div class="h-sec <?php echo esc_attr($settings['hand_sec_style']); ?>" style="background-color: <?php echo esc_attr($settings['hand_sec_color']); ?>; color: <?php echo esc_attr($settings['hand_sec_color']); ?>; width: <?php echo esc_attr($settings['hand_sec_thick']); ?>px; height: <?php echo esc_attr($settings['hand_sec_len']); ?>%; transform: scale(<?php echo esc_attr(isset($settings['analog_hand_scale']) ? $settings['analog_hand_scale'] : '1.0'); ?>);"></div>
+                        <div class="h-hour <?php echo esc_attr($settings['hand_hour_style']); ?> <?php echo (isset($settings['analog_overshoot']) && $settings['analog_overshoot'] === 'yes') ? 'has-overshoot' : ''; ?>" style="background-color: <?php echo esc_attr($settings['hand_hour_color']); ?>; color: <?php echo esc_attr($settings['hand_hour_color']); ?>; width: <?php echo esc_attr($settings['hand_hour_thick']); ?>px; height: <?php echo esc_attr($settings['hand_hour_len']); ?>%; transform: scale(<?php echo esc_attr(isset($settings['analog_hand_scale']) ? $settings['analog_hand_scale'] : '1.0'); ?>);"></div>
+                        <div class="h-min <?php echo esc_attr($settings['hand_min_style']); ?> <?php echo (isset($settings['analog_overshoot']) && $settings['analog_overshoot'] === 'yes') ? 'has-overshoot' : ''; ?>" style="background-color: <?php echo esc_attr($settings['hand_min_color']); ?>; color: <?php echo esc_attr($settings['hand_min_color']); ?>; width: <?php echo esc_attr($settings['hand_min_thick']); ?>px; height: <?php echo esc_attr($settings['hand_min_len']); ?>%; transform: scale(<?php echo esc_attr(isset($settings['analog_hand_scale']) ? $settings['analog_hand_scale'] : '1.0'); ?>);"></div>
+                        <div class="h-sec <?php echo esc_attr($settings['hand_sec_style']); ?> <?php echo (isset($settings['analog_overshoot']) && $settings['analog_overshoot'] === 'yes') ? 'has-overshoot' : ''; ?>" style="background-color: <?php echo esc_attr($settings['hand_sec_color']); ?>; color: <?php echo esc_attr($settings['hand_sec_color']); ?>; width: <?php echo esc_attr($settings['hand_sec_thick']); ?>px; height: <?php echo esc_attr($settings['hand_sec_len']); ?>%; transform: scale(<?php echo esc_attr(isset($settings['analog_hand_scale']) ? $settings['analog_hand_scale'] : '1.0'); ?>);"></div>
+
+                        <?php if (isset($settings['analog_center_ring']) && $settings['analog_center_ring'] === 'yes'): ?>
+                            <div class="center-ring" style="width:<?php echo esc_attr($settings['analog_center_ring_size']); ?>px; height:<?php echo esc_attr($settings['analog_center_ring_size']); ?>px; background:<?php echo esc_attr($settings['analog_center_ring_color']); ?>; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); border-radius:50%; z-index:15;"></div>
+                        <?php endif; ?>
                     </div>
                 </div>
             <?php endif; ?>
 
             <!-- Digital & Info Section -->
-            <div class="adremm-clock-info">
+            <div class="adremm-clock-info" style="display:contents;">
                 <?php if ($settings['show_digital'] === 'yes'): ?>
                     <div class="time-row digital-style-<?php echo esc_attr($settings['digital_style']); ?> <?php echo ($settings['digital_glow'] === 'yes') ? 'has-glow' : ''; ?> <?php echo ($settings['digital_orientation'] === 'vertical') ? 'vertical' : ''; ?>" style="
-                        font-family: <?php echo ($settings['digital_font'] === 'Thema' ? 'inherit' : "'" . esc_attr($settings['digital_font']) . "'"); ?>;
+                        font-family: <?php
+                            if ($settings['digital_style'] === 'custom' && !empty($settings['digital_font_url'])) {
+                                echo "'CustomFont', sans-serif";
+                                echo "; } @font-face { font-family: 'CustomFont'; src: url('" . esc_url($settings['digital_font_url']) . "'); } div { ";
+                            } else {
+                                echo ($settings['digital_font'] === 'Thema' ? 'inherit' : "'" . esc_attr($settings['digital_font']) . "'");
+                            }
+                        ?>;
                         color: <?php echo esc_attr($settings['digital_color']); ?>;
+                        font-size: <?php echo esc_attr($settings['digital_font_size']); ?>px;
+                        font-weight: <?php echo esc_attr($settings['digital_font_weight']); ?>;
+                        font-style: <?php echo ($settings['digital_italic'] === 'yes') ? 'italic' : 'normal'; ?>;
+                        border: <?php echo esc_attr($settings['digital_border_size']); ?>px solid <?php echo esc_attr($settings['digital_border_color']); ?>;
+                        border-radius: <?php echo esc_attr($settings['digital_border_radius']); ?>px;
                         background-color: <?php echo esc_attr($settings['digital_bg']); ?>;
                         --digital-glow-color: <?php echo esc_attr($settings['digital_glow_color']); ?>;
                         --digital-glow-spread: <?php echo esc_attr($settings['digital_glow_spread']); ?>px;
@@ -103,7 +129,11 @@ $style_vars = sprintf(
 
                                 <div class="radio-side-panel">
                                     <div class="radio-logo-brand">
-                                        <div class="logo-circle">A</div>
+                                        <?php if (!empty($settings['vintage_logo'])): ?>
+                                            <img src="<?php echo esc_url($settings['vintage_logo']); ?>" class="logo-circle" style="object-fit:cover; border:none;">
+                                        <?php else: ?>
+                                            <div class="logo-circle">A</div>
+                                        <?php endif; ?>
                                         <div class="brand-text">Radio</div>
                                     </div>
                                     <div class="radio-controls-grid">
@@ -121,17 +151,24 @@ $style_vars = sprintf(
                 <?php endif; ?>
 
                 <?php if ($settings['show_status'] === 'yes'): ?>
-                    <div class="status-row" style="color: <?php echo ($status_data['status'] === 'open') ? esc_attr($settings['color_open']) : esc_attr($settings['color_closed']); ?>; font-family: <?php echo ($settings['font_status'] === 'Thema' ? 'inherit' : "'" . esc_attr($settings['font_status']) . "'"); ?>;"><?php echo esc_html($status_data['text']); ?></div>
+                    <div class="status-row" style="color: <?php echo ($status_data['status'] === 'open') ? esc_attr($settings['color_open']) : esc_attr($settings['color_closed']); ?>; font-family: <?php echo ($settings['font_status'] === 'Thema' ? 'inherit' : "'" . esc_attr($settings['font_status']) . "'"); ?>; <?php
+                        if (isset($settings['status_pos'])) {
+                            if ($settings['status_pos'] === 'above_digital') echo 'order: -1;';
+                            elseif ($settings['status_pos'] === 'above_analog') echo 'order: -2;';
+                            elseif ($settings['status_pos'] === 'below_analog') echo 'order: 1;';
+                            elseif ($settings['status_pos'] === 'below_date') echo 'order: 5;';
+                        }
+                    ?>"><?php echo esc_html($status_data['text']); ?></div>
                 <?php endif; ?>
 
                 <?php if ($settings['show_date'] === 'yes'): ?>
-                    <div class="date-row" style="color: <?php echo esc_attr($settings['color_date']); ?>; font-family: <?php echo ($settings['font_date'] === 'Thema' ? 'inherit' : "'" . esc_attr($settings['font_date']) . "'"); ?>;">
+                    <div class="date-row" style="order: 4; color: <?php echo esc_attr($settings['color_date']); ?>; font-family: <?php echo ($settings['font_date'] === 'Thema' ? 'inherit' : "'" . esc_attr($settings['font_date']) . "'"); ?>;">
                         <span class="date-text"></span>
                     </div>
                 <?php endif; ?>
 
                 <?php if (!empty($settings['extra_message'])): ?>
-                    <div class="extra-row" style="color: <?php echo esc_attr($settings['extra_color']); ?>; font-size: <?php echo esc_attr($settings['extra_font_size']); ?>px;">
+                    <div class="extra-row" style="order: 10; color: <?php echo esc_attr($settings['extra_color']); ?>; font-size: <?php echo esc_attr($settings['extra_font_size']); ?>px;">
                         <span><?php echo esc_html($settings['extra_message']); ?></span>
                     </div>
                 <?php endif; ?>

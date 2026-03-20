@@ -24,8 +24,13 @@
 
             // Analog Sweep Logic
             let secDeg = s * 6;
-            if (handSweep === 'smooth') secDeg = s * 6 + ms * 0.006;
-            else if (handSweep === 'classy') secDeg = s * 6 + ms * 0.003;
+            if (handSweep === 'smooth') {
+                secDeg = s * 6 + ms * 0.006;
+            } else if (handSweep === 'classy') {
+                // Faster ticks (e.g. 5 times per second)
+                const fastTick = Math.floor(ms / 200) * (6 / 5);
+                secDeg = s * 6 + fastTick;
+            }
 
             const minDeg = m * 6 + s * 0.1;
             const hourDeg = (h % 12) * 30 + m * 0.5;
@@ -51,30 +56,54 @@
                 const $scaleV = $root.find('.radio-scale-scroll-v');
                 if ($scaleV.length) {
                     const itemHeight = 20;
-                    const offset = (s + ms/1000) * itemHeight;
+                    const secVal = s + ms/1000;
+                    const offset = secVal * itemHeight;
+                    // Reset transition at the start of a minute to avoid "shooting back"
+                    if (s === 0 && ms < 100) {
+                        $scaleV.css('transition', 'none');
+                    } else {
+                        $scaleV.css('transition', 'transform 0.05s linear');
+                    }
                     $scaleV.css('transform', `translateY(${-offset}px)`);
                 }
             } else if ($timeRow.hasClass('digital-style-wall')) {
                  const digits = (hh + mm + ss).split('');
                  const $cols = $timeTarget.find('.digit-col');
+                 const digitHeight = 52;
                  if ($cols.length === 0) {
                      let html = '';
                      digits.forEach((d, i) => {
-                         html += `<div class="digit-col"><span>0\n1\n2\n3\n4\n5\n6\n7\n8\n9</span></div>`;
+                         html += `<div class="digit-col"><span>0\n1\n2\n3\n4\n5\n6\n7\n8\n9\n0</span></div>`;
                          if (i === 1 || i === 3) html += '<div class="sep">:</div>';
                      });
                      $timeTarget.html(html);
                  }
                  $timeTarget.find('.digit-col').each(function(i) {
-                     const d = digits[i];
-                     $(this).find('span').css('transform', `translateY(-${parseInt(d) * 42}px)`);
+                     const d = parseInt(digits[i]);
+                     let offset = d * digitHeight;
+                     // Continuous smooth rolling for seconds
+                     if (i === 5) { // last digit
+                        offset = (d + ms/1000) * digitHeight;
+                     } else if (i === 4) { // tens of seconds
+                        offset = (d + (s%10)/10 + ms/10000) * digitHeight;
+                     }
+                     $(this).find('span').css('transform', `translateY(-${offset}px)`);
                  });
             } else if (handSweep === 'ticking' || ms < 100) {
                 if ($timeRow.hasClass('digital-style-blocks')) {
-                    $timeTarget.html(`<span class="b">${hh}</span>:<span class="b">${mm}</span>:<span class="b">${ss}</span>`);
+                    const isGlitch = Math.random() > 0.95;
+                    const glitchClass = isGlitch ? ' glitch' : '';
+                    $timeTarget.html(`<span class="b${glitchClass}">${hh}</span>:<span class="b${glitchClass}">${mm}</span>:<span class="b${glitchClass}">${ss}</span>`);
                 } else if ($timeRow.hasClass('digital-style-design')) {
                     const dayName = now.toLocaleDateString(locale, { weekday: 'short' });
-                    $timeTarget.html(`<span class="day">${dayName}</span> ${hh}:${mm}<span class="sec">${ss}</span>`);
+                    $timeTarget.html(`<div class="minimalist-container" style="background:#000; color:#fff; padding:15px; border-radius:8px; display:inline-block; font-family:monospace;">
+                        <div class="time-main" style="font-size:42px; line-height:1; display:flex; align-items:center; gap:5px;">
+                            <span>${hh}</span><span style="color:#666">:</span><span>${mm}</span><span style="color:#666">:</span><span>${ss}</span>
+                        </div>
+                        <div class="time-labels" style="color:#666; font-size:12px; display:flex; justify-content:space-between; margin-top:5px; text-transform:uppercase;">
+                            <span>${dayName}</span><span>uur</span><span>min</span><span>sec</span>
+                        </div>
+                    </div>`);
                 } else if ($timeRow.hasClass('digital-style-pixels')) {
                     $timeTarget.html(`${hh}:${mm}:${ss}`);
                 } else {
@@ -90,6 +119,29 @@
         const interval = (typeof adremmClockData !== 'undefined' && (adremmClockData.handSweep === 'smooth' || adremmClockData.handSweep === 'classy')) ? 50 : 1000;
         setInterval(updateClock, interval);
         updateClock();
+
+        // Marquee Logic (Lichtslang)
+        if (typeof adremmClockData !== 'undefined' && adremmClockData.extraMarquee === 'yes') {
+            const $marqueeRow = $root.find('.extra-row');
+            const $marqueeSpan = $marqueeRow.find('span');
+            if ($marqueeSpan.length) {
+                $marqueeRow.css({ overflow: 'hidden', whiteSpace: 'nowrap', position: 'relative', width: '100%' });
+                $marqueeSpan.css({ display: 'inline-block', position: 'relative' });
+
+                let marqueePos = $marqueeRow.width();
+                const marqueeSpeed = parseInt(adremmClockData.extraSpeed) || 5;
+
+                function stepMarquee() {
+                    marqueePos -= (marqueeSpeed / 10);
+                    if (marqueePos < -$marqueeSpan.width()) {
+                        marqueePos = $marqueeRow.width();
+                    }
+                    $marqueeSpan.css('transform', `translateX(${marqueePos}px)`);
+                    requestAnimationFrame(stepMarquee);
+                }
+                stepMarquee();
+            }
+        }
 
         // Radio Feature
         if (typeof adremmClockData !== 'undefined' && adremmClockData.radioEnabled === 'yes') {
