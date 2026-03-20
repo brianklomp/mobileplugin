@@ -69,7 +69,7 @@
             } else if ($timeRow.hasClass('digital-style-wall')) {
                  const digits = (hh + mm + ss).split('');
                  const $cols = $timeTarget.find('.digit-col');
-                 const digitHeight = 52;
+                 const digitHeight = 60;
                  if ($cols.length === 0) {
                      let html = '';
                      digits.forEach((d, i) => {
@@ -81,19 +81,13 @@
                  $timeTarget.find('.digit-col').each(function(i) {
                      const d = parseInt(digits[i]);
                      let offset = d * digitHeight;
-                     // Continuous smooth rolling for seconds
-                     if (i === 5) { // last digit
-                        offset = (d + ms/1000) * digitHeight;
-                     } else if (i === 4) { // tens of seconds
-                        offset = (d + (s%10)/10 + ms/10000) * digitHeight;
-                     }
                      $(this).find('span').css('transform', `translateY(-${offset}px)`);
                  });
             } else if (handSweep === 'ticking' || ms < 100) {
                 if ($timeRow.hasClass('digital-style-blocks')) {
                     const isGlitch = Math.random() > 0.95;
                     const glitchClass = isGlitch ? ' glitch' : '';
-                    $timeTarget.html(`<span class="b${glitchClass}">${hh}</span>:<span class="b${glitchClass}">${mm}</span>:<span class="b${glitchClass}">${ss}</span>`);
+                    $timeTarget.html(`<span class="b${glitchClass}">${hh}</span><span class="sep">:</span><span class="b${glitchClass}">${mm}</span><span class="sep">:</span><span class="b${glitchClass}">${ss}</span>`);
                 } else if ($timeRow.hasClass('digital-style-design')) {
                     const dayName = now.toLocaleDateString(locale, { weekday: 'short' }).toUpperCase();
                     $timeTarget.html(`<div class="minimalist-container" style="background:#000; color:#fff; padding:15px; border-radius:8px; display:inline-block; font-family:monospace;">

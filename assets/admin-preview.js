@@ -195,7 +195,7 @@ jQuery(document).ready(function($) {
                 'background-image': s.analog_bg_image ? `url(${s.analog_bg_image})` : 'none',
                 'background-color': (s.analog_theme === 'mondriaan') ? '#fff' : (s.analog_bg_image ? 'transparent' : s.analog_bg_color),
                 'border-color': (s.analog_theme === 'mondriaan') ? '#000' : s.analog_ring_color,
-                'border-width': (s.analog_theme === 'mondriaan') ? '3px' : s.analog_ring_size + 'px'
+                'border-width': (s.analog_theme === 'mondriaan') ? '6px' : s.analog_ring_size + 'px'
             });
 
             // Center Ring - now handled inside hand divs in preview for 1:1
@@ -264,12 +264,14 @@ jQuery(document).ready(function($) {
                 const $scroll = $time.find('.radio-scale-scroll-v');
                 for(let i=0; i<=60; i++) $scroll.append(`<div class="scale-mark"><span>-</span>${String(i).padStart(2, '0')}</div>`);
                 $scroll.css('transform', `translateY(${-now.getSeconds() * 20}px)`);
+            } else if (s.digital_style === 'blocks') {
+                $time.html(`<span class="b">${hh}</span><span class="sep">:</span><span class="b">${mm}</span><span class="sep">:</span><span class="b">${ss}</span>`);
             } else if (s.digital_style === 'wall') {
                 const digits = (hh + mm + ss).split('');
                 let html = '';
                 digits.forEach((d, i) => { html += `<div class="digit-col"><span>0\n1\n2\n3\n4\n5\n6\n7\n8\n9\n0</span></div>`; if (i === 1 || i === 3) html += '<div class="sep">:</div>'; });
                 $time.html(html).css('display', 'flex');
-                $time.find('.digit-col').each(function(i) { $(this).find('span').css('transform', `translateY(-${parseInt(digits[i]) * 52}px)`); });
+                $time.find('.digit-col').each(function(i) { $(this).find('span').css('transform', `translateY(-${parseInt(digits[i]) * 60}px)`); });
             } else if (s.digital_style === 'design') {
                 const dayName = now.toLocaleDateString('nl-NL', { weekday: 'short' }).toUpperCase();
                 $time.html(`<div class="minimalist-container" style="background:#000; color:#fff; padding:15px; border-radius:8px; display:inline-block; font-family:monospace; width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center;">
@@ -314,7 +316,7 @@ jQuery(document).ready(function($) {
 
         if (getVal('digital_style') === 'wall') {
             const digits = (String(h).padStart(2, '0') + String(m).padStart(2, '0') + String(s).padStart(2, '0')).split('');
-            $liveView.find('.digit-col').each(function(i) { $(this).find('span').css('transform', `translateY(-${parseInt(digits[i]) * 52}px)`); });
+            $liveView.find('.digit-col').each(function(i) { $(this).find('span').css('transform', `translateY(-${parseInt(digits[i]) * 60}px)`); });
         }
     }
     setInterval(animateClock, 50);

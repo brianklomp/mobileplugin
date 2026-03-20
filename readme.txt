@@ -3,7 +3,7 @@ Contributors: ADREMM
 Tags: clock, widget, opening hours, radio
 Requires at least: 5.0
 Tested up to: 6.4
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 License: GPLv2 or later
 
 Een uiterst gebruiksvriendelijke, meertalige klokplugin met live previews, openingstijden en schaalbare weergave.
@@ -20,6 +20,15 @@ Hij heeft 3 thema's en kan op 8 wijzes getoond worden op de front.
 3. Go to ADREMM Klok in the admin menu to configure.
 
 == Changelog ==
+
+= 1.1.2 =
+* Fixed PHP warnings in status logic by adding robust existence checks.
+* Restored 'Koopdag' (late night shopping) feature with toggle and label support.
+* Refined Matrix theme alignment (centered colons) and Wall Clock alignment (single line HH:MM:SS).
+* Redesigned Mondriaan analog clock with thicker lines and improved proportions.
+* Integrated grid-based position selector with [HD], [FT], and [X] labels.
+* Improved admin live preview fidelity for all themes.
+* Incremented version for better installation/update persistence.
 
 = 1.1.1 =
 * Fixed plugin installation/overwrite behavior by bumping version to 1.1.1.

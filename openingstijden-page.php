@@ -47,6 +47,7 @@ if (!is_array($opening_hours)) $opening_hours = array();
                     <strong style="font-size:16px;"><?php echo $label; ?></strong>
                     <div>
                         <label style="cursor:pointer; font-weight:600;"><input type="checkbox" class="day-closed-toggle" <?php checked($is_closed); ?>> <?php _e('Gesloten', 'adremm-clock-plugin'); ?></label>
+                        <label style="cursor:pointer; font-weight:600; margin-left:15px;"><input type="checkbox" class="day-koopdag-toggle" <?php checked(isset($slots['is_koopdag']) && $slots['is_koopdag']); ?>> <?php _e('Koopdag', 'adremm-clock-plugin'); ?></label>
                         <button type="button" class="button button-secondary copy-day" style="margin-left:20px;"><?php _e('Kopieer naar alle dagen', 'adremm-clock-plugin'); ?></button>
                     </div>
                 </div>
@@ -96,18 +97,19 @@ jQuery(document).ready(function($) {
         $('.day-row').each(function() {
             var day = $(this).data('day');
             var isClosed = $(this).find('.day-closed-toggle').is(':checked');
-            if (isClosed) {
-                hours[day] = { is_closed: true };
-            } else {
-                var slots = [];
-                $(this).find('.slot-item').each(function() {
-                    slots.push({
-                        open: $(this).find('.slot-open').val(),
-                        close: $(this).find('.slot-close').val()
-                    });
+            var isKoopdag = $(this).find('.day-koopdag-toggle').is(':checked');
+
+            var slots = [];
+            $(this).find('.slot-item').each(function() {
+                slots.push({
+                    open: $(this).find('.slot-open').val(),
+                    close: $(this).find('.slot-close').val()
                 });
-                hours[day] = slots;
-            }
+            });
+
+            hours[day] = slots;
+            if (isClosed) hours[day].is_closed = true;
+            if (isKoopdag) hours[day].is_koopdag = true;
         });
         $('#adremm_opening_hours_json').val(JSON.stringify(hours));
     }
@@ -135,6 +137,7 @@ jQuery(document).ready(function($) {
         if(!confirm('Weet je zeker dat je de tijden van deze dag naar ALLE andere dagen wilt kopiëren?')) return;
         var $row = $(this).closest('.day-row');
         var isClosed = $row.find('.day-closed-toggle').is(':checked');
+        var isKoopdag = $row.find('.day-koopdag-toggle').is(':checked');
 
         // Collect current values from original row
         var slots = [];
@@ -148,6 +151,7 @@ jQuery(document).ready(function($) {
         $('.day-row').not($row).each(function() {
             var $targetRow = $(this);
             $targetRow.find('.day-closed-toggle').prop('checked', isClosed);
+            $targetRow.find('.day-koopdag-toggle').prop('checked', isKoopdag);
             $targetRow.find('.slots-wrap').toggle(!isClosed);
 
             var $list = $targetRow.find('.slots-list');

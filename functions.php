@@ -75,25 +75,32 @@ function adremm_clock_get_status() {
     $day = strtolower(date('D', $now));
     $current_time = date('H:i', $now);
 
-    $status_data = array('status' => 'closed', 'text' => $settings['text_closed'], 'pos' => 'inherit');
+    $status_data = array(
+        'status' => 'closed',
+        'text'   => isset($settings['text_closed']) ? $settings['text_closed'] : '',
+        'pos'    => 'inherit'
+    );
 
     // Check Exceptions First
-    if (!empty($exceptional_days)) {
+    if (is_array($exceptional_days)) {
         foreach($exceptional_days as $ex) {
-            if ($ex['date'] === $today_date) {
+            if (isset($ex['date']) && $ex['date'] === $today_date) {
                 $status_data['pos'] = isset($ex['pos']) ? $ex['pos'] : 'inherit';
-                if ($ex['status'] === 'closed') {
+                $status_label = !empty($ex['label']) ? $ex['label'] : (isset($settings['text_open']) ? $settings['text_open'] : '');
+                $closed_label = !empty($ex['label']) ? $ex['label'] : (isset($settings['text_closed']) ? $settings['text_closed'] : '');
+
+                if (isset($ex['status']) && $ex['status'] === 'closed') {
                     $status_data['status'] = 'closed';
-                    $status_data['text'] = $ex['label'] ?: $settings['text_closed'];
+                    $status_data['text'] = $closed_label;
                 } else {
                     $open = isset($ex['open']) ? $ex['open'] : '00:00';
                     $close = isset($ex['close']) ? $ex['close'] : '23:59';
                     if ($current_time >= $open && $current_time <= $close) {
                         $status_data['status'] = 'open';
-                        $status_data['text'] = $ex['label'] ?: $settings['text_open'];
+                        $status_data['text'] = $status_label;
                     } else {
                         $status_data['status'] = 'closed';
-                        $status_data['text'] = $settings['text_closed'];
+                        $status_data['text'] = isset($settings['text_closed']) ? $settings['text_closed'] : '';
                     }
                 }
                 return $status_data;
@@ -101,26 +108,29 @@ function adremm_clock_get_status() {
         }
     }
 
-    if (!isset($opening_hours[$day])) {
-        return array('status' => 'open', 'text' => $settings['text_open'], 'pos' => 'inherit');
+    if (!is_array($opening_hours) || !isset($opening_hours[$day])) {
+        return array('status' => 'open', 'text' => isset($settings['text_open']) ? $settings['text_open'] : '', 'pos' => 'inherit');
     }
 
     $day_data = $opening_hours[$day];
-    if (isset($day_data['is_closed']) && $day_data['is_closed']) {
-        return array('status' => 'closed', 'text' => $settings['text_closed'], 'pos' => 'inherit');
+    $is_koopdag = is_array($day_data) && isset($day_data['is_koopdag']) && $day_data['is_koopdag'];
+    $koop_suffix = $is_koopdag ? ' (Koopdag)' : '';
+
+    if (is_array($day_data) && isset($day_data['is_closed']) && $day_data['is_closed']) {
+        return array('status' => 'closed', 'text' => (isset($settings['text_closed']) ? $settings['text_closed'] : '') . $koop_suffix, 'pos' => 'inherit');
     }
 
     if (is_array($day_data)) {
         foreach ($day_data as $slot) {
-            if (isset($slot['open']) && isset($slot['close'])) {
+            if (is_array($slot) && isset($slot['open']) && isset($slot['close'])) {
                 if ($current_time >= $slot['open'] && $current_time <= $slot['close']) {
-                    return array('status' => 'open', 'text' => $settings['text_open'], 'pos' => 'inherit');
+                    return array('status' => 'open', 'text' => (isset($settings['text_open']) ? $settings['text_open'] : '') . $koop_suffix, 'pos' => 'inherit');
                 }
             }
         }
     }
 
-    return array('status' => 'closed', 'text' => $settings['text_closed'], 'pos' => 'inherit');
+    return array('status' => 'closed', 'text' => (isset($settings['text_closed']) ? $settings['text_closed'] : '') . $koop_suffix, 'pos' => 'inherit');
 }
 
 /**
