@@ -85,7 +85,7 @@ function adremm_clock_get_status() {
     $day = strtolower(date('D', $now));
     $current_time = date('H:i', $now);
 
-    // Check Exceptions First (Holidays etc)
+    // Check Exceptions First
     if (!empty($exceptional_days)) {
         foreach($exceptional_days as $ex) {
             if ($ex['date'] === $today_date) {
@@ -96,7 +96,6 @@ function adremm_clock_get_status() {
 
     if (!isset($opening_hours[$day])) return array('status' => 'open', 'text' => $settings['text_open']);
 
-    // Check if it is a "Koopavond"
     $is_koopavond = !empty($opening_hours[$day]['is_koopavond']);
 
     if (!empty($opening_hours[$day]['is_closed'])) {
@@ -106,7 +105,7 @@ function adremm_clock_get_status() {
     $open = $opening_hours[$day]['open'];
     $close = $opening_hours[$day]['close'];
 
-    // Check Break (Pauze)
+    // Check Break
     if (!empty($opening_hours[$day]['break_start']) && !empty($opening_hours[$day]['break_end'])) {
         if ($current_time >= $opening_hours[$day]['break_start'] && $current_time <= $opening_hours[$day]['break_end']) {
             return array('status' => 'closed', 'text' => $opening_hours[$day]['break_label'] ?: 'Wij zijn even pauzeren');
@@ -129,13 +128,9 @@ add_action('wp_enqueue_scripts', 'adremm_clock_frontend_enqueue');
 function adremm_clock_frontend_enqueue() {
     $settings = wp_parse_args(get_option('adremm_clock_settings', array()), adremm_clock_get_default_settings());
 
-    // Enqueue custom frontend styles
     wp_enqueue_style('adremm-clock-public-css', ADREMM_CLOCK_URL . 'assets/public-style.css', array(), ADREMM_CLOCK_VERSION);
-
-    // Enqueue custom frontend JS
     wp_enqueue_script('adremm-clock-public-js', ADREMM_CLOCK_URL . 'assets/public-clock.js', array('jquery'), ADREMM_CLOCK_VERSION, true);
 
-    // Localize script for multilingual support and settings
     wp_localize_script('adremm-clock-public-js', 'adremmClockData', array(
         'locale' => str_replace('_', '-', get_locale()),
         'panelSize' => $settings['panel_size'],
@@ -146,7 +141,6 @@ function adremm_clock_frontend_enqueue() {
         'radioChannel' => $settings['radio_channel'],
     ));
 
-    // Load Google Fonts
     $font_keys = array('theme_font', 'digital_font', 'font_status', 'font_date');
     foreach ($font_keys as $key) {
         if (!empty($settings[$key]) && $settings[$key] !== 'inherit') {

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: ADREMM Klok
  * Description: Een uiterst gebruiksvriendelijke, meertalige klokplugin met live previews, openingstijden en schaalbare weergave.
- * Version: 1.0.2
+ * Version: 1.0.3
  * Author: ADREMM
  * Author URI: https://adremm.nl
  * License: GPLv2 or later
@@ -12,59 +12,134 @@
 
 if ( ! defined('ABSPATH') ) exit;
 
-// Constants
-define('ADREMM_CLOCK_VERSION', '1.0.2');
-define('ADREMM_CLOCK_PATH', plugin_dir_path(__FILE__));
-define('ADREMM_CLOCK_URL', plugin_dir_url(__FILE__));
+if ( ! class_exists( 'Adremm_Clock_Plugin' ) ) :
 
-// Debug log for path
-// error_log('ADREMM_CLOCK_PATH: ' . ADREMM_CLOCK_PATH);
+class Adremm_Clock_Plugin {
 
-// Load Includes
-require_once ADREMM_CLOCK_PATH . 'settings.php';
-require_once ADREMM_CLOCK_PATH . 'functions.php';
+    /**
+     * @var string
+     */
+    public $version = '1.0.3';
+
+    /**
+     * @var Adremm_Clock_Plugin
+     */
+    private static $instance;
+
+    /**
+     * Main Adremm_Clock_Plugin Instance.
+     */
+    public static function instance() {
+        if ( ! isset( self::$instance ) && ! ( self::$instance instanceof Adremm_Clock_Plugin ) ) {
+            self::$instance = new Adremm_Clock_Plugin();
+            self::$instance->setup_constants();
+            self::$instance->includes();
+            self::$instance->init_hooks();
+        }
+        return self::$instance;
+    }
+
+    /**
+     * Setup constants.
+     */
+    private function setup_constants() {
+        if ( ! defined( 'ADREMM_CLOCK_VERSION' ) ) {
+            define( 'ADREMM_CLOCK_VERSION', $this->version );
+        }
+        if ( ! defined( 'ADREMM_CLOCK_PATH' ) ) {
+            define( 'ADREMM_CLOCK_PATH', plugin_dir_path( __FILE__ ) );
+        }
+        if ( ! defined( 'ADREMM_CLOCK_URL' ) ) {
+            define( 'ADREMM_CLOCK_URL', plugin_dir_url( __FILE__ ) );
+        }
+        if ( ! defined( 'ADREMM_CLOCK_BASENAME' ) ) {
+            define( 'ADREMM_CLOCK_BASENAME', plugin_basename( __FILE__ ) );
+        }
+    }
+
+    /**
+     * Include required files.
+     */
+    private function includes() {
+        require_once ADREMM_CLOCK_PATH . 'settings.php';
+        require_once ADREMM_CLOCK_PATH . 'functions.php';
+    }
+
+    /**
+     * Register hooks.
+     */
+    private function init_hooks() {
+        register_activation_hook( __FILE__, array( $this, 'activate' ) );
+        add_action( 'admin_init', array( $this, 'handle_activation_redirect' ), 9999 );
+        add_action( 'wp_footer', array( $this, 'render_frontend' ) );
+    }
+
+    /**
+     * Activation logic.
+     */
+    public function activate() {
+        $default_settings = adremm_clock_get_default_settings();
+        if ( ! get_option( 'adremm_clock_settings' ) ) {
+            update_option( 'adremm_clock_settings', $default_settings );
+        }
+        set_transient( 'adremm_clock_activation_redirect', true, 30 );
+    }
+
+    /**
+     * Redirect to settings on activation.
+     */
+    public function handle_activation_redirect() {
+        if ( get_transient( 'adremm_clock_activation_redirect' ) ) {
+            delete_transient( 'adremm_clock_activation_redirect' );
+
+            if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) return;
+            if ( isset( $_GET['activate-multi'] ) ) return;
+
+            wp_safe_redirect( admin_url( 'admin.php?page=adremm-clock-settings' ) );
+            exit;
+        }
+    }
+
+    /**
+     * Safe str_pad wrapper.
+     */
+    public static function str_pad( $input, $pad_length, $pad_string = " ", $pad_type = STR_PAD_LEFT ) {
+        return str_pad( (string) $input, $pad_length, $pad_string, $pad_type );
+    }
+
+    /**
+     * Render the clock in footer.
+     */
+    public function render_frontend() {
+        if ( is_admin() ) return;
+
+        $settings = wp_parse_args( get_option( 'adremm_clock_settings', array() ), adremm_clock_get_default_settings() );
+        $status_data = adremm_clock_get_status();
+        $status = $status_data['status'];
+        $status_text = $status_data['text'];
+
+        if ( file_exists( ADREMM_CLOCK_PATH . 'clock-template.php' ) ) {
+            include ADREMM_CLOCK_PATH . 'clock-template.php';
+        }
+    }
+}
 
 /**
- * Safe version of str_pad
+ * Initialize the plugin.
  */
-if (!function_exists('adremm_str_pad')) {
-    function adremm_str_pad($input, $pad_length, $pad_string = " ", $pad_type = STR_PAD_LEFT) {
-        return str_pad((string)$input, $pad_length, $pad_string, $pad_type);
-    }
+function adremm_clock_init() {
+    return Adremm_Clock_Plugin::instance();
 }
 
-// Plugin Activation
-register_activation_hook(__FILE__, 'adremm_clock_activate');
-function adremm_clock_activate() {
-    $default_settings = adremm_clock_get_default_settings();
-    if (!get_option('adremm_clock_settings')) {
-        update_option('adremm_clock_settings', $default_settings);
+adremm_clock_init();
+
+endif;
+
+/**
+ * Global helper for templates if needed.
+ */
+if ( ! function_exists( 'adremm_str_pad' ) ) {
+    function adremm_str_pad( $input, $pad_length, $pad_string = " ", $pad_type = STR_PAD_LEFT ) {
+        return Adremm_Clock_Plugin::str_pad( $input, $pad_length, $pad_string, $pad_type );
     }
-    set_transient('adremm_clock_activation_redirect', true, 30);
-}
-
-// Handle Redirect
-add_action('admin_init', 'adremm_clock_handle_activation_redirect', 9999);
-function adremm_clock_handle_activation_redirect() {
-    if (get_transient('adremm_clock_activation_redirect')) {
-        delete_transient('adremm_clock_activation_redirect');
-
-        if (defined('DOING_AJAX') && DOING_AJAX) return;
-        if (isset($_GET['activate-multi'])) return;
-
-        // Use a slight delay or priority to ensure menu is registered
-        wp_safe_redirect(admin_url('admin.php?page=adremm-clock-settings'));
-        exit;
-    }
-}
-
-// Add the clock to the footer
-add_action('wp_footer', 'adremm_clock_render_frontend');
-function adremm_clock_render_frontend() {
-    if (is_admin()) return;
-    $settings = wp_parse_args(get_option('adremm_clock_settings', array()), adremm_clock_get_default_settings());
-    $status_data = adremm_clock_get_status();
-    $status = $status_data['status'];
-    $status_text = $status_data['text'];
-    include ADREMM_CLOCK_PATH . 'clock-template.php';
 }

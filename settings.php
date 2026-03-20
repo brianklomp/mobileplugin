@@ -21,9 +21,9 @@ function adremm_clock_register_settings() {
 function adremm_clock_get_default_settings() {
     return array(
         'position' => 'bottom-right',
-        'theme_mode' => 'light', // light, dark, auto
+        'theme_mode' => 'light',
         'theme_font' => 'Inter',
-        'panel_size' => 'normal', // small, normal, large
+        'panel_size' => 'normal',
         'panel_padding' => '25',
         'panel_width' => '320',
         'bg_color' => '#ffffff',
@@ -31,16 +31,16 @@ function adremm_clock_get_default_settings() {
 
         // Analoge Klok
         'show_analog' => 'yes',
-        'analog_bg_type' => 'color', // color, image
+        'analog_bg_type' => 'color',
         'analog_bg_image' => '',
         'analog_bg_color' => '#000000',
         'analog_ring_color' => '#3399ff',
         'analog_ring_size' => '2',
-        'analog_hour_not' => 'lines', // lines, dots
+        'analog_hour_not' => 'lines',
         'analog_hour_color' => '#ffffff',
         'analog_hour_thick' => '2',
         'analog_hour_length' => '8',
-        'analog_min_not' => 'lines', // lines, dots
+        'analog_min_not' => 'lines',
         'analog_min_color' => '#ffffff',
         'analog_min_thick' => '1',
         'analog_min_length' => '5',
@@ -52,7 +52,7 @@ function adremm_clock_get_default_settings() {
         'hand_hour_thick' => '4',
         'hand_hour_len' => '50',
         'hand_hour_color' => '#ffffff',
-        'hand_hour_style' => 'rectangle', // rectangle, rounded, point, heart
+        'hand_hour_style' => 'rectangle',
         'hand_min_thick' => '3',
         'hand_min_len' => '70',
         'hand_min_color' => '#ffffff',
@@ -61,7 +61,7 @@ function adremm_clock_get_default_settings() {
         'hand_sec_len' => '80',
         'hand_sec_color' => '#ff3b30',
         'hand_sec_style' => 'point',
-        'hand_sweep' => 'smooth', // smooth, classy, ticking
+        'hand_sweep' => 'smooth',
 
         // Digitale Tijd
         'show_digital' => 'yes',
@@ -70,11 +70,11 @@ function adremm_clock_get_default_settings() {
         'digital_weight' => '700',
         'digital_bg' => 'transparent',
         'digital_show_sec' => 'yes',
-        'digital_style' => 'custom', // alarm, wall, blocks (matrix), pixels, design, custom
+        'digital_style' => 'custom',
         'digital_glow' => 'no',
         'digital_glow_color' => '#ffffff',
         'digital_glow_spread' => '10',
-        'digital_orientation' => 'horizontal', // for design style
+        'digital_orientation' => 'horizontal',
 
         // Radio
         'radio_enabled' => 'no',
@@ -82,7 +82,7 @@ function adremm_clock_get_default_settings() {
 
         // Status
         'show_status' => 'yes',
-        'status_pos' => 'below_digital', // above_digital, below_digital, above_analog, below_analog, below_date
+        'status_pos' => 'below_digital',
         'text_open' => 'Wij zijn geopend',
         'text_closed' => 'Wij zijn gesloten',
         'color_open' => '#28a745',
@@ -105,7 +105,7 @@ function adremm_clock_get_default_settings() {
         'is_collapsible' => 'yes',
         'show_close_x' => 'yes',
         'close_x_size' => '24',
-        'close_x_anim' => 'fade', // fade, rotate, bounce, pulse, zoom
+        'close_x_anim' => 'fade',
         'color_close_x' => '#111111',
         'show_close_label' => 'yes',
         'close_label' => 'Sluiten',
@@ -124,7 +124,7 @@ function adremm_clock_get_default_settings() {
         'tab_shadow_pos' => 'outer',
 
         // Mobile / Tablet Settings
-        'mobile_visibility' => 'both', // both, desktop, mobile, tablet
+        'mobile_visibility' => 'both',
         'mobile_breakpoint' => '768',
         'tablet_breakpoint' => '1024',
         'mobile_position' => 'bottom-right',
@@ -133,22 +133,16 @@ function adremm_clock_get_default_settings() {
 
         // Algemeen
         'language' => 'auto',
-
-        // Openingstijden (Placeholder for JSON)
         'opening_hours' => '',
-        'exceptional_days' => '', // JSON for special dates
+        'exceptional_days' => '',
     );
 }
 
 function adremm_clock_settings_validate($input) {
-    // Start with the existing settings from the database
     $current_settings = get_option('adremm_clock_settings', array());
     $defaults = adremm_clock_get_default_settings();
-
-    // Merge existing settings with defaults to ensure completeness
     $output = wp_parse_args($current_settings, $defaults);
 
-    // Define specifically which keys are color fields that need color validation
     $color_keys = array(
         'bg_color', 'analog_bg_color', 'analog_ring_color', 'hand_hour_color',
         'hand_min_color', 'hand_sec_color', 'digital_color', 'digital_bg',
@@ -161,13 +155,11 @@ function adremm_clock_settings_validate($input) {
         'hand_hour_thick', 'hand_min_thick', 'hand_sec_thick', 'analog_ring_size', 'panel_width'
     );
 
-    // Update the settings with the new input, validating as we go
     if (is_array($input)) {
         foreach($input as $key => $val) {
-            if (!isset($defaults[$key])) continue; // Ignore unknown keys
+            if (!isset($defaults[$key])) continue;
 
             if (in_array($key, $color_keys)) {
-                 // Sanitization for colors (HEX, RGBA, or transparent)
                  $color = trim((string)$val);
                  if (empty($color) || $color === 'transparent' || $color === 'rgba(0,0,0,0)') {
                      $output[$key] = 'transparent';
@@ -178,7 +170,6 @@ function adremm_clock_settings_validate($input) {
             } elseif (in_array($key, $float_keys)) {
                 $output[$key] = filter_var($val, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
             } elseif ($key === 'opening_hours' || $key === 'extra_message') {
-                // Special handling for larger text/JSON
                 $output[$key] = $val;
             } else {
                 $output[$key] = sanitize_text_field($val);
@@ -192,18 +183,16 @@ function adremm_clock_settings_validate($input) {
 // Add admin menu
 add_action('admin_menu', 'adremm_clock_add_admin_menu');
 function adremm_clock_add_admin_menu() {
-    // Top level menu
     add_menu_page(
         'ADREMM Klok Instellingen',
         'ADREMM Klok',
         'manage_options',
         'adremm-clock-settings',
         'adremm_clock_render_settings_page',
-        'dashicons-clock', // Default dashicon, user can provide 20x20px SVG later
+        'dashicons-clock',
         60
     );
 
-    // Submenu: Instellingen (Points to same as parent)
     add_submenu_page(
         'adremm-clock-settings',
         'Instellingen',
@@ -213,7 +202,6 @@ function adremm_clock_add_admin_menu() {
         'adremm_clock_render_settings_page'
     );
 
-    // Submenu: Openingstijden
     add_submenu_page(
         'adremm-clock-settings',
         'Openingstijden',
@@ -223,7 +211,6 @@ function adremm_clock_add_admin_menu() {
         'adremm_clock_render_openingstijden_page'
     );
 
-    // Submenu: Mobiel & Tablet
     add_submenu_page(
         'adremm-clock-settings',
         'Mobiel & Tablet',
@@ -235,27 +222,24 @@ function adremm_clock_add_admin_menu() {
 }
 
 function adremm_clock_render_openingstijden_page() {
-    include ADREMM_CLOCK_PATH . 'openingstijden-page.php';
+    if ( file_exists( ADREMM_CLOCK_PATH . 'openingstijden-page.php' ) ) {
+        include ADREMM_CLOCK_PATH . 'openingstijden-page.php';
+    }
 }
 
 function adremm_clock_render_mobile_settings_page() {
-    include ADREMM_CLOCK_PATH . 'mobile-settings-page.php';
+    if ( file_exists( ADREMM_CLOCK_PATH . 'mobile-settings-page.php' ) ) {
+        include ADREMM_CLOCK_PATH . 'mobile-settings-page.php';
+    }
 }
 
 function adremm_clock_render_settings_page() {
-    include ADREMM_CLOCK_PATH . 'settings-page.php';
+    if ( file_exists( ADREMM_CLOCK_PATH . 'settings-page.php' ) ) {
+        include ADREMM_CLOCK_PATH . 'settings-page.php';
+    }
 }
 
-// Callbacks for settings fields (to be refined in the view step)
-function adremm_clock_position_callback() {
-    // Handled in the view
-}
-function adremm_clock_theme_callback() {
-    // Handled in the view
-}
-function adremm_clock_font_callback() {
-    // Handled in the view
-}
-function adremm_clock_colors_callback() {
-    // Handled in the view
-}
+function adremm_clock_position_callback() {}
+function adremm_clock_theme_callback() {}
+function adremm_clock_font_callback() {}
+function adremm_clock_colors_callback() {}
