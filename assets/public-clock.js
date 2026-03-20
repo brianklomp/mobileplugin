@@ -1,5 +1,5 @@
 /**
- * ADREMM Clock Frontend Logic V5
+ * ADREMM Clock Frontend Logic V6
  */
 (function($) {
     'use strict';
@@ -12,7 +12,6 @@
         const $tab = $root.find('.adremm-clock-tab');
         const $closeBtn = $root.find('.adremm-clock-close');
 
-        // Update Clock Elements
         function updateClock() {
             const now = new Date();
             const ms = now.getMilliseconds();
@@ -44,42 +43,45 @@
             const ss = String(s).padStart(2, '0');
 
             if ($timeRow.hasClass('digital-style-alarm')) {
-                // Update Nixie Tubes
                 $root.find('#nixie-h1').text(hh[0]);
                 $root.find('#nixie-h2').text(hh[1]);
                 $root.find('#nixie-m1').text(mm[0]);
                 $root.find('#nixie-m2').text(mm[1]);
 
-                // Vintage Radio Scrolling Scale Logic (Vertical)
                 const $scaleV = $root.find('.radio-scale-scroll-v');
                 if ($scaleV.length) {
-                    const itemHeight = 20; // Correct height from CSS
+                    const itemHeight = 20;
                     const offset = (s + ms/1000) * itemHeight;
                     $scaleV.css('transform', `translateY(${-offset}px)`);
                 }
+            } else if ($timeRow.hasClass('digital-style-wall')) {
+                 const digits = (hh + mm + ss).split('');
+                 const $cols = $timeTarget.find('.digit-col');
+                 if ($cols.length === 0) {
+                     let html = '';
+                     digits.forEach((d, i) => {
+                         html += `<div class="digit-col"><span>0\n1\n2\n3\n4\n5\n6\n7\n8\n9</span></div>`;
+                         if (i === 1 || i === 3) html += '<div class="sep">:</div>';
+                     });
+                     $timeTarget.html(html);
+                 }
+                 $timeTarget.find('.digit-col').each(function(i) {
+                     const d = digits[i];
+                     $(this).find('span').css('transform', `translateY(-${parseInt(d) * 42}px)`);
+                 });
             } else if (handSweep === 'ticking' || ms < 100) {
-                // Standard Digital Styles
-                if ($timeRow.hasClass('digital-style-wall')) {
-                    const digits = (hh + mm).split('');
-                    let html = '';
-                    digits.forEach((d, i) => {
-                        html += `<div class="digit-col"><span style="transform: translateY(-${parseInt(d) * 32}px)">0\n1\n2\n3\n4\n5\n6\n7\n8\n9</span></div>`;
-                        if (i === 1) html += '<span>:</span>';
-                    });
-                    $timeTarget.html(`${html}<span class="sec" style="opacity:${(ms > 500 ? 0.4 : 1)}">:${ss}</span>`);
-                } else if ($timeRow.hasClass('digital-style-blocks')) {
+                if ($timeRow.hasClass('digital-style-blocks')) {
                     $timeTarget.html(`<span class="b">${hh}</span>:<span class="b">${mm}</span>:<span class="b">${ss}</span>`);
                 } else if ($timeRow.hasClass('digital-style-design')) {
                     const dayName = now.toLocaleDateString(locale, { weekday: 'short' });
                     $timeTarget.html(`<span class="day">${dayName}</span> ${hh}:${mm}<span class="sec">${ss}</span>`);
                 } else if ($timeRow.hasClass('digital-style-pixels')) {
-                    $timeTarget.html(`<span>${hh}</span><span>${mm}</span><span>${ss}</span>`);
+                    $timeTarget.html(`${hh}:${mm}:${ss}`);
                 } else {
                     $timeTarget.text(`${hh}:${mm}:${ss}`);
                 }
             }
 
-            // Always update date
             if (ms < 100) {
                 $root.find('.date-text').text(now.toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long' }));
             }
@@ -88,16 +90,6 @@
         const interval = (typeof adremmClockData !== 'undefined' && (adremmClockData.handSweep === 'smooth' || adremmClockData.handSweep === 'classy')) ? 50 : 1000;
         setInterval(updateClock, interval);
         updateClock();
-
-        // Panel sizing & effects
-        if (typeof adremmClockData !== 'undefined') {
-            $root.addClass('panel-size-' + adremmClockData.panelSize);
-            if (adremmClockData.extraMarquee === 'yes') {
-                $root.find('.extra-row').addClass('marquee');
-                const speed = 21 - parseInt(adremmClockData.extraSpeed);
-                $root.find('.extra-row').css('--marquee-speed', speed + 's');
-            }
-        }
 
         // Radio Feature
         if (typeof adremmClockData !== 'undefined' && adremmClockData.radioEnabled === 'yes') {
@@ -113,20 +105,44 @@
             window.adremmRadio = new Audio(streamUrl);
             window.adremmRadio.volume = 0.8;
 
-            // Radio toggle UI (Knob)
-            $root.on('click', '#adremm-radio-toggle', function(e) {
+            $root.on('click', '#adremm-radio-power', function(e) {
                 e.stopPropagation();
                 $(this).toggleClass('on');
                 if ($(this).hasClass('on')) {
-                    if (window.adremmRadio) window.adremmRadio.play().catch(e => console.log('Autoplay blocked'));
+                    window.adremmRadio.play().catch(e => console.log('Autoplay blocked'));
                 } else {
-                    if (window.adremmRadio) window.adremmRadio.pause();
+                    window.adremmRadio.pause();
                 }
+            });
+
+            // Volume Knob Logic
+            let isDragging = false;
+            let startY = 0;
+            let currentVol = 0.8;
+
+            $root.on('mousedown touchstart', '#adremm-radio-volume', function(e) {
+                isDragging = true;
+                startY = (e.type === 'touchstart') ? e.originalEvent.touches[0].clientY : e.clientY;
+                e.preventDefault();
+            });
+
+            $(document).on('mousemove touchmove', function(e) {
+                if (!isDragging) return;
+                const y = (e.type === 'touchmove') ? e.originalEvent.touches[0].clientY : e.clientY;
+                const delta = (startY - y) / 100;
+                currentVol = Math.max(0, Math.min(1, currentVol + delta));
+                window.adremmRadio.volume = currentVol;
+                const rotation = (currentVol * 240) - 120; // -120 to +120
+                $root.find('#adremm-radio-volume').css('transform', `rotate(${rotation}deg)`);
+                startY = y;
+            });
+
+            $(document).on('mouseup touchend', function() {
+                isDragging = false;
             });
         }
 
         if ($root.hasClass('adremm-clock-panel')) {
-             // Tab positioning logic
              let tabPos = 'tab-right';
              if ($root.hasClass('adremm-clock-pos-top-left') ||
                  $root.hasClass('adremm-clock-pos-middle-left') ||
@@ -136,9 +152,7 @@
              $tab.addClass(tabPos);
 
              $closeBtn.on('click', function() {
-                 $container.fadeOut(300, function() {
-                     $tab.css('display', 'flex').hide().fadeIn(300);
-                 });
+                 $container.fadeOut(300, function() { $tab.css('display', 'flex').hide().fadeIn(300); });
              });
              $tab.on('click', function() {
                  $tab.fadeOut(300, function() { $container.fadeIn(300); });

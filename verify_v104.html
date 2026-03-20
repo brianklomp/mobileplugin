@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ADREMM Clock V1.0.4 Verification</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="assets/public-style.css">
+    <style>
+        body { background: #f0f0f0; display: flex; flex-direction: column; gap: 50px; align-items: center; min-height: 200vh; padding: 50px; margin: 0; }
+        .clock-preview-wrap { position: relative; width: 500px; height: 300px; border: 1px dashed #ccc; display: flex; justify-content: center; align-items: center; }
+        #adremm-clock-wrapper { position: relative !important; top: auto !important; left: auto !important; bottom: auto !important; right: auto !important; transform-origin: center !important; }
+    </style>
+</head>
+<body>
+    <h1>Vintage Radio (v1.0.4)</h1>
+    <div class="clock-preview-wrap">
+        <div id="adremm-clock-wrapper" class="adremm-clock-panel adremm-clock-pos-bottom-right theme-mode-light panel-size-normal" style="--user-bg: #ffffff; --user-text: #111111; font-family: sans-serif; --panel-width: 450px;">
+            <div class="adremm-clock-container" style="box-shadow: 0 10px 40px rgba(0,0,0,0.15); border: 1px solid rgba(0,0,0,0.05); width: var(--panel-width);">
+                <div class="adremm-clock-main">
+                    <div class="adremm-clock-info">
+                        <div class="time-row digital-style-alarm" style="font-family: inherit; color: #ff6600; background-color: #331d14;">
+                            <div class="radio-vintage-body">
+                                <div class="nixie-tubes">
+                                    <div class="nixie-tube" id="nixie-h1">1</div>
+                                    <div class="nixie-tube" id="nixie-h2">4</div>
+                                    <div class="nixie-tube-gap">:</div>
+                                    <div class="nixie-tube" id="nixie-m1">2</div>
+                                    <div class="nixie-tube" id="nixie-m2">5</div>
+                                </div>
+                                <div class="radio-scale-container">
+                                    <div class="scale-indicator"></div>
+                                    <div class="radio-scale-scroll-v">
+                                        <div class="scale-mark"><span>-</span>30</div>
+                                    </div>
+                                </div>
+                                <div class="radio-side-panel">
+                                    <div class="radio-logo-brand"><div class="logo-circle">A</div><div class="brand-text">Radio</div></div>
+                                    <div class="radio-controls-grid">
+                                        <div class="power-btn on" id="adremm-radio-power">X</div>
+                                        <div class="volume-knob" id="adremm-radio-volume"><div class="knob-line"></div></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h1>Wall Clock (6 digits)</h1>
+    <div class="clock-preview-wrap">
+        <div id="adremm-clock-wrapper-wall" class="adremm-clock-panel adremm-clock-pos-bottom-right theme-mode-light panel-size-normal" style="--user-bg: #ffffff; --user-text: #111111; font-family: sans-serif; --panel-width: 450px;">
+            <div class="adremm-clock-container" style="box-shadow: 0 10px 40px rgba(0,0,0,0.15); border: 1px solid rgba(0,0,0,0.05); width: var(--panel-width);">
+                <div class="adremm-clock-main">
+                    <div class="adremm-clock-info">
+                        <div class="time-row digital-style-wall" style="font-family: inherit; color: #ffffff; background-color: #000000;">
+                            <span class="time-digital">
+                                <div class="digit-col"><span>0\n1\n2</span></div>
+                                <div class="digit-col"><span>0\n1\n2</span></div>
+                                <div class="sep">:</div>
+                                <div class="digit-col"><span>0\n1\n2</span></div>
+                                <div class="digit-col"><span>0\n1\n2</span></div>
+                                <div class="sep">:</div>
+                                <div class="digit-col"><span>0\n1\n2</span></div>
+                                <div class="digit-col"><span>0\n1\n2</span></div>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h1>Pixel Clock</h1>
+    <div class="clock-preview-wrap">
+        <div id="adremm-clock-wrapper-pixel" class="adremm-clock-panel adremm-clock-pos-bottom-right theme-mode-light panel-size-normal" style="--user-bg: #ffffff; --user-text: #111111; font-family: sans-serif; --panel-width: 450px;">
+            <div class="adremm-clock-container" style="box-shadow: 0 10px 40px rgba(0,0,0,0.15); border: 1px solid rgba(0,0,0,0.05); width: var(--panel-width);">
+                <div class="adremm-clock-main">
+                    <div class="adremm-clock-info">
+                        <div class="time-row digital-style-pixels" style="font-family: inherit; color: #ff9500; background-color: #111111;">
+                            <span class="time-digital">12:34:56</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.adremmClockData = {
+            handSweep: 'smooth',
+            locale: 'nl-NL',
+            panelSize: 'normal',
+            radioEnabled: 'yes',
+            radioChannel: 'hits'
+        };
+    </script>
+    <script src="assets/public-clock.js"></script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-/* ADREMM Clock Frontend Styles V2.1 */
+/* ADREMM Clock Frontend Styles V2.2 */
 #adremm-clock-wrapper {
     position: fixed;
     z-index: 2147483647;
@@ -6,6 +6,7 @@
     color: var(--adremm-clock-text);
     background-color: var(--adremm-clock-bg);
     box-sizing: border-box;
+    /* Basic scaling via font-size inheritance if needed, but mainly transform-scale */
 }
 
 #adremm-clock-wrapper * { box-sizing: border-box; }
@@ -22,6 +23,7 @@
     position: relative;
     border: 1px solid rgba(0,0,0,0.05);
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    transform-origin: center;
 }
 
 /* THEME ADAPTIVE (Auto) */
@@ -46,19 +48,16 @@
     }
 }
 
-/* SIZES */
-#adremm-clock-wrapper.panel-size-small .adremm-clock-container { min-width: 120px; padding: 10px; }
-#adremm-clock-wrapper.panel-size-small .face { width: 45px; height: 45px; }
-#adremm-clock-wrapper.panel-size-small .time-digital { font-size: 11px; }
-#adremm-clock-wrapper.panel-size-small .time-row.digital-style-wall { width: 100px !important; height: 40px !important; }
-#adremm-clock-wrapper.panel-size-small .time-row.digital-style-wall .time-digital { font-size: 14px; }
-#adremm-clock-wrapper.panel-size-small .status-row { font-size: 9px; }
-#adremm-clock-wrapper.panel-size-small .date-row { font-size: 8px; }
+/* SIZES (Legacy logic, but we'll prefer global transform-scale) */
+#adremm-clock-wrapper.panel-size-small { transform: scale(0.75); }
+#adremm-clock-wrapper.panel-size-normal { transform: scale(1); }
+#adremm-clock-wrapper.panel-size-large { transform: scale(1.25); }
 
-#adremm-clock-wrapper.panel-size-normal .adremm-clock-container { min-width: 200px; padding: 15px; }
-#adremm-clock-wrapper.panel-size-normal .face { width: 60px; height: 60px; }
-
-#adremm-clock-wrapper.panel-size-large .adremm-clock-container { min-width: 380px; padding: 40px; }
+/* Ensure transform doesn't break fixed position */
+#adremm-clock-wrapper.adremm-clock-pos-bottom-right { transform-origin: bottom right; }
+#adremm-clock-wrapper.adremm-clock-pos-bottom-left { transform-origin: bottom left; }
+#adremm-clock-wrapper.adremm-clock-pos-top-left { transform-origin: top left; }
+#adremm-clock-wrapper.adremm-clock-pos-top-right { transform-origin: top right; }
 
 /* BAR LAYOUT (Header/Footer) */
 .adremm-clock-bar {
@@ -72,6 +71,7 @@
     box-shadow: 0 0 20px rgba(0,0,0,0.1);
     padding: 0 20px;
     top: 0; /* Default HD */
+    transform: none !important; /* Bars don't scale like panels */
 }
 
 .adremm-clock-bar.adremm-clock-pos-top-center { top: 0; border-bottom: 1px solid rgba(0,0,0,0.1); }
@@ -94,7 +94,7 @@
 
 .adremm-clock-bar .adremm-clock-analog { width: 40px; height: 40px; }
 .adremm-clock-bar .face { width: 40px; height: 40px; }
-.adremm-clock-bar .extra-row { display: none; } /* Hide extra in bar by default for space */
+.adremm-clock-bar .extra-row { display: none; }
 
 /* Common Elements */
 .adremm-clock-analog { margin-bottom: 15px; }
@@ -134,7 +134,6 @@
     transform-origin: center 40px;
     margin-left: calc(var(--not-thick) / -2);
 }
-.panel-size-small .notations i { transform-origin: center 27.5px; }
 .notations.above { z-index: 20; }
 
 /* Digital Styles */
@@ -153,15 +152,6 @@
     position: relative;
     overflow: hidden;
 }
-.time-row.digital-style-blocks .time-digital::after {
-    content: "";
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-    z-index: 2;
-    background-size: 100% 2px, 3px 100%;
-    pointer-events: none;
-}
 .time-row.digital-style-blocks .time-digital span.b {
     background: #111;
     color: #44ff44;
@@ -174,43 +164,29 @@
     display: inline-block;
     position: relative;
     box-shadow: inset 0 0 10px #000;
-    animation: matrix-glitch 5s infinite;
 }
 
-@keyframes matrix-glitch {
-    0%, 90%, 100% { transform: none; opacity: 1; }
-    92% { transform: skewX(10deg); opacity: 0.8; }
-    94% { transform: skewX(-10deg); opacity: 0.9; }
-    96% { transform: translate(2px, 0); }
-    98% { transform: translate(-2px, 0); }
-}
-.time-row.digital-style-blocks .time-digital span.b::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 50%;
-    width: 100%;
-    height: 3px;
-    background: rgba(0,0,0,0.8);
-    box-shadow: 0 1px 1px rgba(255,255,255,0.1);
+/* PIXELS - Digital Digit Block Design */
+@font-face {
+    font-family: 'PixelDigital';
+    src: url('https://fonts.cdnfonts.com/s/16124/Digital-7.woff') format('woff');
 }
 
-/* PIXELS - Pixel Grid Design */
 .time-row.digital-style-pixels .time-digital {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    font-family: 'Courier New', Courier, monospace;
-    color: #ff9500; /* Requirement: Oranje kleur */
+    font-family: 'PixelDigital', monospace;
+    font-size: 64px;
+    color: #ff9500;
     background: #111;
-    padding: 15px;
-    border-radius: 4px;
-    box-shadow: inset 0 0 10px #000;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: inset 0 0 15px #000;
+    letter-spacing: 5px;
+    display: inline-block;
 }
 
 /* VINTAGE RADIOWEKKER - SKIN BASED ON IMAGE */
 .time-row.digital-style-alarm {
-    background: #331d14; /* Donkerbruine body */
+    background: #331d14;
     padding: 20px;
     border: 8px solid #4a2c1e;
     border-radius: 30px;
@@ -258,17 +234,6 @@
     box-shadow: 0 0 15px rgba(255,102,0,0.1);
 }
 
-/* De grid lines in de tube */
-.nixie-tube::before {
-    content: "";
-    position: absolute;
-    inset: 2px;
-    background-image: linear-gradient(0deg, transparent 24%, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.05) 26%, transparent 27%, transparent 74%, rgba(255,255,255,0.05) 75%, rgba(255,255,255,0.05) 76%, transparent 77%),
-                      linear-gradient(90deg, transparent 24%, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.05) 26%, transparent 27%, transparent 74%, rgba(255,255,255,0.05) 75%, rgba(255,255,255,0.05) 76%, transparent 77%);
-    background-size: 4px 4px;
-    pointer-events: none;
-}
-
 .nixie-tube-gap { width: 10px; color: #ff6600; font-size: 32px; font-weight: bold; }
 
 /* Vertical Seconds Scale */
@@ -288,7 +253,7 @@
     flex-direction: column;
     align-items: center;
     transition: transform 0.1s linear;
-    padding-top: 30px; /* Centering first mark */
+    padding-top: 30px;
 }
 
 .scale-mark {
@@ -324,7 +289,7 @@
     align-items: center;
     gap: 12px;
     flex-shrink: 0;
-    min-width: 60px;
+    min-width: 80px;
 }
 
 .radio-logo-brand {
@@ -354,20 +319,36 @@
     margin-top: -3px;
 }
 
-.radio-controls-grill {
+.radio-controls-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
     background: #222;
-    padding: 6px;
-    border-radius: 6px;
+    padding: 8px;
+    border-radius: 8px;
     border: 1px solid #111;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     box-shadow: inset 0 0 5px #000;
 }
 
+.power-btn {
+    width: 28px;
+    height: 28px;
+    background: #444;
+    border-radius: 50%;
+    border: 2px solid #222;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ff3b30;
+    font-size: 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+}
+.power-btn.on { background: #ff3b30; color: #fff; box-shadow: 0 0 10px #ff3b30; }
+
 .volume-knob {
-    width: 38px;
-    height: 38px;
+    width: 28px;
+    height: 28px;
     background: #333;
     border-radius: 50%;
     border: 2px solid #555;
@@ -377,28 +358,24 @@
     transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.volume-knob.on {
-    transform: rotate(150deg);
-}
-
 .knob-line {
     position: absolute;
-    top: 4px;
+    top: 3px;
     left: 50%;
-    width: 3px;
-    height: 10px;
+    width: 2px;
+    height: 8px;
     background: #fff;
     transform: translateX(-50%);
-    border-radius: 2px;
+    border-radius: 1px;
 }
 
-/* WALL (Muurklok) - High Accuracy Black Rectangular */
+/* WALL (Muurklok) - Sliding Digits for all 6 */
 .time-row.digital-style-wall {
     background: #000 !important;
     border: 3px solid #444 !important;
     border-radius: 4px !important;
     width: 100% !important;
-    max-width: 240px !important;
+    max-width: 320px !important;
     height: 100px !important;
     display: flex !important;
     align-items: center !important;
@@ -410,13 +387,12 @@
     font-family: 'Courier New', Courier, monospace !important;
     overflow: hidden;
 }
-.time-row.digital-style-wall .time-digital { font-size: 32px; font-weight: 300; display: flex; align-items: center; }
-.time-row.digital-style-wall .time-digital .digit-col { display: flex; flex-direction: column; height: 32px; overflow: hidden; position: relative; }
-.time-row.digital-style-wall .time-digital .digit-col span { display: block; width: 20px; line-height: 32px; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); white-space: pre-line; text-align: center; }
-.time-row.digital-style-wall { transition: opacity 0.5s ease; }
-.time-row.digital-style-wall .time-digital .sec { opacity: 0.4; font-size: 0.8em; margin-left: 10px; }
+.time-row.digital-style-wall .time-digital { font-size: 42px; font-weight: 300; display: flex; align-items: center; gap: 2px; }
+.time-row.digital-style-wall .time-digital .digit-col { display: flex; flex-direction: column; height: 42px; overflow: hidden; position: relative; }
+.time-row.digital-style-wall .time-digital .digit-col span { display: block; width: 26px; line-height: 42px; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); text-align: center; font-size: 42px; }
+.time-row.digital-style-wall .time-digital .sep { width: 15px; text-align: center; }
 
-/* DESIGN (Minimalist) - Based on https://codepen.io/eehayman/pen/jVPKpN */
+/* DESIGN (Minimalist) */
 .time-row.digital-style-design {
     font-family: 'Inter', 'Helvetica Neue', Helvetica, sans-serif;
     font-weight: 100;
@@ -427,33 +403,6 @@
     display: flex;
     align-items: baseline;
     justify-content: center;
-}
-.time-row.digital-style-design span:not(.day) {
-    display: inline-block;
-    min-width: 0.6em; /* Ensure uniform digit size */
-    text-align: center;
-}
-.time-row.digital-style-design .day {
-    font-size: 14px;
-    text-transform: uppercase;
-    margin-right: 10px;
-    font-weight: 400;
-    letter-spacing: 1px;
-    display: inline-block;
-}
-.time-row.digital-style-design .sec {
-    font-size: 18px;
-    vertical-align: super;
-    margin-left: 5px;
-    opacity: 0.6;
-}
-.time-row.digital-style-design.vertical {
-    flex-direction: column;
-    align-items: center;
-}
-.time-row.digital-style-design.vertical .day {
-    margin-right: 0;
-    margin-bottom: 5px;
 }
 
 .time-digital { font-size: 24px; font-weight: 800; }
@@ -491,112 +440,10 @@
 .adremm-clock-tab.tab-left { left: 0; border-radius: 0 10px 10px 0; top: 50%; transform: translateY(-50%); }
 .adremm-clock-tab.tab-right { right: 0; border-radius: 10px 0 0 10px; top: 50%; transform: translateY(-50%); }
 
-/* If position is bottom, tab should also be bottom-ish */
-.adremm-clock-pos-bottom-left ~ .adremm-clock-tab.tab-left { bottom: 100px; top: auto; transform: none; }
-.adremm-clock-pos-bottom-right ~ .adremm-clock-tab.tab-right { bottom: 100px; top: auto; transform: none; }
-.adremm-clock-pos-top-left ~ .adremm-clock-tab.tab-left { top: 100px; transform: none; }
-.adremm-clock-pos-top-right ~ .adremm-clock-tab.tab-right { top: 100px; transform: none; }
-
-/* Close Button & Animations */
-.adremm-clock-close {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: inherit;
-    opacity: 0.5;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    line-height: 1;
-    transition: opacity 0.4s ease, transform 0.4s ease;
-}
-.adremm-clock-close:hover { opacity: 1; transform: scale(1.1); }
-.adremm-clock-close .close-label { font-size: 12px; font-weight: bold; }
-
-.anim-rotate:hover .close-x { transform: rotate(180deg); transition: transform 0.6s ease; }
-.anim-bounce:hover { animation: close-bounce 0.5s infinite alternate; }
-.anim-pulse:hover { animation: close-pulse 1s infinite; }
-.anim-zoom:hover .close-x { transform: scale(1.5); transition: transform 0.3s ease; }
-
-@keyframes close-bounce { from { transform: translateY(0); } to { transform: translateY(-5px); } }
-@keyframes close-pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
-
-/* Themes */
-.adremm-clock-theme-classic .adremm-clock-container { border: 6px double currentColor; border-radius: 0; font-family: serif; }
-.adremm-clock-theme-digital .adremm-clock-container { background: #000 !important; color: #0f0 !important; font-family: monospace !important; border: 2px solid #0f0; box-shadow: 0 0 20px #0f0; }
-
-/* Marquee (Lichtslang) */
-.extra-row.marquee {
-    overflow: hidden;
-    white-space: nowrap;
-    position: relative;
-}
-.extra-row.marquee span {
-    display: inline-block;
-    padding-left: 100%;
-    animation: marquee-scroll var(--marquee-speed) linear infinite;
-}
-@keyframes marquee-scroll {
-    0% { transform: translate(0, 0); }
-    100% { transform: translate(-100%, 0); }
-}
-
-/* Hand Styles */
-.h-hour.rounded, .h-min.rounded, .h-sec.rounded { border-radius: 100px; }
-.h-hour.point, .h-min.point, .h-sec.point { clip-path: polygon(50% 0%, 100% 100%, 0% 100%); }
-.h-hour.heart, .h-min.heart, .h-sec.heart {
-    background: transparent !important;
-    position: relative;
-}
-.h-hour.heart::before, .h-min.heart::before, .h-sec.heart::before {
-    content: "❤";
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 24px;
-    color: inherit;
-}
-
-.h-hour.arrow, .h-min.arrow, .h-sec.arrow { clip-path: polygon(50% 0%, 100% 30%, 70% 30%, 70% 100%, 30% 100%, 30% 30%, 0% 30%); }
-
-.h-hour.steampunk, .h-min.steampunk, .h-sec.steampunk { background: transparent !important; border: 2px solid currentColor; border-radius: 50%; position: relative; width: 24px !important; height: 24px !important; margin-left: -12px !important; }
-.h-hour.steampunk::after, .h-min.steampunk::after, .h-sec.steampunk::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 2px;
-    height: 100%;
-    background: currentColor;
-}
-.h-hour.steampunk::before, .h-min.steampunk::before, .h-sec.steampunk::before {
-    content: "⚙";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 16px;
-}
-
-/* Responsive Breakpoints & Overrides */
+/* Mobile Breakpoints */
 .adremm-clock-mobile-hide { display: none !important; }
 
 @media screen and (max-width: 768px) {
-    #adremm-clock-wrapper.mobile-size-small .adremm-clock-container { min-width: 125px; padding: 10px; }
-    #adremm-clock-wrapper.mobile-size-small .face { width: 55px; height: 55px; }
-    #adremm-clock-wrapper.mobile-size-small .time-digital { font-size: 16px; }
-    #adremm-clock-wrapper.mobile-size-small .status-row { font-size: 12px; }
-
-    #adremm-clock-wrapper.mobile-pos-bottom-right { bottom: 10px; right: 10px; top: auto; left: auto; }
-    #adremm-clock-wrapper.mobile-pos-bottom-left { bottom: 10px; left: 10px; top: auto; right: auto; }
-    #adremm-clock-wrapper.mobile-pos-top-center { top: 0; left: 0; width: 100%; }
-    #adremm-clock-wrapper.mobile-pos-bottom-center { bottom: 0; left: 0; width: 100%; }
-
-    .adremm-clock-bar .adremm-clock-info .date-row { display: none; }
-    .adremm-clock-bar .adremm-clock-main { gap: 15px; }
+    #adremm-clock-wrapper { transform: scale(0.7) !important; }
+    #adremm-clock-wrapper.mobile-pos-top-center, #adremm-clock-wrapper.mobile-pos-bottom-center { transform: none !important; }
 }

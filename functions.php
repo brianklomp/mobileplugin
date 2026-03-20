@@ -44,25 +44,17 @@ function adremm_clock_admin_enqueue($hook) {
     );
     if (!in_array($hook, $pages)) return;
 
-    // Enqueue Media for background image uploader
     wp_enqueue_media();
-
-    // Enqueue WP Color Picker
     wp_enqueue_style('wp-color-picker');
     wp_enqueue_script('wp-color-picker');
     wp_enqueue_script('wp-color-picker-alpha', ADREMM_CLOCK_URL . 'assets/wp-color-picker-alpha.min.js', array('wp-color-picker'), '3.0.0', true);
-
-    // Enqueue custom admin styles
     wp_enqueue_style('adremm-clock-admin-css', ADREMM_CLOCK_URL . 'assets/admin-style.css', array(), ADREMM_CLOCK_VERSION);
-
-    // Enqueue custom admin JS
     wp_enqueue_script('adremm-clock-admin-js', ADREMM_CLOCK_URL . 'assets/admin-preview.js', array('jquery', 'wp-color-picker'), ADREMM_CLOCK_VERSION, true);
 
-    // Load initial Google Font if needed
     $settings = wp_parse_args(get_option('adremm_clock_settings', array()), adremm_clock_get_default_settings());
     $font_keys = array('theme_font', 'digital_font', 'font_status', 'font_date');
     foreach ($font_keys as $key) {
-        if (!empty($settings[$key]) && $settings[$key] !== 'inherit') {
+        if (!empty($settings[$key]) && $settings[$key] !== 'inherit' && $settings[$key] !== 'Thema') {
             $font = str_replace(' ', '+', $settings[$key]);
             $handle = 'adremm-clock-font-' . sanitize_title($font);
             wp_enqueue_style($handle, "https://fonts.googleapis.com/css2?family={$font}&display=swap", false);
@@ -71,54 +63,62 @@ function adremm_clock_admin_enqueue($hook) {
 }
 
 /**
- * Determine current store status
+ * Determine current store status with support for multiple time slots and position override
  */
 function adremm_clock_get_status() {
     $settings = wp_parse_args(get_option('adremm_clock_settings', array()), adremm_clock_get_default_settings());
     $opening_hours = !empty($settings['opening_hours']) ? json_decode($settings['opening_hours'], true) : array();
     $exceptional_days = !empty($settings['exceptional_days']) ? json_decode($settings['exceptional_days'], true) : array();
 
-    if (empty($opening_hours) && empty($exceptional_days)) return array('status' => 'open', 'text' => $settings['text_open']);
-
     $now = current_time('timestamp');
     $today_date = date('Y-m-d', $now);
     $day = strtolower(date('D', $now));
     $current_time = date('H:i', $now);
 
+    $status_data = array('status' => 'closed', 'text' => $settings['text_closed'], 'pos' => 'inherit');
+
     // Check Exceptions First
     if (!empty($exceptional_days)) {
         foreach($exceptional_days as $ex) {
             if ($ex['date'] === $today_date) {
-                return array('status' => $ex['status'], 'text' => $ex['label']);
+                $status_data['pos'] = isset($ex['pos']) ? $ex['pos'] : 'inherit';
+                if ($ex['status'] === 'closed') {
+                    $status_data['status'] = 'closed';
+                    $status_data['text'] = $ex['label'] ?: $settings['text_closed'];
+                } else {
+                    if ($current_time >= $ex['open'] && $current_time <= $ex['close']) {
+                        $status_data['status'] = 'open';
+                        $status_data['text'] = $ex['label'] ?: $settings['text_open'];
+                    } else {
+                        $status_data['status'] = 'closed';
+                        $status_data['text'] = $settings['text_closed'];
+                    }
+                }
+                return $status_data;
             }
         }
     }
 
-    if (!isset($opening_hours[$day])) return array('status' => 'open', 'text' => $settings['text_open']);
-
-    $is_koopavond = !empty($opening_hours[$day]['is_koopavond']);
-
-    if (!empty($opening_hours[$day]['is_closed'])) {
-        return array('status' => 'closed', 'text' => $settings['text_closed']);
+    if (!isset($opening_hours[$day])) {
+        return array('status' => 'open', 'text' => $settings['text_open'], 'pos' => 'inherit');
     }
 
-    $open = $opening_hours[$day]['open'];
-    $close = $opening_hours[$day]['close'];
+    $day_data = $opening_hours[$day];
+    if (isset($day_data['is_closed']) && $day_data['is_closed']) {
+        return array('status' => 'closed', 'text' => $settings['text_closed'], 'pos' => 'inherit');
+    }
 
-    // Check Break
-    if (!empty($opening_hours[$day]['break_start']) && !empty($opening_hours[$day]['break_end'])) {
-        if ($current_time >= $opening_hours[$day]['break_start'] && $current_time <= $opening_hours[$day]['break_end']) {
-            return array('status' => 'closed', 'text' => $opening_hours[$day]['break_label'] ?: 'Wij zijn even pauzeren');
+    if (is_array($day_data)) {
+        foreach ($day_data as $slot) {
+            if (isset($slot['open']) && isset($slot['close'])) {
+                if ($current_time >= $slot['open'] && $current_time <= $slot['close']) {
+                    return array('status' => 'open', 'text' => $settings['text_open'], 'pos' => 'inherit');
+                }
+            }
         }
     }
 
-    if ($current_time >= $open && $current_time <= $close) {
-        $text = $settings['text_open'];
-        if ($is_koopavond) $text .= ' (Koopavond)';
-        return array('status' => 'open', 'text' => $text);
-    }
-
-    return array('status' => 'closed', 'text' => $settings['text_closed']);
+    return array('status' => 'closed', 'text' => $settings['text_closed'], 'pos' => 'inherit');
 }
 
 /**
@@ -143,10 +143,10 @@ function adremm_clock_frontend_enqueue() {
 
     $font_keys = array('theme_font', 'digital_font', 'font_status', 'font_date');
     foreach ($font_keys as $key) {
-        if (!empty($settings[$key]) && $settings[$key] !== 'inherit') {
+        if (!empty($settings[$key]) && $settings[$key] !== 'inherit' && $settings[$key] !== 'Thema') {
             $font = str_replace(' ', '+', $settings[$key]);
             $handle = 'adremm-clock-font-' . sanitize_title($font);
-            wp_enqueue_style($handle, "https://fonts.googleapis.com/css2?family={$font}:wght@400;700&display=swap", false);
+            wp_enqueue_style($handle, "https://fonts.googleapis.com/css2?family={$font}:wght@100;400;700&display=swap", false);
         }
     }
 }

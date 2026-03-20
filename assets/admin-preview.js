@@ -1,5 +1,5 @@
 /**
- * ADREMM Clock Admin Preview Logic V4 - FULL UPGRADE
+ * ADREMM Clock Admin Preview Logic V5 - FULL UPGRADE
  */
 jQuery(document).ready(function($) {
     const $form = $('#adremm-clock-form, #adremm-clock-mobile-form');
@@ -138,8 +138,8 @@ jQuery(document).ready(function($) {
         };
 
         // Root styles & Theme classes
-        $liveView.removeClass('theme-mode-light theme-mode-dark theme-mode-auto');
-        $liveView.addClass('theme-mode-' + s.theme_mode);
+        $liveView.removeClass('theme-mode-light theme-mode-dark theme-mode-auto panel-size-small panel-size-normal panel-size-large');
+        $liveView.addClass('theme-mode-' + s.theme_mode + ' panel-size-' + s.panel_size);
 
         $liveView.css({
             '--user-bg': (s.bg_color && s.bg_color !== 'transparent') ? s.bg_color : 'transparent',
@@ -208,21 +208,21 @@ jQuery(document).ready(function($) {
             });
 
             $liveView.find('.hand.hour').attr('class', 'hand hour ' + s.hand_hour_style).css({
-                'background-color': (s.hand_hour_style === 'steampunk' ? 'transparent' : s.hand_hour_color),
+                'background-color': s.hand_hour_color,
                 'color': s.hand_hour_color,
                 'width': s.hand_hour_thick + 'px',
                 'height': s.hand_hour_len + '%',
                 'transform': `scale(${s.analog_hand_scale})`
             });
             $liveView.find('.hand.min').attr('class', 'hand min ' + s.hand_min_style).css({
-                'background-color': (s.hand_min_style === 'steampunk' ? 'transparent' : s.hand_min_color),
+                'background-color': s.hand_min_color,
                 'color': s.hand_min_color,
                 'width': s.hand_min_thick + 'px',
                 'height': s.hand_min_len + '%',
                 'transform': `scale(${s.analog_hand_scale})`
             });
             $liveView.find('.hand.sec').attr('class', 'hand sec ' + s.hand_sec_style).css({
-                'background-color': (s.hand_sec_style === 'steampunk' ? 'transparent' : s.hand_sec_color),
+                'background-color': s.hand_sec_color,
                 'color': s.hand_sec_color,
                 'width': s.hand_sec_thick + 'px',
                 'height': s.hand_sec_len + '%',
@@ -240,7 +240,7 @@ jQuery(document).ready(function($) {
             $timeWrap.prepend($time);
         }
 
-        $time.parent().removeClass('digital-style-alarm digital-style-wall digital-style-custom digital-style-blocks digital-style-dots digital-style-design has-glow');
+        $time.parent().removeClass('digital-style-alarm digital-style-wall digital-style-custom digital-style-blocks digital-style-dots digital-style-design digital-style-pixels has-glow');
         $time.parent().addClass('time-row');
 
         if (s.show_digital === 'yes') {
@@ -274,8 +274,9 @@ jQuery(document).ready(function($) {
                                 </div>
                                 <div class="radio-side-panel">
                                     <div class="radio-logo-brand"><div class="logo-circle">A</div><div class="brand-text">Radio</div></div>
-                                    <div class="radio-controls-grill">
-                                        <div class="volume-knob on" id="adremm-radio-toggle-preview"><div class="knob-line"></div></div>
+                                    <div class="radio-controls-grid">
+                                        <div class="power-btn on" id="adremm-radio-toggle-preview">X</div>
+                                        <div class="volume-knob on"><div class="knob-line"></div></div>
                                     </div>
                                 </div>
                             </div>`);
@@ -285,16 +286,21 @@ jQuery(document).ready(function($) {
             } else if (s.digital_style === 'blocks') {
                 $time.html(`<span class="b">${hh}</span>:<span class="b">${mm}</span>:<span class="b">${ss}</span>`);
             } else if (s.digital_style === 'wall') {
-                const digits = (hh + mm).split('');
+                const digits = (hh + mm + ss).split('');
                 let html = '';
                 digits.forEach((d, i) => {
-                    html += `<div class="digit-col"><span style="transform: translateY(-${parseInt(d) * 32}px)">0\n1\n2\n3\n4\n5\n6\n7\n8\n9</span></div>`;
-                    if (i === 1) html += '<span>:</span>';
+                    html += `<div class="digit-col"><span>0\n1\n2\n3\n4\n5\n6\n7\n8\n9</span></div>`;
+                    if (i === 1 || i === 3) html += '<div class="sep">:</div>';
                 });
-                $time.html(`${html}<span class="sec" style="opacity:0.4">:${ss}</span>`);
+                $time.html(html);
+                $time.find('.digit-col').each(function(i) {
+                    $(this).find('span').css('transform', `translateY(-${parseInt(digits[i]) * 42}px)`);
+                });
             } else if (s.digital_style === 'design') {
                 $time.parent().toggleClass('vertical', s.digital_orientation === 'vertical');
                 $time.html(`<span class="day">MA</span> ${hh}:${mm}<span class="sec">${ss}</span>`);
+            } else if (s.digital_style === 'pixels') {
+                $time.text(`${hh}:${mm}:${ss}`);
             } else {
                 $time.text(`${hh}:${mm}:${ss}`);
             }
@@ -332,7 +338,6 @@ jQuery(document).ready(function($) {
         if (s.extra_marquee === 'yes') $extra.addClass('marquee-preview');
         else $extra.removeClass('marquee-preview');
 
-        $liveView.removeClass('size-small size-normal size-large').addClass('size-' + s.panel_size);
         updateCloseBtn(s);
     }
 
@@ -379,31 +384,28 @@ jQuery(document).ready(function($) {
         $liveView.find('.hand.min').css('transform', `rotate(${m * 6 + s * 0.1}deg)`);
         $liveView.find('.hand.hour').css('transform', `rotate(${h * 30 + m * 0.5}deg)`);
 
-        if (ms < 100) {
-            const style = getVal('digital_style');
-            const hh = String(h).padStart(2, '0');
-            const mm = String(m).padStart(2, '0');
-            const ss = String(s).padStart(2, '0');
-            const $time = $liveView.find('.preview-time');
+        const style = getVal('digital_style');
+        const hh = String(h).padStart(2, '0');
+        const mm = String(m).padStart(2, '0');
+        const ss = String(s).padStart(2, '0');
+        const $time = $liveView.find('.preview-time');
 
-            if (style === 'alarm') {
-                 const $tubes = $time.find('.nixie-tube');
-                 if ($tubes.length) {
-                     $tubes.eq(0).text(hh[0]); $tubes.eq(1).text(hh[1]);
-                     $tubes.eq(2).text(mm[0]); $tubes.eq(3).text(mm[1]);
-                 }
-                 const $scroll = $time.find('.radio-scale-scroll-v');
-                 if ($scroll.length) $scroll.css('transform', `translateY(${-s * 20}px)`);
-            } else if (style === 'blocks') {
+        if (style === 'alarm') {
+             const $tubes = $time.find('.nixie-tube');
+             if ($tubes.length) {
+                 $tubes.eq(0).text(hh[0]); $tubes.eq(1).text(hh[1]);
+                 $tubes.eq(2).text(mm[0]); $tubes.eq(3).text(mm[1]);
+             }
+             const $scroll = $time.find('.radio-scale-scroll-v');
+             if ($scroll.length) $scroll.css('transform', `translateY(${-s * 20}px)`);
+        } else if (style === 'wall') {
+            const digits = (hh + mm + ss).split('');
+            $time.find('.digit-col').each(function(i) {
+                $(this).find('span').css('transform', `translateY(-${parseInt(digits[i]) * 42}px)`);
+            });
+        } else if (ms < 100) {
+            if (style === 'blocks') {
                 $time.html(`<span class="b">${hh}</span>:<span class="b">${mm}</span>:<span class="b">${ss}</span>`);
-            } else if (style === 'wall') {
-                const digits = (hh + mm).split('');
-                let html = '';
-                digits.forEach((d, i) => {
-                    html += `<div class="digit-col"><span style="transform: translateY(-${parseInt(d) * 32}px)">0\n1\n2\n3\n4\n5\n6\n7\n8\n9</span></div>`;
-                    if (i === 1) html += '<span>:</span>';
-                });
-                $time.html(`${html}<span class="sec" style="opacity:0.4">:${ss}</span>`);
             } else if (style === 'design') {
                 $time.html(`<span class="day">MA</span> ${hh}:${mm}<span class="sec">${ss}</span>`);
             } else {
