@@ -75,6 +75,8 @@ function adremm_clock_get_default_settings() {
         'digital_glow_color' => '#ffffff',
         'digital_glow_spread' => '10',
         'digital_orientation' => 'horizontal',
+        'digital_width' => '200',
+        'digital_height' => '60',
 
         // Radio
         'radio_enabled' => 'no',
@@ -152,7 +154,8 @@ function adremm_clock_settings_validate($input) {
 
     $float_keys = array(
         'analog_not_scale', 'analog_hand_scale', 'analog_hour_thick', 'analog_min_thick',
-        'hand_hour_thick', 'hand_min_thick', 'hand_sec_thick', 'analog_ring_size', 'panel_width'
+        'hand_hour_thick', 'hand_min_thick', 'hand_sec_thick', 'analog_ring_size', 'panel_width',
+        'digital_width', 'digital_height'
     );
 
     if (is_array($input)) {
@@ -163,13 +166,16 @@ function adremm_clock_settings_validate($input) {
                  $color = trim((string)$val);
                  if (empty($color) || $color === 'transparent' || $color === 'rgba(0,0,0,0)') {
                      $output[$key] = 'transparent';
-                 } elseif (preg_match('/^rgba\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*(0(\.\d+)?|1(\.0+)?)\s*\)$/', $color) ||
-                     preg_match('/^#([A-Fa-f0-9]{3,8})$/', $color)) {
+                 } elseif (
+                     preg_match('/^rgba\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*(0(\.\d+)?|1(\.0+)?)\s*\)$/', $color) ||
+                     preg_match('/^rgb\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*\)$/', $color) ||
+                     preg_match('/^#([A-Fa-f0-9]{3,8})$/', $color)
+                 ) {
                     $output[$key] = $color;
                  }
             } elseif (in_array($key, $float_keys)) {
                 $output[$key] = filter_var($val, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-            } elseif ($key === 'opening_hours' || $key === 'extra_message') {
+            } elseif ($key === 'opening_hours' || $key === 'exceptional_days' || $key === 'extra_message') {
                 $output[$key] = $val;
             } else {
                 $output[$key] = sanitize_text_field($val);

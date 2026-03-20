@@ -6,14 +6,34 @@
     <link rel="stylesheet" href="assets/public-style.css">
     <style>
         body { background: #f0f0f0; display: flex; flex-direction: column; gap: 50px; align-items: center; min-height: 200vh; padding: 50px; margin: 0; }
-        .clock-preview-wrap { position: relative; width: 500px; height: 300px; border: 1px dashed #ccc; display: flex; justify-content: center; align-items: center; }
+        .clock-preview-wrap { position: relative; width: 500px; height: 350px; border: 1px dashed #ccc; display: flex; justify-content: center; align-items: center; }
         #adremm-clock-wrapper { position: relative !important; top: auto !important; left: auto !important; bottom: auto !important; right: auto !important; transform-origin: center !important; }
     </style>
 </head>
 <body>
-    <h1>Vintage Radio (v1.0.4)</h1>
+    <h1>Analog Clock (With Notations & Minute hand check)</h1>
     <div class="clock-preview-wrap">
-        <div id="adremm-clock-wrapper" class="adremm-clock-panel adremm-clock-pos-bottom-right theme-mode-light panel-size-normal" style="--user-bg: #ffffff; --user-text: #111111; font-family: sans-serif; --panel-width: 450px;">
+        <div id="adremm-clock-wrapper" class="adremm-clock-panel adremm-clock-pos-bottom-right theme-mode-light panel-size-normal" style="--user-bg: #ffffff; --user-text: #111111; font-family: sans-serif; --panel-width: 300px;">
+            <div class="adremm-clock-container" style="box-shadow: 0 10px 40px rgba(0,0,0,0.15); border: 1px solid rgba(0,0,0,0.05); width: var(--panel-width);">
+                <div class="adremm-clock-main">
+                    <div class="adremm-clock-analog">
+                        <div class="face" style="background-color: #000; border-color: #3399ff; border-width: 2px;">
+                            <div class="notations hour-notations" style="color: #ffffff; --not-thick: 2px; --not-len: 10px;">
+                                <i style="transform: rotate(30deg)"></i><i style="transform: rotate(60deg)"></i><i style="transform: rotate(90deg)"></i><i style="transform: rotate(120deg)"></i><i style="transform: rotate(150deg)"></i><i style="transform: rotate(180deg)"></i><i style="transform: rotate(210deg)"></i><i style="transform: rotate(240deg)"></i><i style="transform: rotate(270deg)"></i><i style="transform: rotate(300deg)"></i><i style="transform: rotate(330deg)"></i><i style="transform: rotate(360deg)"></i>
+                            </div>
+                            <div class="h-hour" style="background-color: #ffffff; color: #ffffff; width: 4px; height: 40px; transform: rotate(90deg);"></div>
+                            <div class="h-min" style="background-color: #00ff00; color: #00ff00; width: 3px; height: 50px; transform: rotate(180deg);"></div>
+                            <div class="h-sec" style="background-color: #ff3b30; color: #ff3b30; width: 1px; height: 55px; transform: rotate(270deg);"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h1>Vintage Radio</h1>
+    <div class="clock-preview-wrap">
+        <div id="adremm-clock-wrapper-radio" class="adremm-clock-panel adremm-clock-pos-bottom-right theme-mode-light panel-size-normal" style="--user-bg: #ffffff; --user-text: #111111; font-family: sans-serif; --panel-width: 450px;">
             <div class="adremm-clock-container" style="box-shadow: 0 10px 40px rgba(0,0,0,0.15); border: 1px solid rgba(0,0,0,0.05); width: var(--panel-width);">
                 <div class="adremm-clock-main">
                     <div class="adremm-clock-info">
@@ -85,16 +105,5 @@
             </div>
         </div>
     </div>
-
-    <script>
-        window.adremmClockData = {
-            handSweep: 'smooth',
-            locale: 'nl-NL',
-            panelSize: 'normal',
-            radioEnabled: 'yes',
-            radioChannel: 'hits'
-        };
-    </script>
-    <script src="assets/public-clock.js"></script>
 </body>
 </html>

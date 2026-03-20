@@ -1,4 +1,4 @@
-/* ADREMM Clock Frontend Styles V2.2 */
+/* ADREMM Clock Frontend Styles V2.3 */
 #adremm-clock-wrapper {
     position: fixed;
     z-index: 2147483647;
@@ -6,7 +6,6 @@
     color: var(--adremm-clock-text);
     background-color: var(--adremm-clock-bg);
     box-sizing: border-box;
-    /* Basic scaling via font-size inheritance if needed, but mainly transform-scale */
 }
 
 #adremm-clock-wrapper * { box-sizing: border-box; }
@@ -48,402 +47,128 @@
     }
 }
 
-/* SIZES (Legacy logic, but we'll prefer global transform-scale) */
+/* SIZES (Transform scaling based on position) */
 #adremm-clock-wrapper.panel-size-small { transform: scale(0.75); }
 #adremm-clock-wrapper.panel-size-normal { transform: scale(1); }
 #adremm-clock-wrapper.panel-size-large { transform: scale(1.25); }
 
-/* Ensure transform doesn't break fixed position */
 #adremm-clock-wrapper.adremm-clock-pos-bottom-right { transform-origin: bottom right; }
 #adremm-clock-wrapper.adremm-clock-pos-bottom-left { transform-origin: bottom left; }
 #adremm-clock-wrapper.adremm-clock-pos-top-left { transform-origin: top left; }
 #adremm-clock-wrapper.adremm-clock-pos-top-right { transform-origin: top right; }
+#adremm-clock-wrapper.adremm-clock-pos-middle-left { transform-origin: center left; }
+#adremm-clock-wrapper.adremm-clock-pos-middle-right { transform-origin: center right; }
 
-/* BAR LAYOUT (Header/Footer) */
+/* BAR LAYOUT */
 .adremm-clock-bar {
-    left: 0;
-    width: 100%;
-    height: 60px !important;
+    left: 0; width: 100%; height: 60px !important;
     background: var(--adremm-clock-bg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 0 20px rgba(0,0,0,0.1);
-    padding: 0 20px;
-    top: 0; /* Default HD */
-    transform: none !important; /* Bars don't scale like panels */
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1); padding: 0 20px;
+    transform: none !important;
 }
-
 .adremm-clock-bar.adremm-clock-pos-top-center { top: 0; border-bottom: 1px solid rgba(0,0,0,0.1); }
 .adremm-clock-bar.adremm-clock-pos-bottom-center { bottom: 0; border-top: 1px solid rgba(0,0,0,0.1); }
 
-.adremm-clock-bar .adremm-clock-main {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 30px;
-    max-width: 1200px;
-}
-
-.adremm-clock-bar .adremm-clock-info {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 20px;
-}
-
-.adremm-clock-bar .adremm-clock-analog { width: 40px; height: 40px; }
-.adremm-clock-bar .face { width: 40px; height: 40px; }
-.adremm-clock-bar .extra-row { display: none; }
-
 /* Common Elements */
 .adremm-clock-analog { margin-bottom: 15px; }
-.adremm-clock-bar .adremm-clock-analog { margin-bottom: 0; }
+.face { width: 120px; height: 120px; border-radius: 50%; background: #000; border: 2px solid #3399ff; position: relative; margin: 0 auto; overflow: hidden; }
 
-.face { width: 80px; height: 80px; border-radius: 50%; background: #000; border: 2px solid #3399ff; position: relative; margin: 0 auto; overflow: hidden; }
-.h-hour, .h-min, .h-sec {
-    position: absolute;
-    bottom: 50%;
-    left: 50%;
-    transform-origin: bottom center;
-    background: #fff;
-    border-radius: 4px;
-    z-index: 10;
-    transform: rotate(var(--hand-rotate, 0deg)) scale(var(--hand-scale, 1));
-}
-.h-hour { height: 25px; width: 3px; margin-left: -1.5px; }
-.h-min { height: 35px; width: 2px; margin-left: -1px; }
-.h-sec { height: 38px; width: 1px; background: #ff3b30; margin-left: -0.5px; }
-
-/* Notations (Ticks) */
-.notations {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-}
-.notations i {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    width: var(--not-thick);
-    height: var(--not-len);
-    background: currentColor;
-    transform-origin: center 40px;
-    margin-left: calc(var(--not-thick) / -2);
-}
+/* Analog Notations */
+.notations { position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; }
+.notations i { position: absolute; top: 0; left: 50%; width: var(--not-thick); height: var(--not-len); background: currentColor; transform-origin: 50% 60px; }
 .notations.above { z-index: 20; }
 
-/* Digital Styles */
-.time-row.has-glow .time-digital {
-    text-shadow: 0 0 var(--digital-glow-spread) var(--digital-glow-color) !important;
+.h-hour, .h-min, .h-sec {
+    position: absolute; bottom: 50%; left: 50%; transform-origin: bottom center;
+    border-radius: 4px; z-index: 10;
 }
+/* Ensure currentColor works for styles */
+.h-hour { height: 35px; width: 3px; margin-left: -1.5px; }
+.h-min { height: 45px; width: 2px; margin-left: -1px; }
+.h-sec { height: 50px; width: 1px; background: #ff3b30; margin-left: -0.5px; }
 
-/* MATRIX (Blocks) - Split-flap look */
+/* Digital Styles */
+.time-row.has-glow .time-digital { text-shadow: 0 0 var(--digital-glow-spread) var(--digital-glow-color) !important; }
+
+/* MATRIX (Blocks) */
 .time-row.digital-style-blocks .time-digital {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    background: #000;
-    padding: 20px;
-    border-radius: 12px;
-    position: relative;
-    overflow: hidden;
+    display: flex; justify-content: center; gap: 8px; background: #000; padding: 20px; border-radius: 12px; position: relative; overflow: hidden;
 }
 .time-row.digital-style-blocks .time-digital span.b {
-    background: #111;
-    color: #44ff44;
-    padding: 15px 8px;
-    border-radius: 6px;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 38px;
-    font-weight: bold;
-    min-width: 55px;
-    display: inline-block;
-    position: relative;
-    box-shadow: inset 0 0 10px #000;
+    background: #111; color: #44ff44; padding: 15px 8px; border-radius: 6px; font-family: 'Courier New', Courier, monospace; font-size: 38px; font-weight: bold; min-width: 55px; display: inline-block; position: relative; box-shadow: inset 0 0 10px #000;
 }
 
-/* PIXELS - Digital Digit Block Design */
+/* PIXELS - Digital block style */
 @font-face {
     font-family: 'PixelDigital';
     src: url('https://fonts.cdnfonts.com/s/16124/Digital-7.woff') format('woff');
 }
-
 .time-row.digital-style-pixels .time-digital {
-    font-family: 'PixelDigital', monospace;
-    font-size: 64px;
-    color: #ff9500;
-    background: #111;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: inset 0 0 15px #000;
-    letter-spacing: 5px;
-    display: inline-block;
+    font-family: 'PixelDigital', monospace; font-size: 64px; color: #ff9500; background: #111; padding: 15px 25px; border-radius: 8px; box-shadow: inset 0 0 15px #000; letter-spacing: 4px; display: inline-block; border: 2px solid #222;
 }
 
-/* VINTAGE RADIOWEKKER - SKIN BASED ON IMAGE */
+/* VINTAGE RADIO */
 .time-row.digital-style-alarm {
-    background: #331d14;
-    padding: 20px;
-    border: 8px solid #4a2c1e;
-    border-radius: 30px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 60px rgba(0,0,0,0.5);
-    position: relative;
-    overflow: hidden;
-    display: block !important;
+    background: #331d14; padding: 20px; border: 8px solid #4a2c1e; border-radius: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 60px rgba(0,0,0,0.5); position: relative; overflow: hidden; display: block !important;
 }
-
-.radio-vintage-body {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 15px;
-    width: 100%;
-}
-
-.nixie-tubes {
-    display: flex;
-    gap: 6px;
-    background: #1a0f0a;
-    padding: 12px;
-    border-radius: 15px;
-    border: 3px solid #2a1b15;
-    box-shadow: inset 0 0 30px #000;
-    align-items: center;
-    flex-shrink: 0;
-}
-
-.nixie-tube {
-    width: 50px;
-    height: 80px;
-    background: radial-gradient(circle, #3d2b24 0%, #1a0f0a 100%);
-    border-radius: 12px;
-    border: 1px solid rgba(255,102,0,0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Geist', 'Courier New', monospace;
-    font-size: 52px;
-    font-weight: 300;
-    color: #ff6600;
-    text-shadow: 0 0 20px #ff6600, 0 0 5px #fff;
-    position: relative;
-    box-shadow: 0 0 15px rgba(255,102,0,0.1);
-}
-
+.radio-vintage-body { display: flex; align-items: center; justify-content: center; gap: 15px; width: 100%; }
+.nixie-tubes { display: flex; gap: 6px; background: #1a0f0a; padding: 12px; border-radius: 15px; border: 3px solid #2a1b15; box-shadow: inset 0 0 30px #000; align-items: center; flex-shrink: 0; }
+.nixie-tube { width: 50px; height: 80px; background: radial-gradient(circle, #3d2b24 0%, #1a0f0a 100%); border-radius: 12px; border: 1px solid rgba(255,102,0,0.3); display: flex; align-items: center; justify-content: center; font-family: 'Geist', 'Courier New', monospace; font-size: 52px; font-weight: 300; color: #ff6600; text-shadow: 0 0 20px #ff6600, 0 0 5px #fff; position: relative; }
 .nixie-tube-gap { width: 10px; color: #ff6600; font-size: 32px; font-weight: bold; }
-
-/* Vertical Seconds Scale */
-.radio-scale-container {
-    width: 45px;
-    height: 80px;
-    background: #fff;
-    border-radius: 8px;
-    position: relative;
-    overflow: hidden;
-    border: 2px solid #5a3d31;
-    flex-shrink: 0;
-}
-
-.radio-scale-scroll-v {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    transition: transform 0.1s linear;
-    padding-top: 30px;
-}
-
-.scale-mark {
-    height: 20px;
-    font-size: 10px;
-    color: #333;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    gap: 3px;
-    width: 100%;
-    justify-content: center;
-    border-bottom: 1px solid #eee;
-}
-
+.radio-scale-container { width: 45px; height: 80px; background: #fff; border-radius: 8px; position: relative; overflow: hidden; border: 2px solid #5a3d31; flex-shrink: 0; }
+.radio-scale-scroll-v { display: flex; flex-direction: column; align-items: center; transition: transform 0.1s linear; padding-top: 30px; }
+.scale-mark { height: 20px; font-size: 10px; color: #333; font-weight: bold; display: flex; align-items: center; gap: 3px; width: 100%; justify-content: center; border-bottom: 1px solid #eee; }
 .scale-mark span { color: #f00; font-size: 12px; }
-
-.scale-indicator {
-    position: absolute;
-    top: 50%;
-    left: -2px;
-    transform: translateY(-50%);
-    border-left: 8px solid #444;
-    border-top: 5px solid transparent;
-    border-bottom: 5px solid transparent;
-    z-index: 10;
-}
-
-/* Side Panel with Logo and Knob */
-.radio-side-panel {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    flex-shrink: 0;
-    min-width: 80px;
-}
-
-.radio-logo-brand {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    color: #fff;
-}
-
-.logo-circle {
-    width: 24px;
-    height: 24px;
-    border: 2px solid #fff;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    font-size: 16px;
-}
-
-.brand-text {
-    font-family: 'Brush Script MT', cursive;
-    font-style: italic;
-    color: #ff6600;
-    font-size: 12px;
-    margin-top: -3px;
-}
-
-.radio-controls-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    background: #222;
-    padding: 8px;
-    border-radius: 8px;
-    border: 1px solid #111;
-    box-shadow: inset 0 0 5px #000;
-}
-
-.power-btn {
-    width: 28px;
-    height: 28px;
-    background: #444;
-    border-radius: 50%;
-    border: 2px solid #222;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #ff3b30;
-    font-size: 12px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.4);
-}
+.scale-indicator { position: absolute; top: 50%; left: -2px; transform: translateY(-50%); border-left: 8px solid #444; border-top: 5px solid transparent; border-bottom: 5px solid transparent; z-index: 10; }
+.radio-side-panel { display: flex; flex-direction: column; align-items: center; gap: 12px; flex-shrink: 0; min-width: 80px; }
+.logo-circle { width: 24px; height: 24px; border: 2px solid #fff; border-radius: 50%; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; }
+.brand-text { font-family: 'Brush Script MT', cursive; color: #ff6600; font-size: 12px; margin-top: -3px; }
+.radio-controls-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: #222; padding: 8px; border-radius: 8px; border: 1px solid #111; box-shadow: inset 0 0 5px #000; }
+.power-btn { width: 28px; height: 28px; background: #444; border-radius: 50%; border: 2px solid #222; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #ff3b30; font-size: 12px; }
 .power-btn.on { background: #ff3b30; color: #fff; box-shadow: 0 0 10px #ff3b30; }
+.volume-knob { width: 28px; height: 28px; background: #333; border-radius: 50%; border: 2px solid #555; position: relative; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.6); transition: transform 0.4s; }
+.knob-line { position: absolute; top: 3px; left: 50%; width: 2px; height: 8px; background: #fff; transform: translateX(-50%); border-radius: 1px; }
 
-.volume-knob {
-    width: 28px;
-    height: 28px;
-    background: #333;
-    border-radius: 50%;
-    border: 2px solid #555;
-    position: relative;
-    cursor: pointer;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.6);
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.knob-line {
-    position: absolute;
-    top: 3px;
-    left: 50%;
-    width: 2px;
-    height: 8px;
-    background: #fff;
-    transform: translateX(-50%);
-    border-radius: 1px;
-}
-
-/* WALL (Muurklok) - Sliding Digits for all 6 */
+/* WALL CLOCK - Rolling 6 digits */
 .time-row.digital-style-wall {
-    background: #000 !important;
-    border: 3px solid #444 !important;
-    border-radius: 4px !important;
-    width: 100% !important;
-    max-width: 320px !important;
-    height: 100px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    margin: 0 auto 15px !important;
-    color: #fff !important;
-    box-shadow: inset 0 0 15px rgba(255,255,255,0.05), 0 10px 25px rgba(0,0,0,0.7) !important;
-    padding: 0 !important;
-    font-family: 'Courier New', Courier, monospace !important;
-    overflow: hidden;
+    background: #000 !important; border: 3px solid #444 !important; border-radius: 4px !important; width: 100% !important; max-width: 340px !important; height: 100px !important; display: flex !important; align-items: center !important; justify-content: center !important; margin: 0 auto 15px !important; color: #fff !important; box-shadow: inset 0 0 15px rgba(255,255,255,0.05), 0 10px 25px rgba(0,0,0,0.7) !important; padding: 0 10px !important; font-family: 'Courier New', Courier, monospace !important; overflow: hidden;
 }
-.time-row.digital-style-wall .time-digital { font-size: 42px; font-weight: 300; display: flex; align-items: center; gap: 2px; }
-.time-row.digital-style-wall .time-digital .digit-col { display: flex; flex-direction: column; height: 42px; overflow: hidden; position: relative; }
-.time-row.digital-style-wall .time-digital .digit-col span { display: block; width: 26px; line-height: 42px; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); text-align: center; font-size: 42px; }
-.time-row.digital-style-wall .time-digital .sep { width: 15px; text-align: center; }
+.time-row.digital-style-wall .time-digital { font-size: 48px; font-weight: 300; display: flex; align-items: center; gap: 4px; }
+.time-row.digital-style-wall .digit-col { display: flex; flex-direction: column; height: 48px; overflow: hidden; position: relative; }
+.time-row.digital-style-wall .digit-col span { display: block; width: 32px; line-height: 48px; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); text-align: center; }
+.time-row.digital-style-wall .sep { width: 15px; text-align: center; opacity: 0.5; }
 
-/* DESIGN (Minimalist) */
-.time-row.digital-style-design {
-    font-family: 'Inter', 'Helvetica Neue', Helvetica, sans-serif;
-    font-weight: 100;
-    font-size: 48px;
-    letter-spacing: -2px;
-    color: var(--adremm-clock-text);
-    line-height: 1;
-    display: flex;
-    align-items: baseline;
-    justify-content: center;
-}
+/* Hand Styles */
+.h-hour.heart, .h-min.heart, .h-sec.heart { background: transparent !important; position: relative; }
+.h-hour.heart::before, .h-min.heart::before, .h-sec.heart::before { content: "❤"; position: absolute; top: 0; left: 50%; transform: translateX(-50%); font-size: 24px; color: inherit; }
+.h-hour.steampunk, .h-min.steampunk, .h-sec.steampunk { background: transparent !important; border: 2px solid currentColor; border-radius: 50%; position: relative; width: 24px !important; height: 24px !important; margin-left: -12px !important; color: inherit; }
+.h-hour.steampunk::after, .h-min.steampunk::after, .h-sec.steampunk::after { content: ""; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 2px; height: 100%; background: currentColor; }
+.h-hour.steampunk::before, .h-min.steampunk::before, .h-sec.steampunk::before { content: "⚙"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 16px; }
 
-.time-digital { font-size: 24px; font-weight: 800; }
+/* Status, Date etc */
 .status-row { font-weight: bold; font-size: 18px; margin: 5px 0; }
 .date-row { font-size: 14px; opacity: 0.8; }
 .extra-row { font-size: 11px; margin-top: 10px; line-height: 1.4; opacity: 0.9; }
 
-/* Floating Positions */
+/* Positions */
 .adremm-clock-pos-top-left { top: 20px; left: 20px; }
 .adremm-clock-pos-top-right { top: 20px; right: 20px; }
-.adremm-clock-pos-middle-left { top: 50%; left: 20px; transform: translateY(-50%); }
-.adremm-clock-pos-middle-right { top: 50%; right: 20px; transform: translateY(-50%); }
+.adremm-clock-pos-middle-left { top: 50%; left: 20px; transform: translateY(-50%) var(--scale-val, scale(1)); }
+.adremm-clock-pos-middle-right { top: 50%; right: 20px; transform: translateY(-50%) var(--scale-val, scale(1)); }
 .adremm-clock-pos-bottom-left { bottom: 20px; left: 20px; }
 .adremm-clock-pos-bottom-right { bottom: 20px; right: 20px; }
 
 /* Tab Style */
 .adremm-clock-tab {
-    position: fixed;
-    width: 25px !important;
-    height: 100px !important;
-    background: var(--adremm-clock-bg);
-    color: var(--adremm-clock-text);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    border: 1px solid rgba(0,0,0,0.1);
-    transition: width 0.3s, background-color 0.3s;
-    z-index: 2147483647;
+    position: fixed; width: 25px !important; height: 100px !important; background: var(--adremm-clock-bg); color: var(--adremm-clock-text); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border: 1px solid rgba(0,0,0,0.1); z-index: 2147483647;
 }
-.adremm-clock-tab:hover { width: 35px !important; }
-.adremm-clock-tab .tab-label { transform: rotate(-90deg); white-space: nowrap; font-weight: bold; font-size: 11px; letter-spacing: 2px; font-family: inherit; }
-
+.adremm-clock-tab .tab-label { transform: rotate(-90deg); white-space: nowrap; font-weight: bold; font-size: 11px; letter-spacing: 2px; }
 .adremm-clock-tab.tab-left { left: 0; border-radius: 0 10px 10px 0; top: 50%; transform: translateY(-50%); }
 .adremm-clock-tab.tab-right { right: 0; border-radius: 10px 0 0 10px; top: 50%; transform: translateY(-50%); }
 
-/* Mobile Breakpoints */
 .adremm-clock-mobile-hide { display: none !important; }
 
 @media screen and (max-width: 768px) {
-    #adremm-clock-wrapper { transform: scale(0.7) !important; }
-    #adremm-clock-wrapper.mobile-pos-top-center, #adremm-clock-wrapper.mobile-pos-bottom-center { transform: none !important; }
+    #adremm-clock-wrapper { transform: scale(0.65) !important; }
 }

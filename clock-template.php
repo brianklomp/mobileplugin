@@ -76,6 +76,11 @@ $style_vars = sprintf(
                         background-color: <?php echo esc_attr($settings['digital_bg']); ?>;
                         --digital-glow-color: <?php echo esc_attr($settings['digital_glow_color']); ?>;
                         --digital-glow-spread: <?php echo esc_attr($settings['digital_glow_spread']); ?>px;
+                        <?php if($settings['digital_style'] === 'custom'): ?>
+                        width: <?php echo esc_attr($settings['digital_width']); ?>px;
+                        height: <?php echo esc_attr($settings['digital_height']); ?>px;
+                        display: flex; align-items: center; justify-content: center;
+                        <?php endif; ?>
                     ">
                         <?php if ($settings['digital_style'] === 'alarm'): ?>
                             <div class="radio-vintage-body">
