@@ -28,7 +28,7 @@ $style_vars = sprintf(
 );
 ?>
 
-<div id="adremm-clock-wrapper" class="<?php echo esc_attr($layout_class); ?> <?php echo esc_attr($position_class); ?> <?php echo esc_attr($theme_class); ?> panel-size-<?php echo esc_attr($settings['panel_size']); ?> <?php echo esc_attr($mobile_vis_class); ?> <?php echo esc_attr($mobile_pos_class); ?> <?php echo esc_attr($mobile_size_class); ?> <?php echo (isset($settings['panel_custom_override']) && $settings['panel_custom_override'] === 'yes') ? 'custom-width-active' : ''; ?>" style="<?php echo esc_attr($style_vars); ?> --panel-width: <?php echo esc_attr($settings['panel_width']); ?>px;">
+<div id="adremm-clock-wrapper" class="<?php echo esc_attr($layout_class); ?> <?php echo esc_attr($position_class); ?> <?php echo esc_attr($theme_class); ?> panel-size-<?php echo esc_attr($settings['panel_size']); ?> <?php echo esc_attr($mobile_vis_class); ?> <?php echo esc_attr($mobile_pos_class); ?> <?php echo esc_attr($mobile_size_class); ?> <?php echo (isset($settings['panel_custom_override']) && $settings['panel_custom_override'] === 'yes') ? 'custom-width-active' : ''; ?>" style="<?php echo esc_attr($style_vars); ?> <?php if(isset($settings['panel_custom_override']) && $settings['panel_custom_override'] === 'yes') { echo '--panel-width: ' . esc_attr($settings['panel_width']) . 'px;'; } ?>">
 
     <div class="adremm-clock-container" style="box-shadow: <?php echo esc_attr($settings['panel_shadow']); ?>; border: <?php echo esc_attr($settings['panel_border']); ?>; width: var(--panel-width);">
         <?php if (!$is_bar && ($settings['show_close_x'] === 'yes' || $settings['show_close_label'] === 'yes')): ?>

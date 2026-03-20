@@ -44,9 +44,11 @@
 }
 
 /* Strict Sizes in Preview */
-#clock-live-view.panel-size-small { width: 280px !important; }
-#clock-live-view.panel-size-normal { width: 380px !important; }
-#clock-live-view.panel-size-large { width: 480px !important; }
+#clock-live-view.panel-size-small { --panel-width: 280px; }
+#clock-live-view.panel-size-normal { --panel-width: 380px; }
+#clock-live-view.panel-size-large { --panel-width: 480px; }
+
+#clock-live-view { width: var(--panel-width, 380px) !important; }
 
 #clock-live-view.panel-size-small .time-row { --digital-w: 250px; --digital-h: 100px; }
 #clock-live-view.panel-size-normal .time-row { --digital-w: 310px; --digital-h: 125px; }
@@ -126,21 +128,21 @@
 
 /* Admin Analog Preview */
 .clock-face { width: 80px; height: 80px; border-radius: 50%; background: #000; border: 2px solid #3399ff; position: relative; margin: 0 auto 15px; overflow: hidden; }
-.clock-face.theme-mondriaan { border-radius: 0; background: #fff; border: 6px solid #000 !important; }
+.clock-face.theme-mondriaan { border-radius: 0; background: #fff; border: 8px solid #000 !important; }
 .clock-face.theme-mondriaan::before {
     content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
     background:
-        linear-gradient(90deg, #000 6px, transparent 6px) 25% 0,
-        linear-gradient(90deg, #000 6px, transparent 6px) 75% 0,
-        linear-gradient(0deg, #000 6px, transparent 6px) 0 35%,
-        linear-gradient(0deg, #000 6px, transparent 6px) 0 70%;
+        linear-gradient(90deg, #000 8px, transparent 8px) 30% 0,
+        linear-gradient(90deg, #000 8px, transparent 8px) 70% 0,
+        linear-gradient(0deg, #000 8px, transparent 8px) 0 40%,
+        linear-gradient(0deg, #000 8px, transparent 8px) 0 75%;
     background-size: 100% 100%;
     z-index: 1;
 }
 .clock-face.theme-mondriaan .mondriaan-block { position: absolute; z-index: 0; }
-.clock-face.theme-mondriaan .block-red { top: 0; left: 0; width: 25%; height: 35%; background: #ff0000; }
-.clock-face.theme-mondriaan .block-blue { bottom: 0; right: 0; width: 25%; height: 30%; background: #0000ff; }
-.clock-face.theme-mondriaan .block-yellow { top: 35%; right: 0; width: 25%; height: 35%; background: #ffff00; }
+.clock-face.theme-mondriaan .block-red { top: 0; left: 0; width: 30%; height: 40%; background: #ff0000; }
+.clock-face.theme-mondriaan .block-blue { bottom: 0; left: 30%; width: 40%; height: 25%; background: #0000ff; }
+.clock-face.theme-mondriaan .block-yellow { top: 40%; right: 0; width: 30%; height: 35%; background: #ffff00; }
 
 .clock-face .hand { position: absolute; bottom: 50%; left: 50%; transform-origin: bottom center; background: #fff; border-radius: 4px; z-index: 10; }
 .clock-face .hand.has-overshoot { bottom: 40%; transform-origin: center 90%; }
@@ -184,16 +186,16 @@
 .knob-line { position: absolute; top: 2px; left: 50%; width: 2px; height: 6px; background: #fff; transform: translateX(-50%); }
 
 /* Wall Style Preview */
-.time-row.digital-style-wall .preview-time { background: transparent !important; color: #fff !important; padding: 0 !important; border-radius: 0; display: flex; justify-content: center; font-family: 'Courier New', monospace; font-size: 52px; height: 52px; overflow: hidden; align-items: center; }
-.time-row.digital-style-wall .digit-col { display: flex; flex-direction: column; height: 52px; overflow: visible; position: relative; flex-shrink: 0; }
-.time-row.digital-style-wall .digit-col span { display: block; width: 34px; line-height: 52px; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); text-align: center; white-space: pre; flex-shrink: 0; }
-.time-row.digital-style-wall .sep { width: 15px; text-align: center; opacity: 0.5; font-size: 52px; line-height: 52px; }
+.time-row.digital-style-wall .preview-time { background: transparent !important; color: #fff !important; padding: 0 !important; border-radius: 0; display: flex; justify-content: center; font-family: 'Courier New', monospace; font-size: 42px; height: 60px; overflow: hidden; align-items: center; }
+.time-row.digital-style-wall .digit-col { display: flex; flex-direction: column; height: 60px; overflow: visible; position: relative; flex-shrink: 0; }
+.time-row.digital-style-wall .digit-col span { display: block; width: 28px; line-height: 60px; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); text-align: center; white-space: pre; flex-shrink: 0; }
+.time-row.digital-style-wall .sep { width: 12px; text-align: center; opacity: 0.5; font-size: 32px; line-height: 1; display: flex; align-items: center; justify-content: center; }
 
 .time-row.digital-style-wall::before, .time-row.digital-style-wall::after {
     content: ""; position: absolute; left: 0; width: 100%; height: 30% !important; z-index: 10; pointer-events: none;
 }
-.time-row.digital-style-wall::before { top: 0; background: linear-gradient(180deg, #111 0%, rgba(17,17,17,0) 100%) !important; }
-.time-row.digital-style-wall::after { bottom: 0; background: linear-gradient(0deg, #111 0%, rgba(17,17,17,0) 100%) !important; }
+.time-row.digital-style-wall::before { top: 0; background: linear-gradient(180deg, #111 0%, rgba(17,17,17,0) 30%, rgba(17,17,17,0) 100%) !important; height: 100% !important; }
+.time-row.digital-style-wall::after { bottom: 0; background: linear-gradient(0deg, #111 0%, rgba(17,17,17,0) 30%, rgba(17,17,17,0) 100%) !important; height: 100% !important; }
 
 /* Matrix Blocks Preview */
 @font-face {

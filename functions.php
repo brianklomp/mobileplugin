@@ -52,6 +52,7 @@ function adremm_clock_admin_enqueue($hook) {
     wp_enqueue_script('adremm-clock-admin-js', ADREMM_CLOCK_URL . 'assets/admin-preview.js', array('jquery', 'wp-color-picker'), ADREMM_CLOCK_VERSION, true);
 
     $settings = wp_parse_args(get_option('adremm_clock_settings', array()), adremm_clock_get_default_settings());
+    wp_enqueue_style('adremm-clock-pixel-font', "https://fonts.googleapis.com/css2?family=Silkscreen&display=swap", false);
     $font_keys = array('theme_font', 'digital_font', 'font_status', 'font_date');
     foreach ($font_keys as $key) {
         if (!empty($settings[$key]) && $settings[$key] !== 'inherit' && $settings[$key] !== 'Thema') {
@@ -84,7 +85,7 @@ function adremm_clock_get_status() {
     // Check Exceptions First
     if (is_array($exceptional_days)) {
         foreach($exceptional_days as $ex) {
-            if (isset($ex['date']) && $ex['date'] === $today_date) {
+            if (is_array($ex) && isset($ex['date']) && $ex['date'] === $today_date) {
                 $status_data['pos'] = isset($ex['pos']) ? $ex['pos'] : 'inherit';
                 $status_label = !empty($ex['label']) ? $ex['label'] : (isset($settings['text_open']) ? $settings['text_open'] : '');
                 $closed_label = !empty($ex['label']) ? $ex['label'] : (isset($settings['text_closed']) ? $settings['text_closed'] : '');
@@ -114,14 +115,30 @@ function adremm_clock_get_status() {
 
     $day_data = $opening_hours[$day];
     $is_koopdag = is_array($day_data) && isset($day_data['is_koopdag']) && $day_data['is_koopdag'];
+    $is_closed = is_array($day_data) && isset($day_data['is_closed']) && $day_data['is_closed'];
     $koop_suffix = $is_koopdag ? ' (Koopdag)' : '';
 
-    if (is_array($day_data) && isset($day_data['is_closed']) && $day_data['is_closed']) {
+    if ($is_closed) {
         return array('status' => 'closed', 'text' => (isset($settings['text_closed']) ? $settings['text_closed'] : '') . $koop_suffix, 'pos' => 'inherit');
     }
 
+    $slots = array();
     if (is_array($day_data)) {
-        foreach ($day_data as $slot) {
+        if (isset($day_data['slots']) && is_array($day_data['slots'])) {
+            $slots = $day_data['slots'];
+        } else {
+            // Legacy format check: if it's a list of slots
+            $is_legacy = true;
+            foreach($day_data as $key => $val) {
+                if ($key === 'is_closed' || $key === 'is_koopdag') continue;
+                if (!is_numeric($key)) { $is_legacy = false; break; }
+            }
+            if ($is_legacy) $slots = $day_data;
+        }
+    }
+
+    if (is_array($slots)) {
+        foreach ($slots as $slot) {
             if (is_array($slot) && isset($slot['open']) && isset($slot['close'])) {
                 if ($current_time >= $slot['open'] && $current_time <= $slot['close']) {
                     return array('status' => 'open', 'text' => (isset($settings['text_open']) ? $settings['text_open'] : '') . $koop_suffix, 'pos' => 'inherit');
@@ -140,6 +157,7 @@ add_action('wp_enqueue_scripts', 'adremm_clock_frontend_enqueue');
 function adremm_clock_frontend_enqueue() {
     $settings = wp_parse_args(get_option('adremm_clock_settings', array()), adremm_clock_get_default_settings());
 
+    wp_enqueue_style('adremm-clock-pixel-font', "https://fonts.googleapis.com/css2?family=Silkscreen&display=swap", false);
     wp_enqueue_style('adremm-clock-public-css', ADREMM_CLOCK_URL . 'assets/public-style.css', array(), ADREMM_CLOCK_VERSION);
     wp_enqueue_script('adremm-clock-public-js', ADREMM_CLOCK_URL . 'assets/public-clock.js', array('jquery'), ADREMM_CLOCK_VERSION, true);
 

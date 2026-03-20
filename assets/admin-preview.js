@@ -75,6 +75,7 @@ jQuery(document).ready(function($) {
 
     function updatePreview() {
         const currentWidth = updateWidthLogic();
+        const customActive = $form.find('#adremm-panel-custom-check').is(':checked');
         const s = {
             theme_mode: getRadioVal('theme_mode'),
             theme_font: getVal('theme_font'),
@@ -82,6 +83,7 @@ jQuery(document).ready(function($) {
             text_color: getVal('text_color'),
             panel_size: getVal('panel_size'),
             panel_width: currentWidth,
+            custom_width_active: customActive,
             panel_shadow: getVal('panel_shadow'),
             panel_border: getVal('panel_border'),
             show_analog: getRadioVal('show_analog'),
@@ -155,15 +157,22 @@ jQuery(document).ready(function($) {
             close_label_font_size: getVal('close_label_font_size'),
         };
 
-        $liveView.removeClass('theme-mode-light theme-mode-dark theme-mode-auto panel-size-small panel-size-normal panel-size-large');
+        $liveView.removeClass('theme-mode-light theme-mode-dark theme-mode-auto panel-size-small panel-size-normal panel-size-large custom-width-active');
         $liveView.addClass('theme-mode-' + s.theme_mode + ' panel-size-' + s.panel_size);
+        if (s.custom_width_active) $liveView.addClass('custom-width-active');
 
-        $liveView.css({
+        const liveStyles = {
             '--user-bg': s.bg_color || 'transparent',
             '--user-text': s.text_color || '#000',
-            'font-family': (s.theme_font && s.theme_font !== 'inherit') ? `"${s.theme_font}"` : 'inherit',
-            'width': s.panel_width + 'px'
-        });
+            'font-family': (s.theme_font && s.theme_font !== 'inherit') ? `"${s.theme_font}"` : 'inherit'
+        };
+        if (s.custom_width_active) {
+            liveStyles['--panel-width'] = s.panel_width + 'px';
+        } else {
+            // Unset the variable to let the CSS class take over
+            $liveView.get(0).style.removeProperty('--panel-width');
+        }
+        $liveView.css(liveStyles);
 
         // Set system font preview globally in preview container
         if (s.theme_font && s.theme_font !== 'inherit') {

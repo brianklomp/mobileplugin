@@ -33,13 +33,13 @@ if (!is_array($opening_hours)) $opening_hours = array();
 
         <div class="hours-container" style="max-width: 1000px; margin-top: 20px;">
             <?php foreach($days as $key => $label):
-                $slots = isset($opening_hours[$key]) ? $opening_hours[$key] : array();
-                $is_closed = false;
-                if (isset($slots['is_closed'])) {
-                    $is_closed = $slots['is_closed'];
-                }
-                if (empty($slots) || (isset($slots['is_closed']) && count($slots) == 1)) {
-                    if (!$is_closed) $slots = array(array('open' => '09:00', 'close' => '18:00'));
+                $day_data = isset($opening_hours[$key]) ? $opening_hours[$key] : array();
+                $is_closed = isset($day_data['is_closed']) ? $day_data['is_closed'] : false;
+                $is_koopdag = isset($day_data['is_koopdag']) ? $day_data['is_koopdag'] : false;
+                $slots = isset($day_data['slots']) ? $day_data['slots'] : array();
+
+                if (empty($slots) && !$is_closed) {
+                    $slots = array(array('open' => '09:00', 'close' => '18:00'));
                 }
             ?>
             <div class="day-row" data-day="<?php echo $key; ?>" style="background:#fff; padding:15px; border:1px solid #ccd0d4; margin-bottom:10px; border-radius:8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
@@ -47,7 +47,7 @@ if (!is_array($opening_hours)) $opening_hours = array();
                     <strong style="font-size:16px;"><?php echo $label; ?></strong>
                     <div>
                         <label style="cursor:pointer; font-weight:600;"><input type="checkbox" class="day-closed-toggle" <?php checked($is_closed); ?>> <?php _e('Gesloten', 'adremm-clock-plugin'); ?></label>
-                        <label style="cursor:pointer; font-weight:600; margin-left:15px;"><input type="checkbox" class="day-koopdag-toggle" <?php checked(isset($slots['is_koopdag']) && $slots['is_koopdag']); ?>> <?php _e('Koopdag', 'adremm-clock-plugin'); ?></label>
+                        <label style="cursor:pointer; font-weight:600; margin-left:15px;"><input type="checkbox" class="day-koopdag-toggle" <?php checked($is_koopdag); ?>> <?php _e('Koopdag', 'adremm-clock-plugin'); ?></label>
                         <button type="button" class="button button-secondary copy-day" style="margin-left:20px;"><?php _e('Kopieer naar alle dagen', 'adremm-clock-plugin'); ?></button>
                     </div>
                 </div>
@@ -107,9 +107,11 @@ jQuery(document).ready(function($) {
                 });
             });
 
-            hours[day] = slots;
-            if (isClosed) hours[day].is_closed = true;
-            if (isKoopdag) hours[day].is_koopdag = true;
+            hours[day] = {
+                slots: slots,
+                is_closed: isClosed,
+                is_koopdag: isKoopdag
+            };
         });
         $('#adremm_opening_hours_json').val(JSON.stringify(hours));
     }

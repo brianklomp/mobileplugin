@@ -47,10 +47,10 @@
 }
 
 /* SIZES (Strict scaling) */
-#adremm-clock-wrapper.panel-size-small:not(.custom-width-active) { --panel-width: 280px; }
-#adremm-clock-wrapper.panel-size-normal:not(.custom-width-active) { --panel-width: 380px; }
-#adremm-clock-wrapper.panel-size-large:not(.custom-width-active) { --panel-width: 480px; }
-#adremm-clock-wrapper.custom-width-active { transform: none !important; }
+.panel-size-small { --panel-width: 280px; width: 280px !important; }
+.panel-size-normal { --panel-width: 380px; width: 380px !important; }
+.panel-size-large { --panel-width: 480px; width: 480px !important; }
+#adremm-clock-wrapper.custom-width-active { transform: none !important; width: var(--panel-width) !important; }
 
 /* Digital Clock Sizing based on Panel Size */
 #adremm-clock-wrapper.panel-size-small .time-row { --digital-w: 250px; --digital-h: 100px; }
@@ -181,12 +181,8 @@
 }
 
 /* PIXELS - Digital block style */
-@font-face {
-    font-family: 'Looksky';
-    src: url('https://fonts.cdnfonts.com/s/96342/LookskyRegular-VGOp6.woff') format('woff');
-}
 .time-row.digital-style-pixels .time-digital {
-    font-family: 'Looksky', sans-serif; font-size: 64px; color: #ff9500; background: #111; padding: 15px 25px; border-radius: 8px; box-shadow: inset 0 0 15px #000; letter-spacing: 4px; display: inline-block; border: 2px solid #222;
+    font-family: 'Silkscreen', 'Looksky', 'Courier New', Courier, monospace; font-size: 64px; color: #ff9500; background: #111; padding: 15px 25px; border-radius: 8px; box-shadow: inset 0 0 15px #000; letter-spacing: 4px; display: inline-block; border: 2px solid #222;
 }
 
 /* VINTAGE RADIO */
@@ -228,8 +224,8 @@
 .time-row.digital-style-wall::before, .time-row.digital-style-wall::after {
     content: ""; position: absolute; left: 0; width: 100%; height: 30% !important; z-index: 10; pointer-events: none;
 }
-.time-row.digital-style-wall::before { top: 0; background: linear-gradient(180deg, #111 0%, rgba(17,17,17,0) 100%) !important; }
-.time-row.digital-style-wall::after { bottom: 0; background: linear-gradient(0deg, #111 0%, rgba(17,17,17,0) 100%) !important; }
+.time-row.digital-style-wall::before { top: 0; background: linear-gradient(180deg, #111 0%, rgba(17,17,17,0) 30%, rgba(17,17,17,0) 100%) !important; height: 100% !important; }
+.time-row.digital-style-wall::after { bottom: 0; background: linear-gradient(0deg, #111 0%, rgba(17,17,17,0) 30%, rgba(17,17,17,0) 100%) !important; height: 100% !important; }
 
 .time-row.digital-style-wall .time-digital { font-size: 42px; font-weight: 300; display: flex; align-items: center; gap: 2px; position: relative; z-index: 5; height: 60px; overflow: hidden; width: 100%; justify-content: center; }
 .time-row.digital-style-wall .digit-col { display: flex; flex-direction: column; height: 60px; overflow: visible; position: relative; flex-shrink: 0; }
