@@ -158,7 +158,7 @@ function adremm_clock_settings_validate($input) {
 
     $float_keys = array(
         'analog_not_scale', 'analog_hand_scale', 'analog_hour_thick', 'analog_min_thick',
-        'hand_hour_thick', 'hand_min_thick', 'hand_sec_thick', 'analog_ring_size'
+        'hand_hour_thick', 'hand_min_thick', 'hand_sec_thick', 'analog_ring_size', 'panel_width'
     );
 
     // Update the settings with the new input, validating as we go

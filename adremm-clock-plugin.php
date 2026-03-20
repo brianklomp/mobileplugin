@@ -17,9 +17,21 @@ define('ADREMM_CLOCK_VERSION', '1.0.2');
 define('ADREMM_CLOCK_PATH', plugin_dir_path(__FILE__));
 define('ADREMM_CLOCK_URL', plugin_dir_url(__FILE__));
 
+// Debug log for path
+// error_log('ADREMM_CLOCK_PATH: ' . ADREMM_CLOCK_PATH);
+
 // Load Includes
 require_once ADREMM_CLOCK_PATH . 'settings.php';
 require_once ADREMM_CLOCK_PATH . 'functions.php';
+
+/**
+ * Safe version of str_pad
+ */
+if (!function_exists('adremm_str_pad')) {
+    function adremm_str_pad($input, $pad_length, $pad_string = " ", $pad_type = STR_PAD_LEFT) {
+        return str_pad((string)$input, $pad_length, $pad_string, $pad_type);
+    }
+}
 
 // Plugin Activation
 register_activation_hook(__FILE__, 'adremm_clock_activate');

@@ -1,4 +1,4 @@
-/* ADREMM Clock Frontend Styles V2 */
+/* ADREMM Clock Frontend Styles V2.1 */
 #adremm-clock-wrapper {
     position: fixed;
     z-index: 2147483647;
@@ -101,7 +101,16 @@
 .adremm-clock-bar .adremm-clock-analog { margin-bottom: 0; }
 
 .face { width: 80px; height: 80px; border-radius: 50%; background: #000; border: 2px solid #3399ff; position: relative; margin: 0 auto; overflow: hidden; }
-.h-hour, .h-min, .h-sec { position: absolute; bottom: 50%; left: 50%; transform-origin: bottom center; background: #fff; border-radius: 4px; z-index: 10; }
+.h-hour, .h-min, .h-sec {
+    position: absolute;
+    bottom: 50%;
+    left: 50%;
+    transform-origin: bottom center;
+    background: #fff;
+    border-radius: 4px;
+    z-index: 10;
+    transform: rotate(var(--hand-rotate, 0deg)) scale(var(--hand-scale, 1));
+}
 .h-hour { height: 25px; width: 3px; margin-left: -1.5px; }
 .h-min { height: 35px; width: 2px; margin-left: -1px; }
 .h-sec { height: 38px; width: 1px; background: #ff3b30; margin-left: -0.5px; }
@@ -199,51 +208,188 @@
     box-shadow: inset 0 0 10px #000;
 }
 
-/* VINTAGE RADIOWEKKER - Tubeclock effect */
+/* VINTAGE RADIOWEKKER - SKIN BASED ON IMAGE */
 .time-row.digital-style-alarm {
-    background: #2a1b15;
-    color: #ff6600;
-    padding: 20px 30px;
-    border: 8px solid #3d2b24;
-    border-radius: 15px;
-    font-family: 'Geist', 'Courier New', Courier, monospace;
-    text-shadow: 0 0 10px #ff6600;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 0 30px rgba(0,0,0,0.8);
-    font-weight: 300;
-    font-size: 32px;
+    background: #331d14; /* Donkerbruine body */
+    padding: 20px;
+    border: 8px solid #4a2c1e;
+    border-radius: 30px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 60px rgba(0,0,0,0.5);
     position: relative;
+    overflow: hidden;
+    display: block !important;
 }
 
-.radio-panel { display: flex; align-items: center; gap: 10px; background: #fff; padding: 5px 10px; border-radius: 5px; height: 60px; overflow: hidden; border: 2px solid #5a3d31; flex-grow: 1; }
-.radio-dial { position: relative; width: 100%; height: 30px; border: 1px solid #ccc; background: #f9f9f9; overflow: hidden; }
-.radio-indicator { position: absolute; left: 50%; top: 0; width: 2px; height: 100%; background: #f00; z-index: 5; transform: translateX(-50%); }
-.radio-scale-scroll { display: flex; align-items: center; gap: 20px; padding: 0 50%; height: 100%; transition: transform 0.1s linear; }
-.radio-scale-scroll span { font-size: 10px; color: #333; font-weight: bold; min-width: 10px; }
-.radio-logo-wrap { display: flex; flex-direction: column; align-items: center; line-height: 1; min-width: 40px; }
-.radio-logo-wrap .logo-a { font-size: 20px; font-weight: bold; color: #111; font-style: normal; border: 2px solid #111; padding: 0 4px; border-radius: 50%; margin-bottom: 2px; }
-.radio-logo-wrap .logo-text { font-size: 9px; color: #ff6600; font-family: 'Brush Script MT', cursive; font-style: italic; }
+.radio-vintage-body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    width: 100%;
+}
 
-.radio-switch { width: 35px; height: 55px; background: #333; border-radius: 4px; position: relative; cursor: pointer; border: 2px solid #111; box-shadow: inset 0 2px 5px rgba(0,0,0,0.5); }
-.radio-switch::before { content: ""; position: absolute; left: 3px; top: 3px; width: 25px; height: 25px; background: #555; border-radius: 2px; transition: 0.2s; box-shadow: 0 2px 0 #000; }
-.radio-switch.on::before { top: 23px; background: #ff6600; box-shadow: 0 0 10px #ff6600; }
+.nixie-tubes {
+    display: flex;
+    gap: 6px;
+    background: #1a0f0a;
+    padding: 12px;
+    border-radius: 15px;
+    border: 3px solid #2a1b15;
+    box-shadow: inset 0 0 30px #000;
+    align-items: center;
+    flex-shrink: 0;
+}
 
-.radio-volume-wrap { position: relative; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
-.volume-knob-visual { width: 30px; height: 30px; background: #333; border-radius: 50%; border: 2px solid #111; position: relative; transition: transform 0.1s; }
-.volume-knob-visual::after { content: ""; position: absolute; top: 2px; left: 50%; width: 2px; height: 8px; background: #ff6600; transform: translateX(-50%); }
-#adremm-volume-knob { position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 10; }
+.nixie-tube {
+    width: 50px;
+    height: 80px;
+    background: radial-gradient(circle, #3d2b24 0%, #1a0f0a 100%);
+    border-radius: 12px;
+    border: 1px solid rgba(255,102,0,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Geist', 'Courier New', monospace;
+    font-size: 52px;
+    font-weight: 300;
+    color: #ff6600;
+    text-shadow: 0 0 20px #ff6600, 0 0 5px #fff;
+    position: relative;
+    box-shadow: 0 0 15px rgba(255,102,0,0.1);
+}
 
-.time-digit-tube { display: inline-block; background: #1a0f0a; padding: 5px 8px; border-radius: 10px; border: 2px solid #3d2b24; margin: 0 2px; position: relative; box-shadow: inset 0 0 15px #000; z-index: 1; }
-.time-digit-tube::after {
+/* De grid lines in de tube */
+.nixie-tube::before {
     content: "";
     position: absolute;
-    inset: -5px;
-    background: radial-gradient(circle, rgba(255,102,0,0.4) 0%, transparent 70%);
+    inset: 2px;
+    background-image: linear-gradient(0deg, transparent 24%, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.05) 26%, transparent 27%, transparent 74%, rgba(255,255,255,0.05) 75%, rgba(255,255,255,0.05) 76%, transparent 77%),
+                      linear-gradient(90deg, transparent 24%, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.05) 26%, transparent 27%, transparent 74%, rgba(255,255,255,0.05) 75%, rgba(255,255,255,0.05) 76%, transparent 77%);
+    background-size: 4px 4px;
     pointer-events: none;
-    z-index: -1;
+}
+
+.nixie-tube-gap { width: 10px; color: #ff6600; font-size: 32px; font-weight: bold; }
+
+/* Vertical Seconds Scale */
+.radio-scale-container {
+    width: 45px;
+    height: 80px;
+    background: #fff;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid #5a3d31;
+    flex-shrink: 0;
+}
+
+.radio-scale-scroll-v {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.1s linear;
+    padding-top: 30px; /* Centering first mark */
+}
+
+.scale-mark {
+    height: 20px;
+    font-size: 10px;
+    color: #333;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    width: 100%;
+    justify-content: center;
+    border-bottom: 1px solid #eee;
+}
+
+.scale-mark span { color: #f00; font-size: 12px; }
+
+.scale-indicator {
+    position: absolute;
+    top: 50%;
+    left: -2px;
+    transform: translateY(-50%);
+    border-left: 8px solid #444;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    z-index: 10;
+}
+
+/* Side Panel with Logo and Knob */
+.radio-side-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+    min-width: 60px;
+}
+
+.radio-logo-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #fff;
+}
+
+.logo-circle {
+    width: 24px;
+    height: 24px;
+    border: 2px solid #fff;
     border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.brand-text {
+    font-family: 'Brush Script MT', cursive;
+    font-style: italic;
+    color: #ff6600;
+    font-size: 12px;
+    margin-top: -3px;
+}
+
+.radio-controls-grill {
+    background: #222;
+    padding: 6px;
+    border-radius: 6px;
+    border: 1px solid #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 0 5px #000;
+}
+
+.volume-knob {
+    width: 38px;
+    height: 38px;
+    background: #333;
+    border-radius: 50%;
+    border: 2px solid #555;
+    position: relative;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.6);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.volume-knob.on {
+    transform: rotate(150deg);
+}
+
+.knob-line {
+    position: absolute;
+    top: 4px;
+    left: 50%;
+    width: 3px;
+    height: 10px;
+    background: #fff;
+    transform: translateX(-50%);
+    border-radius: 2px;
 }
 
 /* WALL (Muurklok) - High Accuracy Black Rectangular */
@@ -308,14 +454,6 @@
 .time-row.digital-style-design.vertical .day {
     margin-right: 0;
     margin-bottom: 5px;
-}
-.time-row.digital-style-wall .time-digital {
-    font-size: 20px;
-}
-.time-row.digital-style-wall .time-digital span.sec {
-    opacity: 0.4;
-    font-size: 0.8em;
-    transition: opacity 0.5s;
 }
 
 .time-digital { font-size: 24px; font-weight: 800; }
@@ -446,19 +584,14 @@
 }
 
 /* Responsive Breakpoints & Overrides */
-/* The actual values are injected by PHP via wp_add_inline_style or handled via media classes if complex.
-   But for now, standard classes will work. */
-
 .adremm-clock-mobile-hide { display: none !important; }
 
 @media screen and (max-width: 768px) {
-    /* Mobile Override Example */
     #adremm-clock-wrapper.mobile-size-small .adremm-clock-container { min-width: 125px; padding: 10px; }
     #adremm-clock-wrapper.mobile-size-small .face { width: 55px; height: 55px; }
     #adremm-clock-wrapper.mobile-size-small .time-digital { font-size: 16px; }
     #adremm-clock-wrapper.mobile-size-small .status-row { font-size: 12px; }
 
-    /* Position overrides */
     #adremm-clock-wrapper.mobile-pos-bottom-right { bottom: 10px; right: 10px; top: auto; left: auto; }
     #adremm-clock-wrapper.mobile-pos-bottom-left { bottom: 10px; left: 10px; top: auto; right: auto; }
     #adremm-clock-wrapper.mobile-pos-top-center { top: 0; left: 0; width: 100%; }

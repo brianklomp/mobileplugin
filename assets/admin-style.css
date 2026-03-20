@@ -1,4 +1,4 @@
-/* ADREMM Clock Admin Styles V3 */
+/* ADREMM Clock Admin Styles V4 */
 .adremm-clock-v2 { max-width: 1200px; margin-top: 20px; }
 .adremm-clock-v2 h1 { font-size: 28px; margin-bottom: 25px; }
 
@@ -15,23 +15,16 @@
 .form-table th { width: 220px; padding: 15px 10px 15px 0; font-weight: 600; color: #333; }
 .form-table td { padding: 10px 0; vertical-align: middle; }
 .adremm-panel { padding: 0 10px; }
-.adremm-panel .form-table td > div { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.adremm-panel .wp-picker-container { vertical-align: middle; margin: 0; }
-.adremm-panel input[type="number"] { height: 30px; margin: 0; }
 .wrap.adremm-clock-v2 .adremm-panel { display: none !important; }
 .wrap.adremm-clock-v2 .adremm-panel.is-active { display: block !important; }
-.adremm-clock-section { margin-bottom: 30px; }
-.adremm-clock-section h3 { margin-top: 0; font-size: 18px; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 15px; }
 
 /* Joystick Box */
 .adremm-joystick-box { background: #f0f0f1; padding: 25px; display: inline-block; border-radius: 12px; border: 1px solid #ddd; }
 .joy-grid { display: grid; grid-template-columns: repeat(3, 60px); grid-template-rows: repeat(3, 60px); gap: 12px; }
-.joy-item, .joy-gap { width: 60px; height: 60px; }
 .joy-item { background: #fff; border: 1px solid #ccc; border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.2s; position: relative; color: #50575e; }
 .joy-item input { display: none; }
 .joy-item:hover { border-color: #2271b1; background: #f0f6fb; }
 .joy-item.active { background: #2271b1 !important; color: #fff !important; border-color: #2271b1 !important; }
-.joy-item.active::after { content: 'X'; position: absolute; font-size: 14px; top: 2px; right: 4px; opacity: 0.5; }
 
 /* Tooltip for joy-item */
 .joy-item[title]:hover::before {
@@ -48,9 +41,6 @@
     white-space: nowrap;
     z-index: 1000;
     pointer-events: none;
-    font-weight: 500;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    opacity: 1;
 }
 .joy-item[title]:hover::after {
     content: '';
@@ -68,101 +58,71 @@
 .theme-option { cursor: pointer; flex: 1; min-width: 80px; }
 .theme-option input { display: none; }
 .theme-card { display: block; padding: 10px; text-align: center; border: 2px solid #ddd; border-radius: 8px; font-weight: 600; transition: all 0.2s; background: #f9f9f9; font-size: 13px; }
-.theme-option:hover .theme-card { border-color: #2271b1; }
 .theme-option input:checked + .theme-card { border-color: #2271b1; background: #e5f3ff; color: #2271b1; }
-.theme-card.classic { font-family: serif; border-style: double; }
-.theme-card.digital { font-family: monospace; background: #111; color: #0f0; border-color: #333; }
 
-/* Preview */
+/* Preview Stage */
 .adremm-preview-col { position: sticky; top: 32px; }
 .adremm-preview-card { background: #f0f0f1; border: 1px solid #ccd0d4; border-radius: 4px; padding: 15px; }
-.preview-stage { height: 300px; background: #fff; border: 1px solid #ddd; display: flex; align-items: center; justify-content: center; overflow: hidden; background-image: radial-gradient(#ddd 1px, transparent 1px); background-size: 20px 20px; margin-bottom: 15px; }
+.preview-stage { height: 350px; background: #fff; border: 1px solid #ddd; display: flex; align-items: center; justify-content: center; overflow: hidden; background-image: radial-gradient(#ddd 1px, transparent 1px); background-size: 20px 20px; margin-bottom: 15px; }
 
-#clock-live-view { width: 240px; padding: 20px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); text-align: center; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); border: 1px solid rgba(0,0,0,0.05); overflow: hidden; }
-#clock-live-view .preview-time { font-size: 24px; font-weight: 800; margin-bottom: 5px; }
-#clock-live-view .preview-date { font-size: 13px; opacity: 0.8; margin-bottom: 10px; }
+#clock-live-view {
+    width: 320px;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    text-align: center;
+    background-color: var(--user-bg, #fff);
+    color: var(--user-text, #111);
+    border: 1px solid rgba(0,0,0,0.05);
+    overflow: hidden;
+}
 
-/* Admin Preview Analog */
-.analog-preview { margin-bottom: 15px; }
-.clock-face { width: 80px; height: 80px; border-radius: 50%; background: #000; border: 2px solid #3399ff; position: relative; margin: 0 auto; overflow: hidden; }
+/* Admin Analog Preview */
+.clock-face { width: 80px; height: 80px; border-radius: 50%; background: #000; border: 2px solid #3399ff; position: relative; margin: 0 auto 15px; overflow: hidden; }
 .clock-face .hand { position: absolute; bottom: 50%; left: 50%; transform-origin: bottom center; background: #fff; border-radius: 4px; z-index: 10; }
 .clock-face .hand.hour { height: 25px; width: 3px; margin-left: -1.5px; }
 .clock-face .hand.min { height: 35px; width: 2px; margin-left: -1px; }
 .clock-face .hand.sec { height: 38px; width: 1px; background: #ff3b30; margin-left: -0.5px; }
 
-/* Notations in Preview */
-.notations { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
-.notations i {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    width: var(--not-thick);
-    height: var(--not-len);
-    background: currentColor;
-    transform-origin: center 40px;
-    margin-left: calc(var(--not-thick) / -2);
+/* VINTAGE RADIO PREVIEW STYLES (Sync with public-style.css) */
+.time-row.digital-style-alarm {
+    background: #331d14;
+    padding: 15px;
+    border: 6px solid #4a2c1e;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    margin-bottom: 15px;
 }
-.notations.above { z-index: 20; }
+.radio-vintage-body { display: flex; align-items: center; justify-content: center; gap: 10px; }
+.nixie-tubes { display: flex; gap: 4px; background: #1a0f0a; padding: 8px; border-radius: 10px; align-items: center; }
+.nixie-tube { width: 35px; height: 55px; background: #2a1b15; border-radius: 6px; color: #ff6600; font-size: 36px; display: flex; align-items: center; justify-content: center; font-family: monospace; text-shadow: 0 0 10px #ff6600; }
+.nixie-tube-gap { color: #ff6600; font-weight: bold; }
 
-/* Admin Digital Styles - High Accuracy Sync */
-#clock-live-view .time-row.has-glow .preview-time { text-shadow: 0 0 var(--digital-glow-spread) var(--digital-glow-color) !important; }
+.radio-scale-container { width: 30px; height: 55px; background: #fff; border-radius: 4px; position: relative; overflow: hidden; border: 1px solid #5a3d31; }
+.radio-scale-scroll-v { display: flex; flex-direction: column; align-items: center; transition: transform 0.1s linear; padding-top: 17.5px; }
+.scale-mark { height: 20px; font-size: 8px; color: #333; display: flex; align-items: center; gap: 2px; }
+.scale-mark span { color: #f00; }
+.scale-indicator { position: absolute; top: 50%; left: -1px; transform: translateY(-50%); border-left: 6px solid #444; border-top: 4px solid transparent; border-bottom: 4px solid transparent; z-index: 10; }
 
-#clock-live-view .time-row.digital-style-blocks .preview-time { display: flex; justify-content: center; gap: 4px; background:#000; padding:10px; border-radius:6px; }
-#clock-live-view .time-row.digital-style-blocks .preview-time span.b { background: #222; color: #0f0; padding: 6px 4px; border-radius: 3px; font-family: monospace; font-size: 20px; min-width: 28px; position:relative; box-shadow:0 3px 0 #111; }
-#clock-live-view .time-row.digital-style-blocks .preview-time span.b::after { content:""; position:absolute; left:0; top:50%; width:100%; height:1px; background:#000; }
+.radio-side-panel { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+.logo-circle { width: 18px; height: 18px; border: 1px solid #fff; border-radius: 50%; color: #fff; font-size: 12px; display: flex; align-items: center; justify-content: center; }
+.brand-text { color: #ff6600; font-size: 9px; font-style: italic; }
+.volume-knob { width: 24px; height: 24px; background: #333; border-radius: 50%; border: 1px solid #555; position: relative; transition: transform 0.3s; }
+.volume-knob.on { transform: rotate(150deg); }
+.knob-line { position: absolute; top: 2px; left: 50%; width: 2px; height: 6px; background: #fff; transform: translateX(-50%); }
 
-#clock-live-view .time-row.digital-style-alarm .preview-time { background: #000; color: #f00; padding: 12px 15px; border: 4px solid #333; border-radius: 6px; font-family: monospace; text-shadow: 0 0 10px #f00; display: inline-block; font-size: 20px; font-weight:900; }
+/* Wall Style Preview */
+.time-row.digital-style-wall .preview-time { background: #000 !important; color: #fff !important; padding: 10px !important; border-radius: 4px; display: flex; justify-content: center; font-family: monospace; font-size: 24px; }
+.time-row.digital-style-wall .digit-col { height: 24px; overflow: hidden; }
+.time-row.digital-style-wall .digit-col span { line-height: 24px; display: block; }
 
-#clock-live-view .time-row.digital-style-wall .preview-time { background: #000 !important; border: 2px solid #444 !important; border-radius: 4px !important; width: auto !important; min-width: 140px !important; height: 55px !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; color: #fff !important; font-size: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.5) !important; font-family: monospace !important; }
-#clock-live-view .time-row.digital-style-wall .preview-time .sec { opacity: 0.3; font-size: 0.8em; }
+/* Matrix Blocks Preview */
+.time-row.digital-style-blocks .preview-time { display: flex; gap: 5px; justify-content: center; }
+.time-row.digital-style-blocks .preview-time span.b { background: #111; color: #0f0; padding: 8px 5px; border-radius: 4px; font-family: monospace; font-size: 24px; border-bottom: 2px solid #000; }
 
-#clock-live-view .time-row.digital-style-design .preview-time { font-family: sans-serif; font-weight: 100; font-size: 38px; letter-spacing: -2px; color: #000; line-height:1; }
-#clock-live-view .time-row.digital-style-design .preview-time .sec { font-size: 16px; vertical-align: super; opacity: 0.5; }
+.preview-time { font-size: 24px; font-weight: 800; margin-bottom: 10px; }
+.preview-status { font-weight: bold; margin-bottom: 5px; }
+.preview-date { font-size: 13px; opacity: 0.7; }
+.preview-extra { margin-top: 10px; font-style: italic; }
 
-/* Radio Dial (Admin Preview) */
-.radio-dial-wrap { display: flex; align-items: center; gap: 8px; background: #222; padding: 4px 8px; border-radius: 4px; border: 1px solid #444; margin-top: 10px; }
-.radio-dial { position: relative; width: 60px; height: 30px; background: #fff; overflow: hidden; border-radius: 2px; }
-.radio-dial::after { content: ""; position: absolute; left: 50%; top: 0; width: 2px; height: 100%; background: #f00; z-index: 5; }
-.radio-scale { display: flex; gap: 4px; font-size: 8px; color: #333; transform: translateX(-10px); }
-.radio-logo { font-size: 18px; font-weight: bold; color: #ff6600; font-family: serif; font-style: italic; }
-
-/* Preview themes */
-#clock-live-view {
-    --adremm-clock-bg: var(--user-bg);
-    --adremm-clock-text: var(--user-text);
-    background-color: var(--adremm-clock-bg) !important;
-    color: var(--adremm-clock-text) !important;
-}
-#clock-live-view.theme-mode-dark {
-    --adremm-clock-bg: #1a1a1a;
-    --adremm-clock-text: #ffffff;
-}
-#clock-live-view.theme-mode-auto {
-    /* In admin preview, we might want to simulate auto or just follow browser */
-}
-@media (prefers-color-scheme: dark) {
-    #clock-live-view.theme-mode-auto {
-        --adremm-clock-bg: #1a1a1a;
-        --adremm-clock-text: #ffffff;
-    }
-}
-
-#clock-live-view.theme-classic { border: 4px double currentColor !important; border-radius: 0 !important; }
-#clock-live-view.theme-digital { background: #000 !important; color: #0f0 !important; border: 2px solid #0f0 !important; box-shadow: 0 0 15px #0f0 !important; }
-
-/* Digital Styles */
-.digital-alarm { background: #000; color: #fff; padding: 10px; border-radius: 8px; border: 2px solid #333; font-family: 'Courier New', Courier, monospace; }
-.digital-wall { background: #eee; border-radius: 50%; width: 150px; height: 150px; display: flex; align-items: center; justify-content: center; border: 10px solid #333; color: #000; }
-
-/* Marquee in Preview */
-.marquee-preview { overflow: hidden; white-space: nowrap; }
-.marquee-preview:after { content: '...'; }
-
-.preview-menu-placeholder { border-top: 1px solid rgba(0,0,0,0.1); padding-top: 15px; }
-.preview-menu-placeholder div { height: 10px; background: currentColor; opacity: 0.1; margin-bottom: 8px; border-radius: 4px; }
-.preview-menu-placeholder .dot { width: 10px; display: inline-block; }
-.preview-menu-placeholder .line { width: 80%; display: inline-block; margin-left: 5px; }
-
-.preview-note { font-size: 12px; color: #646970; text-align: center; margin-top: 10px; }
-.adremm-clock-submit-wrap { margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px; }
 .adremm-select { min-width: 200px; }

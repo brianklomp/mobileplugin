@@ -1,5 +1,5 @@
 /**
- * ADREMM Clock Frontend Logic V4
+ * ADREMM Clock Frontend Logic V5
  */
 (function($) {
     'use strict';
@@ -35,15 +35,30 @@
             $root.find('.h-min').css('transform', `rotate(${minDeg}deg)`);
             $root.find('.h-hour').css('transform', `rotate(${hourDeg}deg)`);
 
-            // Digital (Update every second or when ms is low)
-            if (handSweep === 'ticking' || ms < 100) {
-                const $timeRow = $root.find('.time-row');
-                const $timeTarget = $root.find('.time-digital');
+            // Digital Update
+            const $timeRow = $root.find('.time-row');
+            const $timeTarget = $root.find('.time-digital');
 
-                const hh = String(h).padStart(2, '0');
-                const mm = String(m).padStart(2, '0');
-                const ss = String(s).padStart(2, '0');
+            const hh = String(h).padStart(2, '0');
+            const mm = String(m).padStart(2, '0');
+            const ss = String(s).padStart(2, '0');
 
+            if ($timeRow.hasClass('digital-style-alarm')) {
+                // Update Nixie Tubes
+                $root.find('#nixie-h1').text(hh[0]);
+                $root.find('#nixie-h2').text(hh[1]);
+                $root.find('#nixie-m1').text(mm[0]);
+                $root.find('#nixie-m2').text(mm[1]);
+
+                // Vintage Radio Scrolling Scale Logic (Vertical)
+                const $scaleV = $root.find('.radio-scale-scroll-v');
+                if ($scaleV.length) {
+                    const itemHeight = 20; // Correct height from CSS
+                    const offset = (s + ms/1000) * itemHeight;
+                    $scaleV.css('transform', `translateY(${-offset}px)`);
+                }
+            } else if (handSweep === 'ticking' || ms < 100) {
+                // Standard Digital Styles
                 if ($timeRow.hasClass('digital-style-wall')) {
                     const digits = (hh + mm).split('');
                     let html = '';
@@ -54,16 +69,6 @@
                     $timeTarget.html(`${html}<span class="sec" style="opacity:${(ms > 500 ? 0.4 : 1)}">:${ss}</span>`);
                 } else if ($timeRow.hasClass('digital-style-blocks')) {
                     $timeTarget.html(`<span class="b">${hh}</span>:<span class="b">${mm}</span>:<span class="b">${ss}</span>`);
-                } else if ($timeRow.hasClass('digital-style-alarm')) {
-                    $timeTarget.html(`<span class="time-digit-tube">${hh}</span>:<span class="time-digit-tube">${mm}</span>:<span class="time-digit-tube">${ss}</span>`);
-
-                    // Vintage Radio Scrolling Scale Logic
-                    const $scale = $root.find('.radio-scale-scroll');
-                    if ($scale.length) {
-                        const itemWidth = 30; // pixels per second mark
-                        const offset = (s + ms/1000) * itemWidth;
-                        $scale.css('transform', `translateX(${-offset}px)`);
-                    }
                 } else if ($timeRow.hasClass('digital-style-design')) {
                     const dayName = now.toLocaleDateString(locale, { weekday: 'short' });
                     $timeTarget.html(`<span class="day">${dayName}</span> ${hh}:${mm}<span class="sec">${ss}</span>`);
@@ -72,7 +77,10 @@
                 } else {
                     $timeTarget.text(`${hh}:${mm}:${ss}`);
                 }
+            }
 
+            // Always update date
+            if (ms < 100) {
                 $root.find('.date-text').text(now.toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long' }));
             }
         }
@@ -103,38 +111,19 @@
             };
             const streamUrl = streams[adremmClockData.radioChannel] || streams.hits;
             window.adremmRadio = new Audio(streamUrl);
+            window.adremmRadio.volume = 0.8;
 
-            $root.find('.time-row.digital-style-alarm').css('cursor', 'pointer').on('click', function() {
-                if (window.adremmRadio.paused) {
-                    window.adremmRadio.play().catch(e => console.log('Autoplay blocked'));
-                    $(this).css('box-shadow', '0 0 30px rgba(255,102,0,0.8)');
+            // Radio toggle UI (Knob)
+            $root.on('click', '#adremm-radio-toggle', function(e) {
+                e.stopPropagation();
+                $(this).toggleClass('on');
+                if ($(this).hasClass('on')) {
+                    if (window.adremmRadio) window.adremmRadio.play().catch(e => console.log('Autoplay blocked'));
                 } else {
-                    window.adremmRadio.pause();
-                    $(this).css('box-shadow', '');
+                    if (window.adremmRadio) window.adremmRadio.pause();
                 }
             });
-
-            // Volume Control Logic
-            $root.on('input', '#adremm-volume-knob', function() {
-                const vol = $(this).val() / 100;
-                if (window.adremmRadio) window.adremmRadio.volume = vol;
-                // Rotate knob visually
-                const rotation = ($(this).val() * 2.4) - 120; // -120 to +120 deg
-                $root.find('.volume-knob-visual').css('transform', `rotate(${rotation}deg)`);
-            });
         }
-
-        // Toggle Logic
-        // Radio toggle UI
-        $root.on('click', '#adremm-radio-toggle', function(e) {
-            e.stopPropagation();
-            $(this).toggleClass('on');
-            if ($(this).hasClass('on')) {
-                if (window.adremmRadio) window.adremmRadio.play().catch(e => console.log('Autoplay blocked'));
-            } else {
-                if (window.adremmRadio) window.adremmRadio.pause();
-            }
-        });
 
         if ($root.hasClass('adremm-clock-panel')) {
              // Tab positioning logic
@@ -150,8 +139,6 @@
                  $container.fadeOut(300, function() {
                      $tab.css('display', 'flex').hide().fadeIn(300);
                  });
-                 // Audio should continue playing when collapsed per requirement
-                 // if (window.adremmRadio) window.adremmRadio.pause();
              });
              $tab.on('click', function() {
                  $tab.fadeOut(300, function() { $container.fadeIn(300); });

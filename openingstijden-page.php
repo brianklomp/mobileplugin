@@ -42,14 +42,14 @@ $opening_hours = !empty($settings['opening_hours']) ? json_decode($settings['ope
             </thead>
             <tbody>
                 <?php foreach($days as $key => $label):
-                    $day_data = $opening_hours[$key] ?? array();
-                    $open = $day_data['open'] ?? '09:00';
-                    $close = $day_data['close'] ?? '18:00';
+                    $day_data = isset($opening_hours[$key]) ? $opening_hours[$key] : array();
+                    $open = isset($day_data['open']) ? $day_data['open'] : '09:00';
+                    $close = isset($day_data['close']) ? $day_data['close'] : '18:00';
                     $is_closed = !empty($day_data['is_closed']);
                     $is_koopavond = !empty($day_data['is_koopavond']);
-                    $break_start = $day_data['break_start'] ?? '';
-                    $break_end = $day_data['break_end'] ?? '';
-                    $break_label = $day_data['break_label'] ?? '';
+                    $break_start = isset($day_data['break_start']) ? $day_data['break_start'] : '';
+                    $break_end = isset($day_data['break_end']) ? $day_data['break_end'] : '';
+                    $break_label = isset($day_data['break_label']) ? $day_data['break_label'] : '';
                 ?>
                 <tr>
                     <td><strong><?php echo $label; ?></strong></td>

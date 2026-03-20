@@ -1,5 +1,5 @@
 /**
- * ADREMM Clock Admin Preview Logic V3 - FULL UPGRADE
+ * ADREMM Clock Admin Preview Logic V4 - FULL UPGRADE
  */
 jQuery(document).ready(function($) {
     const $form = $('#adremm-clock-form, #adremm-clock-mobile-form');
@@ -154,7 +154,7 @@ jQuery(document).ready(function($) {
 
         // Preload fonts
         [s.theme_font, s.digital_font, s.font_status, s.font_date].forEach(font => {
-            if (font && font !== 'inherit') {
+            if (font && font !== 'inherit' && font !== 'Thema') {
                 const url = 'https://fonts.googleapis.com/css2?family=' + font.replace(/ /g, '+') + '&display=swap';
                 if (!$('link[href="' + url + '"]').length) $('head').append('<link rel="stylesheet" href="' + url + '">');
             }
@@ -175,7 +175,6 @@ jQuery(document).ready(function($) {
             // Notations
             const $notations = $face.find('.notations');
             if ($notations.length === 0) {
-                // Initialize preview notation structure if missing
                 let html = '<div class="notations hour-notations"></div><div class="notations min-notations"></div>';
                 $face.prepend(html);
             }
@@ -193,7 +192,6 @@ jQuery(document).ready(function($) {
                 'z-index': (s.analog_not_above === 'yes' ? 20 : 5),
                 'transform': `scale(${s.analog_not_scale})`
             });
-            if (s.analog_not_above === 'yes') $hNots.addClass('above'); else $hNots.removeClass('above');
 
             const $mNots = $face.find('.min-notations');
             $mNots.html('');
@@ -208,7 +206,6 @@ jQuery(document).ready(function($) {
                 'z-index': (s.analog_not_above === 'yes' ? 20 : 5),
                 'transform': `scale(${s.analog_not_scale})`
             });
-            if (s.analog_not_above === 'yes') $mNots.addClass('above'); else $mNots.removeClass('above');
 
             $liveView.find('.hand.hour').attr('class', 'hand hour ' + s.hand_hour_style).css({
                 'background-color': (s.hand_hour_style === 'steampunk' ? 'transparent' : s.hand_hour_color),
@@ -244,7 +241,7 @@ jQuery(document).ready(function($) {
         }
 
         $time.parent().removeClass('digital-style-alarm digital-style-wall digital-style-custom digital-style-blocks digital-style-dots digital-style-design has-glow');
-        $time.parent().addClass('time-row'); // Ensure base class
+        $time.parent().addClass('time-row');
 
         if (s.show_digital === 'yes') {
             $time.parent().show().addClass('digital-style-' + s.digital_style);
@@ -252,18 +249,40 @@ jQuery(document).ready(function($) {
 
             $time.parent().css({
                 'color': s.digital_color,
-                'font-family': (s.digital_font && s.digital_font !== 'inherit') ? `"${s.digital_font}"` : 'inherit',
+                'font-family': (s.digital_font && s.digital_font !== 'inherit' && s.digital_font !== 'Thema') ? `"${s.digital_font}"` : 'inherit',
                 '--digital-glow-color': s.digital_glow_color,
                 '--digital-glow-spread': s.digital_glow_spread + 'px'
             });
 
-            // Update content based on style
             const now = new Date();
             const hh = String(now.getHours()).padStart(2, '0');
             const mm = String(now.getMinutes()).padStart(2, '0');
             const ss = String(now.getSeconds()).padStart(2, '0');
 
-            if (s.digital_style === 'blocks') {
+            if (s.digital_style === 'alarm') {
+                $time.html(`<div class="radio-vintage-body">
+                                <div class="nixie-tubes">
+                                    <div class="nixie-tube">${hh[0]}</div>
+                                    <div class="nixie-tube">${hh[1]}</div>
+                                    <div class="nixie-tube-gap">:</div>
+                                    <div class="nixie-tube">${mm[0]}</div>
+                                    <div class="nixie-tube">${mm[1]}</div>
+                                </div>
+                                <div class="radio-scale-container">
+                                    <div class="scale-indicator"></div>
+                                    <div class="radio-scale-scroll-v"></div>
+                                </div>
+                                <div class="radio-side-panel">
+                                    <div class="radio-logo-brand"><div class="logo-circle">A</div><div class="brand-text">Radio</div></div>
+                                    <div class="radio-controls-grill">
+                                        <div class="volume-knob on" id="adremm-radio-toggle-preview"><div class="knob-line"></div></div>
+                                    </div>
+                                </div>
+                            </div>`);
+                const $scroll = $time.find('.radio-scale-scroll-v');
+                for(let i=0; i<=60; i++) $scroll.append(`<div class="scale-mark"><span>-</span>${String(i).padStart(2, '0')}</div>`);
+                $scroll.css('transform', `translateY(${-now.getSeconds() * 20}px)`);
+            } else if (s.digital_style === 'blocks') {
                 $time.html(`<span class="b">${hh}</span>:<span class="b">${mm}</span>:<span class="b">${ss}</span>`);
             } else if (s.digital_style === 'wall') {
                 const digits = (hh + mm).split('');
@@ -276,28 +295,6 @@ jQuery(document).ready(function($) {
             } else if (s.digital_style === 'design') {
                 $time.parent().toggleClass('vertical', s.digital_orientation === 'vertical');
                 $time.html(`<span class="day">MA</span> ${hh}:${mm}<span class="sec">${ss}</span>`);
-            } else if (s.digital_style === 'alarm') {
-                $time.html(`<span class="time-digit-tube">${hh}</span>:<span class="time-digit-tube">${mm}</span>:<span class="time-digit-tube">${ss}</span>`);
-
-                // Admin Preview Radio Scale Scroll
-                let $rDial = $time.parent().find('.radio-dial');
-                if (!$rDial.length) {
-                    $rDial = $(`<div class="radio-panel">
-                                <div class="radio-dial">
-                                    <div class="radio-scale-scroll"></div>
-                                    <div class="radio-indicator"></div>
-                                </div>
-                                <div class="radio-logo-wrap"><div class="logo-a">A</div><div class="logo-text">Radio</div></div>
-                                <div class="radio-switch" id="adremm-radio-toggle"></div>
-                            </div>`);
-                    $time.after($rDial);
-                    const $scroll = $rDial.find('.radio-scale-scroll');
-                    for(let i=0; i<=60; i++) $scroll.append(`<span>${String(i).padStart(2, '0')}</span>`);
-                }
-                const $scale = $rDial.find('.radio-scale-scroll');
-                const itemWidth = 30;
-                $scale.css('transform', `translateX(${-now.getSeconds() * itemWidth}px)`);
-
             } else {
                 $time.text(`${hh}:${mm}:${ss}`);
             }
@@ -305,26 +302,17 @@ jQuery(document).ready(function($) {
             $time.parent().hide();
         }
 
-        // Status & Date positioning in preview
+        // Status & Date positioning
         const $info = $liveView.find('.clock-info');
         const $pStatus = $info.find('.preview-status');
         const $pDate = $info.find('.preview-date');
         const $pTime = $info.find('.time-row');
 
-        // Reset positions
-        $pStatus.detach();
-        $pDate.detach();
-        $pTime.detach();
-
-        if (s.status_pos === 'above_digital') {
-            $info.append($pStatus).append($pTime).append($pDate);
-        } else if (s.status_pos === 'below_digital') {
-            $info.append($pTime).append($pStatus).append($pDate);
-        } else if (s.status_pos === 'below_date') {
-            $info.append($pTime).append($pDate).append($pStatus);
-        } else {
-             $info.append($pTime).append($pStatus).append($pDate);
-        }
+        $pStatus.detach(); $pDate.detach(); $pTime.detach();
+        if (s.status_pos === 'above_digital') $info.append($pStatus).append($pTime).append($pDate);
+        else if (s.status_pos === 'below_digital') $info.append($pTime).append($pStatus).append($pDate);
+        else if (s.status_pos === 'below_date') $info.append($pTime).append($pDate).append($pStatus);
+        else $info.append($pTime).append($pStatus).append($pDate);
 
         $pStatus.text(s.text_open).css({
             'color': s.color_open,
@@ -332,10 +320,9 @@ jQuery(document).ready(function($) {
         });
         $pDate.css({
             'color': s.color_date,
-            'font-family': (s.font_date && s.font_date !== 'inherit') ? `"${s.font_date}"` : 'inherit'
+            'font-family': (s.font_date && s.font_date !== 'inherit' && s.font_date !== 'Thema') ? `"${s.font_date}"` : 'inherit'
         });
 
-        // Extra
         const $extra = $liveView.find('.preview-extra');
         $extra.text(s.extra_message).css({
             'color': s.extra_color,
@@ -345,28 +332,17 @@ jQuery(document).ready(function($) {
         if (s.extra_marquee === 'yes') $extra.addClass('marquee-preview');
         else $extra.removeClass('marquee-preview');
 
-        // Size classes (visual feedback in preview)
         $liveView.removeClass('size-small size-normal size-large').addClass('size-' + s.panel_size);
-
         updateCloseBtn(s);
-
-        // Ensure radio on/off visual in preview
-        if (s.digital_style === 'alarm') {
-             $liveView.find('#adremm-radio-toggle').toggleClass('on', s.radio_enabled === 'yes');
-        }
     }
 
-    // Font Preload for select options and handle preview
     $('.adremm-font-select').on('change', function() {
         const font = $(this).val();
         $(this).css('font-family', (font && font !== 'inherit' && font !== 'Thema') ? `"${font}"` : 'inherit');
     }).each(function() {
-        const $sel = $(this);
-        $sel.find('option').each(function() {
+        $(this).find('option').each(function() {
             const f = $(this).val();
-            if (f && f !== 'inherit' && f !== 'Thema') {
-                $(this).css('font-family', `"${f}"`);
-            }
+            if (f && f !== 'inherit' && f !== 'Thema') $(this).css('font-family', `"${f}"`);
         });
     }).trigger('change');
 
@@ -374,33 +350,16 @@ jQuery(document).ready(function($) {
         updatePreview();
     });
 
-    // Special listener for radio buttons and checkboxes to ensure they trigger on click
     $form.on('click', 'input[type="radio"], input[type="checkbox"]', function() {
         setTimeout(updatePreview, 10);
     });
 
-    // Initial trigger to sync UI with loaded settings
-        if ($('.nav-tab.is-active').length) $('.nav-tab.is-active').trigger('click');
-        if ($('.sub-tab-btn.active').length) $('.sub-tab-btn.active').trigger('click');
-
-
-        // Final force update
-        setTimeout(updatePreview, 100);
-
-    // Close preview button logic
     function updateCloseBtn(s) {
         let $btn = $liveView.find('.preview-close');
-        if ($btn.length === 0) {
-            $btn = $('<div class="preview-close"></div>');
-            $liveView.prepend($btn);
-        }
+        if ($btn.length === 0) { $btn = $('<div class="preview-close"></div>'); $liveView.prepend($btn); }
         $btn.html('');
-        if (s.show_close_label === 'yes') {
-            $btn.append(`<span class="close-label" style="color:${s.color_close_label}">${s.close_label}</span>`);
-        }
-        if (s.show_close_x === 'yes') {
-            $btn.append(`<span class="close-x" style="font-size:${s.close_x_size}px; color:${s.color_close_x}">&times;</span>`);
-        }
+        if (s.show_close_label === 'yes') $btn.append(`<span class="close-label" style="color:${s.color_close_label}">${s.close_label}</span>`);
+        if (s.show_close_x === 'yes') $btn.append(`<span class="close-x" style="font-size:${s.close_x_size}px; color:${s.color_close_x}">&times;</span>`);
         if (s.show_close_x !== 'yes' && s.show_close_label !== 'yes') $btn.hide(); else $btn.show();
     }
 
@@ -420,8 +379,6 @@ jQuery(document).ready(function($) {
         $liveView.find('.hand.min').css('transform', `rotate(${m * 6 + s * 0.1}deg)`);
         $liveView.find('.hand.hour').css('transform', `rotate(${h * 30 + m * 0.5}deg)`);
 
-        // Re-run the part of updatePreview that handles digital time logic
-        // but only if we are in the middle of a second to show "on the fly" updates
         if (ms < 100) {
             const style = getVal('digital_style');
             const hh = String(h).padStart(2, '0');
@@ -429,7 +386,15 @@ jQuery(document).ready(function($) {
             const ss = String(s).padStart(2, '0');
             const $time = $liveView.find('.preview-time');
 
-            if (style === 'blocks') {
+            if (style === 'alarm') {
+                 const $tubes = $time.find('.nixie-tube');
+                 if ($tubes.length) {
+                     $tubes.eq(0).text(hh[0]); $tubes.eq(1).text(hh[1]);
+                     $tubes.eq(2).text(mm[0]); $tubes.eq(3).text(mm[1]);
+                 }
+                 const $scroll = $time.find('.radio-scale-scroll-v');
+                 if ($scroll.length) $scroll.css('transform', `translateY(${-s * 20}px)`);
+            } else if (style === 'blocks') {
                 $time.html(`<span class="b">${hh}</span>:<span class="b">${mm}</span>:<span class="b">${ss}</span>`);
             } else if (style === 'wall') {
                 const digits = (hh + mm).split('');
@@ -446,7 +411,6 @@ jQuery(document).ready(function($) {
             }
         }
     }
-    setInterval(animateClock, 1000);
-    animateClock();
+    setInterval(animateClock, 50);
     updatePreview();
 });
