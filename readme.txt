@@ -3,7 +3,7 @@ Contributors: ADREMM
 Tags: clock, widget, opening hours, radio
 Requires at least: 5.0
 Tested up to: 6.4
-Stable tag: 1.0.2
+Stable tag: 1.0.5
 License: GPLv2 or later
 
 Een uiterst gebruiksvriendelijke, meertalige klokplugin met live previews, openingstijden en schaalbare weergave.
@@ -20,6 +20,14 @@ Hij heeft 3 thema's en kan op 8 wijzes getoond worden op de front.
 3. Go to ADREMM Klok in the admin menu to configure.
 
 == Changelog ==
+
+= 1.0.5 =
+* Overhauled architecture to Singleton class.
+* Enhanced Vintage Radio (v2.3) with side controls.
+* Added 6-digit HH:MM:SS Wall Clock theme.
+* Implemented position-aware transform scaling.
+* Fixed analog hand color inheritance.
+* Improved opening hours engine (multi-slot, special days).
 
 = 1.0.2 =
 * Added support for decimal values in settings (step="0.1").
