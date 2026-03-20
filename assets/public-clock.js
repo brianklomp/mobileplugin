@@ -69,7 +69,7 @@
             } else if ($timeRow.hasClass('digital-style-wall')) {
                  const digits = (hh + mm + ss).split('');
                  const $cols = $timeTarget.find('.digit-col');
-                 const digitHeight = 60;
+                 const digitHeight = $cols.first().height() || 60;
                  if ($cols.length === 0) {
                      let html = '';
                      digits.forEach((d, i) => {
@@ -189,16 +189,23 @@
         }
 
         if ($root.hasClass('adremm-clock-panel')) {
-             let tabPos = 'tab-right';
-             if ($root.hasClass('adremm-clock-pos-top-left') ||
-                 $root.hasClass('adremm-clock-pos-middle-left') ||
-                 $root.hasClass('adremm-clock-pos-bottom-left')) {
-                 tabPos = 'tab-left';
+             function updateTabPos() {
+                 $tab.removeClass('tab-left tab-right');
+                 let tabPos = 'tab-right';
+                 if ($root.hasClass('adremm-clock-pos-top-left') ||
+                     $root.hasClass('adremm-clock-pos-middle-left') ||
+                     $root.hasClass('adremm-clock-pos-bottom-left')) {
+                     tabPos = 'tab-left';
+                 }
+                 $tab.addClass(tabPos);
              }
-             $tab.addClass(tabPos);
+             updateTabPos();
 
              $closeBtn.on('click', function() {
-                 $container.fadeOut(300, function() { $tab.css('display', 'flex').hide().fadeIn(300); });
+                 $container.fadeOut(300, function() {
+                     updateTabPos();
+                     $tab.css('display', 'flex').hide().fadeIn(300);
+                 });
              });
              $tab.on('click', function() {
                  $tab.fadeOut(300, function() { $container.fadeIn(300); });

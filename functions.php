@@ -44,6 +44,7 @@ function adremm_clock_admin_enqueue($hook) {
     );
     if (!in_array($hook, $pages)) return;
 
+    wp_enqueue_style('adremm-clock-pixel-font', "https://fonts.googleapis.com/css2?family=Silkscreen&display=swap", false);
     wp_enqueue_media();
     wp_enqueue_style('wp-color-picker');
     wp_enqueue_script('wp-color-picker');

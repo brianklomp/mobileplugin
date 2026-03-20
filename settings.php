@@ -33,6 +33,7 @@ function adremm_clock_get_default_settings() {
 
         // Analoge Klok
         'show_analog' => 'yes',
+        'analog_theme' => 'classic',
         'analog_bg_type' => 'color',
         'analog_bg_image' => '',
         'analog_bg_color' => '#000000',

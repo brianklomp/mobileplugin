@@ -47,15 +47,23 @@
 }
 
 /* SIZES (Strict scaling) */
-.panel-size-small { --panel-width: 280px; width: 280px !important; }
-.panel-size-normal { --panel-width: 380px; width: 380px !important; }
-.panel-size-large { --panel-width: 480px; width: 480px !important; }
-#adremm-clock-wrapper.custom-width-active { transform: none !important; width: var(--panel-width) !important; }
+#adremm-clock-wrapper.panel-size-small { --panel-width: 280px; --panel-scale: 0.73; }
+#adremm-clock-wrapper.panel-size-normal { --panel-width: 380px; --panel-scale: 1.0; }
+#adremm-clock-wrapper.panel-size-large { --panel-width: 480px; --panel-scale: 1.26; }
 
-/* Digital Clock Sizing based on Panel Size */
-#adremm-clock-wrapper.panel-size-small .time-row { --digital-w: 250px; --digital-h: 100px; }
-#adremm-clock-wrapper.panel-size-normal .time-row { --digital-w: 310px; --digital-h: 125px; }
-#adremm-clock-wrapper.panel-size-large .time-row { --digital-w: 440px; --digital-h: 176px; }
+#adremm-clock-wrapper { width: var(--panel-width) !important; }
+#adremm-clock-wrapper.custom-width-active { width: var(--panel-width) !important; --panel-scale: 1.0; }
+
+/* Proportional Internal Sizing */
+.adremm-clock-analog .face {
+    width: calc(120px * var(--panel-scale));
+    height: calc(120px * var(--panel-scale));
+}
+.adremm-clock-analog .notations i {
+    transform-origin: 50% calc(60px * var(--panel-scale));
+    height: calc(var(--not-len) * var(--panel-scale));
+    width: calc(var(--not-thick) * var(--panel-scale));
+}
 
 /* Apply sizes to digital styles */
 .time-row.digital-style-custom,
@@ -64,10 +72,11 @@
 .time-row.digital-style-blocks,
 .time-row.digital-style-pixels,
 .time-row.digital-style-design {
-    width: var(--digital-w, 310px) !important;
-    height: var(--digital-h, 125px) !important;
+    width: calc(310px * var(--panel-scale)) !important;
+    height: calc(125px * var(--panel-scale)) !important;
     margin-left: auto;
     margin-right: auto;
+    font-size: calc(32px * var(--panel-scale));
 }
 
 #adremm-clock-wrapper.adremm-clock-pos-bottom-right { transform-origin: bottom right; }
@@ -90,7 +99,7 @@
 
 /* Common Elements */
 .adremm-clock-analog { margin-bottom: 15px; }
-.face { width: 120px; height: 120px; border-radius: 50%; background: #000; border: 2px solid #3399ff; position: relative; margin: 0 auto; overflow: hidden; }
+.face { border-radius: 50%; background: #000; border: 2px solid #3399ff; position: relative; margin: 0 auto; overflow: hidden; }
 
 /* MONDRIAAN THEME */
 .face.theme-mondriaan {
@@ -140,9 +149,9 @@
     top: 90%;
 }
 /* Ensure currentColor works for styles */
-.h-hour { height: 35px; width: 3px; margin-left: -1.5px; }
-.h-min { height: 45px; width: 2px; margin-left: -1px; }
-.h-sec { height: 50px; width: 1px; background: #ff3b30; margin-left: -0.5px; }
+.h-hour { height: calc(35px * var(--panel-scale)); width: calc(3px * var(--panel-scale)); margin-left: calc(-1.5px * var(--panel-scale)); }
+.h-min { height: calc(45px * var(--panel-scale)); width: calc(2px * var(--panel-scale)); margin-left: calc(-1px * var(--panel-scale)); }
+.h-sec { height: calc(50px * var(--panel-scale)); width: calc(1px * var(--panel-scale)); background: #ff3b30; margin-left: calc(-0.5px * var(--panel-scale)); }
 
 /* Digital Styles */
 .time-row.has-glow .time-digital { text-shadow: 0 0 var(--digital-glow-spread) var(--digital-glow-color) !important; }
@@ -182,24 +191,24 @@
 
 /* PIXELS - Digital block style */
 .time-row.digital-style-pixels .time-digital {
-    font-family: 'Silkscreen', 'Looksky', 'Courier New', Courier, monospace; font-size: 64px; color: #ff9500; background: #111; padding: 15px 25px; border-radius: 8px; box-shadow: inset 0 0 15px #000; letter-spacing: 4px; display: inline-block; border: 2px solid #222;
+    font-family: 'Silkscreen', 'Looksky', 'Courier New', Courier, monospace; font-size: calc(64px * var(--panel-scale)); color: #ff9500; background: #111; padding: 15px 25px; border-radius: 8px; box-shadow: inset 0 0 15px #000; letter-spacing: 4px; display: inline-block; border: 2px solid #222;
 }
 
 /* VINTAGE RADIO */
 .time-row.digital-style-alarm {
-    background: #331d14; padding: 20px; border: 8px solid #4a2c1e; border-radius: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 60px rgba(0,0,0,0.5); position: relative; overflow: hidden; display: block !important;
+    background: #331d14; padding: calc(20px * var(--panel-scale)); border: calc(8px * var(--panel-scale)) solid #4a2c1e; border-radius: calc(30px * var(--panel-scale)); box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 60px rgba(0,0,0,0.5); position: relative; overflow: hidden; display: block !important;
 }
-.radio-vintage-body { display: flex; align-items: center; justify-content: center; gap: 15px; width: 100%; }
-.nixie-tubes { display: flex; gap: 6px; background: #1a0f0a; padding: 12px; border-radius: 15px; border: 3px solid #2a1b15; box-shadow: inset 0 0 30px #000; align-items: center; flex-shrink: 0; }
+.radio-vintage-body { display: flex; align-items: center; justify-content: center; gap: calc(15px * var(--panel-scale)); width: 100%; }
+.nixie-tubes { display: flex; gap: calc(6px * var(--panel-scale)); background: #1a0f0a; padding: calc(12px * var(--panel-scale)); border-radius: calc(15px * var(--panel-scale)); border: calc(3px * var(--panel-scale)) solid #2a1b15; box-shadow: inset 0 0 30px #000; align-items: center; flex-shrink: 0; }
 .nixie-tube {
-    width: 50px; height: 80px;
+    width: calc(50px * var(--panel-scale)); height: calc(80px * var(--panel-scale));
     background:
         radial-gradient(circle, rgba(255,102,0,0.1) 0%, transparent 80%),
         linear-gradient(rgba(255,255,255,0.12) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255,255,255,0.12) 1px, transparent 1px),
         radial-gradient(circle, #3d2b24 0%, #1a0f0a 100%);
     background-size: 100% 100%, 8px 8px, 8px 8px, 100% 100%;
-    border-radius: 12px; border: 1px solid rgba(255,102,0,0.3); display: flex; align-items: center; justify-content: center; font-family: 'Geist', 'Courier New', monospace; font-size: 52px; font-weight: 300; color: #ff6600; text-shadow: 0 0 20px #ff6600, 0 0 5px #fff; position: relative;
+    border-radius: calc(12px * var(--panel-scale)); border: 1px solid rgba(255,102,0,0.3); display: flex; align-items: center; justify-content: center; font-family: 'Geist', 'Courier New', monospace; font-size: calc(52px * var(--panel-scale)); font-weight: 300; color: #ff6600; text-shadow: 0 0 20px #ff6600, 0 0 5px #fff; position: relative;
 }
 .nixie-tube-gap { width: 10px; color: #ff6600; font-size: 32px; font-weight: bold; }
 .radio-scale-container { width: 45px; height: 80px; background: #fff; border-radius: 8px; position: relative; overflow: hidden; border: 2px solid #5a3d31; flex-shrink: 0; }
@@ -224,12 +233,12 @@
 .time-row.digital-style-wall::before, .time-row.digital-style-wall::after {
     content: ""; position: absolute; left: 0; width: 100%; height: 30% !important; z-index: 10; pointer-events: none;
 }
-.time-row.digital-style-wall::before { top: 0; background: linear-gradient(180deg, #111 0%, rgba(17,17,17,0) 30%, rgba(17,17,17,0) 100%) !important; height: 100% !important; }
-.time-row.digital-style-wall::after { bottom: 0; background: linear-gradient(0deg, #111 0%, rgba(17,17,17,0) 30%, rgba(17,17,17,0) 100%) !important; height: 100% !important; }
+.time-row.digital-style-wall::before { top: 0; background: linear-gradient(180deg, #111 0%, rgba(17,17,17,0) 100%) !important; height: 30% !important; }
+.time-row.digital-style-wall::after { bottom: 0; background: linear-gradient(0deg, #111 0%, rgba(17,17,17,0) 100%) !important; height: 30% !important; }
 
-.time-row.digital-style-wall .time-digital { font-size: 42px; font-weight: 300; display: flex; align-items: center; gap: 2px; position: relative; z-index: 5; height: 60px; overflow: hidden; width: 100%; justify-content: center; }
-.time-row.digital-style-wall .digit-col { display: flex; flex-direction: column; height: 60px; overflow: visible; position: relative; flex-shrink: 0; }
-.time-row.digital-style-wall .digit-col span { display: block; width: 28px; line-height: 60px; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); text-align: center; white-space: pre; flex-shrink: 0; }
+.time-row.digital-style-wall .time-digital { font-size: calc(42px * var(--panel-scale)); font-weight: 300; display: flex; align-items: center; gap: 2px; position: relative; z-index: 5; height: calc(60px * var(--panel-scale)); overflow: hidden; width: 100%; justify-content: center; }
+.time-row.digital-style-wall .digit-col { display: flex; flex-direction: column; height: calc(60px * var(--panel-scale)); overflow: visible; position: relative; flex-shrink: 0; }
+.time-row.digital-style-wall .digit-col span { display: block; width: calc(28px * var(--panel-scale)); line-height: calc(60px * var(--panel-scale)); transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); text-align: center; white-space: pre; flex-shrink: 0; }
 .time-row.digital-style-wall .sep { width: 12px; height: 60px; text-align: center; opacity: 0.5; display: flex; align-items: center; justify-content: center; font-size: 32px; line-height: 1; }
 
 /* Hand Styles */

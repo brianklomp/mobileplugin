@@ -92,8 +92,14 @@ class Adremm_Clock_Plugin {
      */
     public function activate() {
         $default_settings = adremm_clock_get_default_settings();
-        if ( ! get_option( 'adremm_clock_settings' ) ) {
-            update_option( 'adremm_clock_settings', $default_settings );
+        $current_settings = get_option( 'adremm_clock_settings', array() );
+
+        // Merge defaults with current settings to ensure new keys exist
+        $new_settings = wp_parse_args( (array) $current_settings, $default_settings );
+        update_option( 'adremm_clock_settings', $new_settings );
+
+        if ( ! get_option( 'adremm_clock_version' ) ) {
+            update_option( 'adremm_clock_version', $this->version );
         }
     }
 

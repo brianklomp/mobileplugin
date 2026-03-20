@@ -55,35 +55,36 @@ jQuery(document).ready(function($) {
 
     function updateWidthLogic() {
         const size = getVal('panel_size');
-        const customOverride = $form.find('#adremm-panel-custom-check').is(':checked');
-        const $customInput = $('#adremm-panel-width-custom');
-        const $hiddenWidth = $('#adremm-panel-width-hidden');
+        const customOverride = $form.find('input[name="adremm_clock_settings[panel_custom_override]"]').is(':checked');
+        const $customInput = $form.find('input[name="adremm_clock_settings[panel_width_custom]"]');
+        const $hiddenWidth = $form.find('input[name="adremm_clock_settings[panel_width]"]');
 
         let width = 380;
+        let scale = 1.0;
         if (customOverride) {
             $customInput.prop('disabled', false);
             width = parseFloat($customInput.val()) || 380;
+            scale = 1.0;
         } else {
             $customInput.prop('disabled', true);
-            if (size === 'small') width = 280;
-            else if (size === 'normal') width = 380;
-            else if (size === 'large') width = 480;
+            if (size === 'small') { width = 280; scale = 0.73; }
+            else if (size === 'normal') { width = 380; scale = 1.0; }
+            else if (size === 'large') { width = 480; scale = 1.26; }
         }
         $hiddenWidth.val(width);
-        return width;
+        return { width, scale, customOverride };
     }
 
     function updatePreview() {
-        const currentWidth = updateWidthLogic();
-        const customActive = $form.find('#adremm-panel-custom-check').is(':checked');
+        const { width, scale, customOverride } = updateWidthLogic();
         const s = {
             theme_mode: getRadioVal('theme_mode'),
             theme_font: getVal('theme_font'),
             bg_color: getVal('bg_color'),
             text_color: getVal('text_color'),
             panel_size: getVal('panel_size'),
-            panel_width: currentWidth,
-            custom_width_active: customActive,
+            panel_width: width,
+            custom_width_active: customOverride,
             panel_shadow: getVal('panel_shadow'),
             panel_border: getVal('panel_border'),
             show_analog: getRadioVal('show_analog'),
@@ -159,19 +160,16 @@ jQuery(document).ready(function($) {
 
         $liveView.removeClass('theme-mode-light theme-mode-dark theme-mode-auto panel-size-small panel-size-normal panel-size-large custom-width-active');
         $liveView.addClass('theme-mode-' + s.theme_mode + ' panel-size-' + s.panel_size);
-        if (s.custom_width_active) $liveView.addClass('custom-width-active');
+        if (customOverride) $liveView.addClass('custom-width-active');
 
         const liveStyles = {
             '--user-bg': s.bg_color || 'transparent',
             '--user-text': s.text_color || '#000',
-            'font-family': (s.theme_font && s.theme_font !== 'inherit') ? `"${s.theme_font}"` : 'inherit'
+            'font-family': (s.theme_font && s.theme_font !== 'inherit') ? `"${s.theme_font}"` : 'inherit',
+            '--panel-scale': scale,
+            '--panel-width': width + 'px',
+            '--digital-font-size-base': s.digital_font_size + 'px'
         };
-        if (s.custom_width_active) {
-            liveStyles['--panel-width'] = s.panel_width + 'px';
-        } else {
-            // Unset the variable to let the CSS class take over
-            $liveView.get(0).style.removeProperty('--panel-width');
-        }
         $liveView.css(liveStyles);
 
         // Set system font preview globally in preview container
@@ -280,7 +278,8 @@ jQuery(document).ready(function($) {
                 let html = '';
                 digits.forEach((d, i) => { html += `<div class="digit-col"><span>0\n1\n2\n3\n4\n5\n6\n7\n8\n9\n0</span></div>`; if (i === 1 || i === 3) html += '<div class="sep">:</div>'; });
                 $time.html(html).css('display', 'flex');
-                $time.find('.digit-col').each(function(i) { $(this).find('span').css('transform', `translateY(-${parseInt(digits[i]) * 60}px)`); });
+                const digitHeight = $time.find('.digit-col').first().height() || 60;
+                $time.find('.digit-col').each(function(i) { $(this).find('span').css('transform', `translateY(-${parseInt(digits[i]) * digitHeight}px)`); });
             } else if (s.digital_style === 'design') {
                 const dayName = now.toLocaleDateString('nl-NL', { weekday: 'short' }).toUpperCase();
                 $time.html(`<div class="minimalist-container" style="background:#000; color:#fff; padding:15px; border-radius:8px; display:inline-block; font-family:monospace; width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center;">
@@ -298,7 +297,9 @@ jQuery(document).ready(function($) {
         updateCloseBtn(s);
     }
 
-    $form.on('input change keyup click', 'input, select, textarea', function() { updatePreview(); });
+    $form.on('input change keyup click', 'input, select, textarea', function() {
+        setTimeout(updatePreview, 10);
+    });
 
     function updateCloseBtn(s) {
         let $btn = $liveView.find('.preview-close');
@@ -325,7 +326,8 @@ jQuery(document).ready(function($) {
 
         if (getVal('digital_style') === 'wall') {
             const digits = (String(h).padStart(2, '0') + String(m).padStart(2, '0') + String(s).padStart(2, '0')).split('');
-            $liveView.find('.digit-col').each(function(i) { $(this).find('span').css('transform', `translateY(-${parseInt(digits[i]) * 60}px)`); });
+            const digitHeight = $liveView.find('.digit-col').first().height() || 60;
+            $liveView.find('.digit-col').each(function(i) { $(this).find('span').css('transform', `translateY(-${parseInt(digits[i]) * digitHeight}px)`); });
         }
     }
     setInterval(animateClock, 50);
