@@ -5,6 +5,14 @@ jQuery(document).ready(function($) {
     const $form = $('#adremm-clock-form, #adremm-clock-mobile-form');
     const $liveView = $('#clock-live-view, #clock-mobile-view');
 
+    // Style font select options
+    $('.adremm-font-select option').each(function() {
+        const font = $(this).val();
+        if (font && font !== 'Thema' && font !== 'inherit') {
+            $(this).css('font-family', font);
+        }
+    });
+
     $('.adremm-nav-tabs .nav-tab').on('click', function(e) {
         e.preventDefault();
         const target = $(this).attr('href');
@@ -302,6 +310,9 @@ jQuery(document).ready(function($) {
     }
 
     $form.on('input change keyup click', 'input, select, textarea', function() {
+        if ($(this).hasClass('adremm-font-select')) {
+            $(this).css('font-family', $(this).val() === 'Thema' ? 'inherit' : $(this).val());
+        }
         setTimeout(updatePreview, 10);
     });
 

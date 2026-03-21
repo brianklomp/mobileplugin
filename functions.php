@@ -52,16 +52,13 @@ function adremm_clock_admin_enqueue($hook) {
     wp_enqueue_style('adremm-clock-admin-css', ADREMM_CLOCK_URL . 'assets/admin-style.css', array(), ADREMM_CLOCK_VERSION);
     wp_enqueue_script('adremm-clock-admin-js', ADREMM_CLOCK_URL . 'assets/admin-preview.js', array('jquery', 'wp-color-picker'), ADREMM_CLOCK_VERSION, true);
 
-    $settings = wp_parse_args(get_option('adremm_clock_settings', array()), adremm_clock_get_default_settings());
-    wp_enqueue_style('adremm-clock-pixel-font', "https://fonts.googleapis.com/css2?family=Silkscreen&display=swap", false);
-    $font_keys = array('theme_font', 'digital_font', 'font_status', 'font_date');
-    foreach ($font_keys as $key) {
-        if (!empty($settings[$key]) && $settings[$key] !== 'inherit' && $settings[$key] !== 'Thema') {
-            $font = str_replace(' ', '+', $settings[$key]);
-            $handle = 'adremm-clock-font-' . sanitize_title($font);
-            wp_enqueue_style($handle, "https://fonts.googleapis.com/css2?family={$font}&display=swap", false);
-        }
+    // Load ALL available Google Fonts for the admin preview
+    $all_fonts = adremm_clock_get_google_fonts();
+    $google_query = '';
+    foreach ($all_fonts as $font) {
+        $google_query .= '&family=' . str_replace(' ', '+', $font) . ':wght@400;700';
     }
+    wp_enqueue_style('adremm-clock-admin-google-fonts', "https://fonts.googleapis.com/css2?display=swap" . $google_query, false);
 }
 
 /**
