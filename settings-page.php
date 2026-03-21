@@ -523,19 +523,25 @@ $fonts = adremm_clock_get_google_fonts();
                 <div class="adremm-preview-card">
                     <h3>Live preview</h3>
                     <div class="preview-stage">
-                        <div id="clock-live-view">
-                            <div class="analog-preview">
-                                <div class="clock-face">
-                                    <div class="hand hour"></div>
-                                    <div class="hand min"></div>
-                                    <div class="hand sec"></div>
+                        <div id="clock-live-view" class="adremm-clock-panel adremm-clock-pos-bottom-right">
+                            <div class="adremm-clock-container">
+                                <div class="adremm-clock-main">
+                                    <div class="analog-preview adremm-clock-analog">
+                                        <div class="clock-face face">
+                                            <div class="h-hour"></div>
+                                            <div class="h-min"></div>
+                                            <div class="h-sec"></div>
+                                        </div>
+                                    </div>
+                                    <div class="clock-info adremm-clock-info">
+                                        <div class="time-row">
+                                            <div class="preview-time time-digital">12:34:56</div>
+                                        </div>
+                                        <div class="preview-status status-row">Wij zijn geopend</div>
+                                        <div class="preview-date date-row">Maandag 1 januari</div>
+                                        <div class="preview-extra extra-row">Extra bericht tekst...</div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="clock-info">
-                                <div class="preview-time">12:34:56</div>
-                                <div class="preview-status">Wij zijn geopend</div>
-                                <div class="preview-date">Maandag 1 januari</div>
-                                <div class="preview-extra">Extra bericht tekst...</div>
                             </div>
                         </div>
                     </div>

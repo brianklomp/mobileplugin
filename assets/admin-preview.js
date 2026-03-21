@@ -196,11 +196,11 @@ jQuery(document).ready(function($) {
             $face.removeClass('theme-mondriaan');
             if (s.analog_theme === 'mondriaan') {
                 $face.addClass('theme-mondriaan');
-                if ($face.find('.mondriaan-grid').length === 0) {
-                    $face.append('<div class="mondriaan-grid"><div class="mondriaan-block block-red"></div><div class="mondriaan-block block-blue"></div><div class="mondriaan-block block-yellow"></div><div class="mondriaan-line line-v1"></div><div class="mondriaan-line line-v2"></div><div class="mondriaan-line line-h1"></div><div class="mondriaan-line line-h2"></div></div>');
+                if ($face.find('.mondriaan-elements').length === 0) {
+                    $face.append('<div class="mondriaan-elements"><div class="mondriaan-mark-12"></div><div class="mondriaan-mark-9"></div><div class="mondriaan-hub"></div></div>');
                 }
             } else {
-                $face.find('.mondriaan-grid').remove();
+                $face.find('.mondriaan-elements').remove();
             }
 
             $face.css({
