@@ -3,7 +3,7 @@ Contributors: ADREMM
 Tags: clock, widget, opening hours, radio
 Requires at least: 5.0
 Tested up to: 6.4
-Stable tag: 1.1.5
+Stable tag: 1.1.6
 License: GPLv2 or later
 
 Een uiterst gebruiksvriendelijke, meertalige klokplugin met live previews, openingstijden en schaalbare weergave.
@@ -20,6 +20,13 @@ Hij heeft 3 thema's en kan op 8 wijzes getoond worden op de front.
 3. Go to ADREMM Klok in the admin menu to configure.
 
 == Changelog ==
+
+= 1.1.6 =
+* Overhauled Mondriaan analog clock design with 8px lines and precise block placement.
+* Standardized collapsible tab to 25px x 100px.
+* Improved admin joystick UI with specific [HD], [FT], [X] labels and tooltips.
+* Fixed snapping logic: closed clock from the right docks to the left edge as a 25x100px tab.
+* Finalized version for release 1.1.6 to ensure clean WordPress install.
 
 = 1.1.5 =
 * Fixed analog hand alignment to precise center.

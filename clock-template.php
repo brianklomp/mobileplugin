@@ -61,9 +61,15 @@ $style_vars = sprintf(
                         border-width: <?php echo (isset($settings['analog_theme']) && $settings['analog_theme'] === 'mondriaan') ? '4px' : esc_attr(isset($settings['analog_ring_size']) ? $settings['analog_ring_size'] : '0'); ?>px;
                     ">
                         <?php if (isset($settings['analog_theme']) && $settings['analog_theme'] === 'mondriaan'): ?>
-                            <div class="mondriaan-block block-red"></div>
-                            <div class="mondriaan-block block-blue"></div>
-                            <div class="mondriaan-block block-yellow"></div>
+                            <div class="mondriaan-grid">
+                                <div class="mondriaan-block block-red"></div>
+                                <div class="mondriaan-block block-blue"></div>
+                                <div class="mondriaan-block block-yellow"></div>
+                                <div class="mondriaan-line line-v1"></div>
+                                <div class="mondriaan-line line-v2"></div>
+                                <div class="mondriaan-line line-h1"></div>
+                                <div class="mondriaan-line line-h2"></div>
+                            </div>
                         <?php endif; ?>
                         <div class="notations hour-notations <?php echo (isset($settings['analog_not_above']) && $settings['analog_not_above'] === 'yes') ? 'above' : ''; ?>" style="color: <?php echo esc_attr(isset($settings['analog_hour_color']) ? $settings['analog_hour_color'] : '#fff'); ?>; --not-thick: <?php echo esc_attr(isset($settings['analog_hour_thick']) ? $settings['analog_hour_thick'] : '2'); ?>px; --not-len: <?php echo esc_attr(isset($settings['analog_hour_length']) ? $settings['analog_hour_length'] : '10'); ?>px; transform: scale(<?php echo esc_attr(isset($settings['analog_not_scale']) ? $settings['analog_not_scale'] : '1.0'); ?>);">
                             <?php for($i=1; $i<=12; $i++): ?><i style="transform: rotate(<?php echo $i*30; ?>deg)"></i><?php endfor; ?>
