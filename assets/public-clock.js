@@ -68,20 +68,45 @@
                 }
             } else if ($timeRow.hasClass('digital-style-wall')) {
                  const digits = (hh + mm + ss).split('');
-                 const $cols = $timeTarget.find('.digit-col');
-                 const digitHeight = $cols.first().height() || 60;
+                 let $cols = $timeTarget.find('.digit-col');
                  if ($cols.length === 0) {
                      let html = '';
                      digits.forEach((d, i) => {
-                         html += `<div class="digit-col"><span>0\n1\n2\n3\n4\n5\n6\n7\n8\n9\n0</span></div>`;
+                         html += `<div class="digit-col" data-prev="-1"><span>0\n1\n2\n3\n4\n5\n6\n7\n8\n9\n0</span></div>`;
                          if (i === 1 || i === 3) html += '<div class="sep">:</div>';
                      });
                      $timeTarget.html(html);
+                     $cols = $timeTarget.find('.digit-col');
                  }
-                 $timeTarget.find('.digit-col').each(function(i) {
+
+                 const digitHeight = $cols.first().height() || 60;
+
+                 $cols.each(function(i) {
                      const d = parseInt(digits[i]);
-                     let offset = d * digitHeight;
-                     $(this).find('span').css('transform', `translateY(-${offset}px)`);
+                     const prev = parseInt($(this).attr('data-prev'));
+                     const $span = $(this).find('span');
+
+                     if (prev !== d) {
+                         let targetIdx = d;
+                         // If we go from 9 to 0, use the 11th item (index 10)
+                         if (prev === 9 && d === 0) {
+                             targetIdx = 10;
+                         }
+
+                         $span.css({
+                             'transition': 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
+                             'transform': `translateY(-${targetIdx * digitHeight}px)`
+                         });
+
+                         // If we reached index 10, snap back to index 0 after transition
+                         if (targetIdx === 10) {
+                             setTimeout(() => {
+                                 $span.css({ 'transition': 'none', 'transform': 'translateY(0)' });
+                             }, 600);
+                         }
+
+                         $(this).attr('data-prev', d);
+                     }
                  });
             } else if (handSweep === 'ticking' || ms < 100) {
                 if ($timeRow.hasClass('digital-style-blocks')) {

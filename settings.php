@@ -241,11 +241,25 @@ function adremm_clock_add_admin_menu() {
         'adremm_clock_render_openingstijden_page'
     );
 
+    add_submenu_page(
+        'adremm-clock-settings',
+        'Mobiel & Tablet',
+        'Mobiel & Tablet',
+        'manage_options',
+        'adremm-clock-mobile',
+        'adremm_clock_render_mobile_settings_page'
+    );
 }
 
 function adremm_clock_render_openingstijden_page() {
     if ( file_exists( ADREMM_CLOCK_PATH . 'openingstijden-page.php' ) ) {
         include ADREMM_CLOCK_PATH . 'openingstijden-page.php';
+    }
+}
+
+function adremm_clock_render_mobile_settings_page() {
+    if ( file_exists( ADREMM_CLOCK_PATH . 'mobile-settings-page.php' ) ) {
+        include ADREMM_CLOCK_PATH . 'mobile-settings-page.php';
     }
 }
 

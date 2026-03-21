@@ -215,6 +215,10 @@ jQuery(document).ready(function($) {
                 if ($face.find('.mondriaan-elements').length === 0) {
                     $face.append('<div class="mondriaan-elements"><div class="mondriaan-mark-12"></div><div class="mondriaan-mark-9"></div><div class="mondriaan-hub"></div></div>');
                 }
+                // Force colors for Mondriaan
+                s.hand_hour_color = '#2a3492';
+                s.hand_min_color = '#ffff00';
+                s.hand_sec_color = '#ff3b30';
             } else {
                 $face.find('.mondriaan-elements').remove();
             }
@@ -294,12 +298,12 @@ jQuery(document).ready(function($) {
             } else if (s.digital_style === 'blocks') {
                 $time.html(`<span class="b">${hh}</span><span class="sep">:</span><span class="b">${mm}</span><span class="sep">:</span><span class="b">${ss}</span>`);
             } else if (s.digital_style === 'wall') {
-                const digits = (hh + mm + ss).split('');
-                let html = '';
-                digits.forEach((d, i) => { html += `<div class="digit-col"><span>0\n1\n2\n3\n4\n5\n6\n7\n8\n9\n0</span></div>`; if (i === 1 || i === 3) html += '<div class="sep">:</div>'; });
-                $time.html(html).css('display', 'flex');
-                const digitHeight = $time.find('.digit-col').first().height() || 60;
-                $time.find('.digit-col').each(function(i) { $(this).find('span').css('transform', `translateY(-${parseInt(digits[i]) * digitHeight}px)`); });
+                if ($time.find('.digit-col').length === 0) {
+                    const digits = (hh + mm + ss).split('');
+                    let html = '';
+                    digits.forEach((d, i) => { html += `<div class="digit-col" data-prev="-1"><span>0\n1\n2\n3\n4\n5\n6\n7\n8\n9\n0</span></div>`; if (i === 1 || i === 3) html += '<div class="sep">:</div>'; });
+                    $time.html(html).css('display', 'flex');
+                }
             } else if (s.digital_style === 'design') {
                 const dayName = now.toLocaleDateString('nl-NL', { weekday: 'short' }).toUpperCase();
                 $time.html(`<div class="minimalist-container" style="background:#000; color:#fff; padding:15px; border-radius:8px; display:inline-block; font-family:monospace; width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center;">
@@ -356,8 +360,23 @@ jQuery(document).ready(function($) {
 
         if (getVal('digital_style') === 'wall') {
             const digits = (String(h).padStart(2, '0') + String(m).padStart(2, '0') + String(s).padStart(2, '0')).split('');
-            const digitHeight = $liveView.find('.digit-col').first().height() || 60;
-            $liveView.find('.digit-col').each(function(i) { $(this).find('span').css('transform', `translateY(-${parseInt(digits[i]) * digitHeight}px)`); });
+            const $cols = $liveView.find('.digit-col');
+            const digitHeight = $cols.first().height() || 60;
+
+            $cols.each(function(i) {
+                const d = parseInt(digits[i]);
+                const prev = parseInt($(this).attr('data-prev'));
+                const $span = $(this).find('span');
+                if (prev !== d) {
+                    let targetIdx = d;
+                    if (prev === 9 && d === 0) targetIdx = 10;
+                    $span.css({ 'transition': 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)', 'transform': `translateY(-${targetIdx * digitHeight}px)` });
+                    if (targetIdx === 10) {
+                        setTimeout(() => { $span.css({ 'transition': 'none', 'transform': 'translateY(0)' }); }, 600);
+                    }
+                    $(this).attr('data-prev', d);
+                }
+            });
         }
     }
     setInterval(animateClock, 50);
