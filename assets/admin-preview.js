@@ -72,6 +72,12 @@ jQuery(document).ready(function($) {
             else if (size === 'large') { width = 480; scale = 1.26; }
         }
         $hiddenWidth.val(width);
+
+        // Apply to preview container immediately
+        $liveView.removeClass('panel-size-small panel-size-normal panel-size-large custom-width-active');
+        $liveView.addClass('panel-size-' + size);
+        if (customOverride) $liveView.addClass('custom-width-active');
+
         return { width, scale, customOverride };
     }
 
@@ -158,9 +164,8 @@ jQuery(document).ready(function($) {
             close_label_font_size: getVal('close_label_font_size'),
         };
 
-        $liveView.removeClass('theme-mode-light theme-mode-dark theme-mode-auto panel-size-small panel-size-normal panel-size-large custom-width-active');
-        $liveView.addClass('theme-mode-' + s.theme_mode + ' panel-size-' + s.panel_size);
-        if (customOverride) $liveView.addClass('custom-width-active');
+        $liveView.removeClass('theme-mode-light theme-mode-dark theme-mode-auto');
+        $liveView.addClass('theme-mode-' + s.theme_mode);
 
         const liveStyles = {
             '--user-bg': s.bg_color || 'transparent',
@@ -225,8 +230,7 @@ jQuery(document).ready(function($) {
                 $h.attr('class', 'h-' + h + ' ' + s['hand_' + h + '_style'] + overshootClass).css({
                     'background-color': s['hand_' + h + '_color'], 'color': s['hand_' + h + '_color'],
                     'width': s['hand_' + h + '_thick'] + 'px', 'height': s['hand_' + h + '_len'] + '%',
-                    'transform-origin': '50% ' + (s.analog_overshoot === 'yes' ? '90%' : '100%'),
-                    'transform': `scale(${s.analog_hand_scale})`
+                    '--adremm-scale': s.analog_hand_scale
                 });
                 if (s.analog_center_ring === 'yes') {
                     $h.append(`<div class="center-ring" style="width:${s.analog_center_ring_size}px; height:${s.analog_center_ring_size}px; background:${s['hand_' + h + '_color']};"></div>`);
@@ -320,9 +324,9 @@ jQuery(document).ready(function($) {
         let secDeg = s * 6;
         if (handSweep === 'smooth') secDeg = s * 6 + ms * 0.006;
         if (handSweep === 'classy') secDeg = s * 6 + ms * 0.003;
-        $liveView.find('.h-sec').css('transform', `rotate(${secDeg}deg)`);
-        $liveView.find('.h-min').css('transform', `rotate(${m * 6 + s * 0.1}deg)`);
-        $liveView.find('.h-hour').css('transform', `rotate(${h * 30 + m * 0.5}deg)`);
+        $liveView.find('.h-sec').css('--adremm-rotate', `${secDeg}deg`);
+        $liveView.find('.h-min').css('--adremm-rotate', `${m * 6 + s * 0.1}deg`);
+        $liveView.find('.h-hour').css('--adremm-rotate', `${h * 30 + m * 0.5}deg`);
 
         if (getVal('digital_style') === 'wall') {
             const digits = (String(h).padStart(2, '0') + String(m).padStart(2, '0') + String(s).padStart(2, '0')).split('');

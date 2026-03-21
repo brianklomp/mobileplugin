@@ -3,7 +3,7 @@ Contributors: ADREMM
 Tags: clock, widget, opening hours, radio
 Requires at least: 5.0
 Tested up to: 6.4
-Stable tag: 1.1.3
+Stable tag: 1.1.5
 License: GPLv2 or later
 
 Een uiterst gebruiksvriendelijke, meertalige klokplugin met live previews, openingstijden en schaalbare weergave.
@@ -21,7 +21,16 @@ Hij heeft 3 thema's en kan op 8 wijzes getoond worden op de front.
 
 == Changelog ==
 
-= 1.1.3 =
+= 1.1.5 =
+* Fixed analog hand alignment to precise center.
+* Perfected Wall Clock fade gradients (top/bottom) and layout.
+* Improved Mondriaan analog clock design (8px borders and blocks).
+* Refined digital clock sizing for better fit in Small/Normal/Large panels.
+* Fixed admin live preview reliability.
+* Incremented version to ensure installation overwrites previous versions.
+
+= 1.1.4 =
+* Incremented version to ensure installation overwrites previous versions.
 * Fixed scaling logic to strictly follow 280px/380px/480px sizes.
 * Switched failing 'Pixels' font to reliable Google Font 'Silkscreen'.
 * Perfected Wall Clock 30% top/bottom fade effect.

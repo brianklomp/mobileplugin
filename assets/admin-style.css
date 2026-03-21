@@ -192,10 +192,10 @@
 .time-row.digital-style-wall .sep { width: 12px; text-align: center; opacity: 0.5; font-size: 32px; line-height: 1; display: flex; align-items: center; justify-content: center; }
 
 .time-row.digital-style-wall::before, .time-row.digital-style-wall::after {
-    content: ""; position: absolute; left: 0; width: 100%; height: 30% !important; z-index: 10; pointer-events: none;
+    content: ""; position: absolute; left: 0; width: 100%; height: 35% !important; z-index: 20; pointer-events: none;
 }
-.time-row.digital-style-wall::before { top: 0; background: linear-gradient(180deg, #111 0%, rgba(17,17,17,0) 30%, rgba(17,17,17,0) 100%) !important; height: 100% !important; }
-.time-row.digital-style-wall::after { bottom: 0; background: linear-gradient(0deg, #111 0%, rgba(17,17,17,0) 30%, rgba(17,17,17,0) 100%) !important; height: 100% !important; }
+.time-row.digital-style-wall::before { top: 0; background: linear-gradient(180deg, #111 0%, #111 5%, rgba(17,17,17,0) 100%) !important; }
+.time-row.digital-style-wall::after { bottom: 0; background: linear-gradient(0deg, #111 0%, #111 5%, rgba(17,17,17,0) 100%) !important; }
 
 /* Matrix Blocks Preview */
 @font-face {

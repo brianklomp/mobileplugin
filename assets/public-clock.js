@@ -35,9 +35,9 @@
             const minDeg = m * 6 + s * 0.1;
             const hourDeg = (h % 12) * 30 + m * 0.5;
 
-            $root.find('.h-sec').css('transform', `rotate(${secDeg}deg)`);
-            $root.find('.h-min').css('transform', `rotate(${minDeg}deg)`);
-            $root.find('.h-hour').css('transform', `rotate(${hourDeg}deg)`);
+            $root.find('.h-sec').css('--adremm-rotate', `${secDeg}deg`);
+            $root.find('.h-min').css('--adremm-rotate', `${minDeg}deg`);
+            $root.find('.h-hour').css('--adremm-rotate', `${hourDeg}deg`);
 
             // Digital Update
             const $timeRow = $root.find('.time-row');

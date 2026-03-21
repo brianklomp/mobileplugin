@@ -72,8 +72,9 @@
 .time-row.digital-style-blocks,
 .time-row.digital-style-pixels,
 .time-row.digital-style-design {
-    width: calc(310px * var(--panel-scale)) !important;
-    height: calc(125px * var(--panel-scale)) !important;
+    width: calc(300px * var(--panel-scale)) !important;
+    height: calc(120px * var(--panel-scale)) !important;
+    max-width: 95%;
     margin-left: auto;
     margin-right: auto;
     font-size: calc(32px * var(--panel-scale));
@@ -104,23 +105,23 @@
 /* MONDRIAAN THEME */
 .face.theme-mondriaan {
     background: #fff;
-    border: 6px solid #000 !important;
+    border: 8px solid #000 !important;
     border-radius: 0;
 }
 .face.theme-mondriaan::before {
     content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
     background:
-        linear-gradient(90deg, #000 6px, transparent 6px) 25% 0,
-        linear-gradient(90deg, #000 6px, transparent 6px) 75% 0,
-        linear-gradient(0deg, #000 6px, transparent 6px) 0 35%,
-        linear-gradient(0deg, #000 6px, transparent 6px) 0 70%;
+        linear-gradient(90deg, #000 8px, transparent 8px) 30% 0,
+        linear-gradient(90deg, #000 8px, transparent 8px) 70% 0,
+        linear-gradient(0deg, #000 8px, transparent 8px) 0 40%,
+        linear-gradient(0deg, #000 8px, transparent 8px) 0 75%;
     background-size: 100% 100%;
     z-index: 1;
 }
 .face.theme-mondriaan .mondriaan-block { position: absolute; z-index: 0; border: none; }
-.face.theme-mondriaan .block-red { top: 0; left: 0; width: 25%; height: 35%; background: #ff0000; }
-.face.theme-mondriaan .block-blue { bottom: 0; right: 0; width: 25%; height: 30%; background: #0000ff; }
-.face.theme-mondriaan .block-yellow { top: 35%; right: 0; width: 25%; height: 35%; background: #ffff00; }
+.face.theme-mondriaan .block-red { top: 0; left: 0; width: 30%; height: 40%; background: #ff0000; }
+.face.theme-mondriaan .block-blue { bottom: 0; left: 30%; width: 40%; height: 25%; background: #0000ff; }
+.face.theme-mondriaan .block-yellow { top: 40%; right: 0; width: 30%; height: 35%; background: #ffff00; }
 
 /* Analog Notations */
 .notations { position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; }
@@ -128,12 +129,22 @@
 .notations.above { z-index: 20; }
 
 .h-hour, .h-min, .h-sec {
-    position: absolute; bottom: 50%; left: 50%; transform-origin: 50% 100%;
-    border-radius: 4px; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+    position: absolute;
+    bottom: 50%;
+    left: 50%;
+    border-radius: 4px;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    transform: translateX(-50%) rotate(var(--adremm-rotate, 0deg)) scale(var(--adremm-scale, 1)) translateY(var(--p-y, 0%));
+    transform-origin: 50% 100%;
+    transition: none;
 }
 .h-hour.has-overshoot, .h-min.has-overshoot, .h-sec.has-overshoot {
-    bottom: 50%;
-    transform: translateY(10%); /* Shifts the whole hand so 90% is at the pivot point */
+    --p-y: 10%; /* Shifts the whole hand so 90% is at the pivot point */
+    transform-origin: 50% 90%;
 }
 
 /* Center Rings per hand */
@@ -149,9 +160,9 @@
     top: 90%;
 }
 /* Ensure currentColor works for styles */
-.h-hour { height: calc(35px * var(--panel-scale)); width: calc(3px * var(--panel-scale)); margin-left: calc(-1.5px * var(--panel-scale)); }
-.h-min { height: calc(45px * var(--panel-scale)); width: calc(2px * var(--panel-scale)); margin-left: calc(-1px * var(--panel-scale)); }
-.h-sec { height: calc(50px * var(--panel-scale)); width: calc(1px * var(--panel-scale)); background: #ff3b30; margin-left: calc(-0.5px * var(--panel-scale)); }
+.h-hour { height: calc(35px * var(--panel-scale)); width: calc(4px * var(--panel-scale)); }
+.h-min { height: calc(45px * var(--panel-scale)); width: calc(3px * var(--panel-scale)); }
+.h-sec { height: calc(50px * var(--panel-scale)); width: calc(1px * var(--panel-scale)); background: #ff3b30; }
 
 /* Digital Styles */
 .time-row.has-glow .time-digital { text-shadow: 0 0 var(--digital-glow-spread) var(--digital-glow-color) !important; }
@@ -231,10 +242,10 @@
     max-width: 100%;
 }
 .time-row.digital-style-wall::before, .time-row.digital-style-wall::after {
-    content: ""; position: absolute; left: 0; width: 100%; height: 30% !important; z-index: 10; pointer-events: none;
+    content: ""; position: absolute; left: 0; width: 100%; height: 35% !important; z-index: 20; pointer-events: none;
 }
-.time-row.digital-style-wall::before { top: 0; background: linear-gradient(180deg, #111 0%, rgba(17,17,17,0) 100%) !important; height: 30% !important; }
-.time-row.digital-style-wall::after { bottom: 0; background: linear-gradient(0deg, #111 0%, rgba(17,17,17,0) 100%) !important; height: 30% !important; }
+.time-row.digital-style-wall::before { top: 0; background: linear-gradient(180deg, #111 0%, #111 5%, rgba(17,17,17,0) 100%) !important; }
+.time-row.digital-style-wall::after { bottom: 0; background: linear-gradient(0deg, #111 0%, #111 5%, rgba(17,17,17,0) 100%) !important; }
 
 .time-row.digital-style-wall .time-digital { font-size: calc(42px * var(--panel-scale)); font-weight: 300; display: flex; align-items: center; gap: 2px; position: relative; z-index: 5; height: calc(60px * var(--panel-scale)); overflow: hidden; width: 100%; justify-content: center; }
 .time-row.digital-style-wall .digit-col { display: flex; flex-direction: column; height: calc(60px * var(--panel-scale)); overflow: visible; position: relative; flex-shrink: 0; }
