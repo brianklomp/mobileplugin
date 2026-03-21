@@ -189,7 +189,9 @@ jQuery(document).ready(function($) {
             'font-family': (s.theme_font && s.theme_font !== 'inherit') ? `"${s.theme_font}"` : 'inherit',
             '--panel-scale': scale,
             '--panel-width': width + 'px',
-            '--digital-font-size-base': s.digital_font_size + 'px'
+            '--digital-font-size-base': s.digital_font_size + 'px',
+            '--digital-width-final': (s.digital_style === 'custom') ? (s.digital_width * scale) + 'px' : '100%',
+            '--digital-height-final': (s.digital_style === 'custom') ? (s.digital_height * scale) + 'px' : 'auto'
         };
         $liveView.css(liveStyles);
 
@@ -248,12 +250,18 @@ jQuery(document).ready(function($) {
             ['hour', 'min', 'sec'].forEach(h => {
                 const $h = $liveView.find('.h-' + h);
                 $h.attr('class', 'h-' + h + ' ' + s['hand_' + h + '_style'] + overshootClass).css({
-                    'background-color': s['hand_' + h + '_color'], 'color': s['hand_' + h + '_color'],
-                    'width': s['hand_' + h + '_thick'] + 'px', 'height': s['hand_' + h + '_len'] + '%',
+                    'background-color': s['hand_' + h + '_color'],
+                    'color': s['hand_' + h + '_color'],
+                    'width': s['hand_' + h + '_thick'] + 'px',
+                    'height': s['hand_' + h + '_len'] + '%',
                     '--adremm-scale': s.analog_hand_scale
                 });
+
+                // Remove existing center ring to prevent duplication
+                $h.find('.center-ring').remove();
+
                 if (s.analog_center_ring === 'yes') {
-                    $h.append(`<div class="center-ring" style="width:${s.analog_center_ring_size}px; height:${s.analog_center_ring_size}px; background:${s['hand_' + h + '_color']};"></div>`);
+                    $h.append(`<div class="center-ring" style="width:${s.analog_center_ring_size}px; height:${s.analog_center_ring_size}px; background:${s.analog_center_ring_color};"></div>`);
                 }
             });
         } else { $analog.hide(); }

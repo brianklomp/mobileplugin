@@ -187,11 +187,18 @@ $fonts = adremm_clock_get_google_fonts();
                         <tr>
                             <th><?php _e('Middenring & Overshoot', 'adremm-clock-plugin'); ?></th>
                             <td>
-                                <label><input type="checkbox" name="adremm_clock_settings[analog_center_ring]" value="yes" <?php checked(isset($settings['analog_center_ring']) ? $settings['analog_center_ring'] : 'yes', 'yes'); ?>> Middenring</label>
-                                Grootte: <input type="number" name="adremm_clock_settings[analog_center_ring_size]" value="<?php echo esc_attr(isset($settings['analog_center_ring_size']) ? $settings['analog_center_ring_size'] : '8'); ?>" style="width:50px;">
-                                Kleur: <input type="text" name="adremm_clock_settings[analog_center_ring_color]" value="<?php echo esc_attr(isset($settings['analog_center_ring_color']) ? $settings['analog_center_ring_color'] : '#ffffff'); ?>" class="adremm-color-picker" data-alpha-enabled="true">
-                                <br><br>
-                                <label><input type="checkbox" name="adremm_clock_settings[analog_overshoot]" value="yes" <?php checked(isset($settings['analog_overshoot']) ? $settings['analog_overshoot'] : 'no', 'yes'); ?>> Overshoot (wijzers steken door center)</label>
+                                <div class="adremm-row-flex">
+                                    <input type="hidden" name="adremm_clock_settings[analog_center_ring]" value="no">
+                                    <label><input type="checkbox" name="adremm_clock_settings[analog_center_ring]" value="yes" <?php checked(isset($settings['analog_center_ring']) ? $settings['analog_center_ring'] : 'yes', 'yes'); ?>> Middenring</label>
+                                    <div class="adremm-input-item">
+                                        <strong>Maat:</strong> <input type="number" name="adremm_clock_settings[analog_center_ring_size]" value="<?php echo esc_attr(isset($settings['analog_center_ring_size']) ? $settings['analog_center_ring_size'] : '8'); ?>" style="width:50px;">
+                                    </div>
+                                    <input type="text" name="adremm_clock_settings[analog_center_ring_color]" value="<?php echo esc_attr(isset($settings['analog_center_ring_color']) ? $settings['analog_center_ring_color'] : '#ffffff'); ?>" class="adremm-color-picker" data-alpha-enabled="true">
+                                </div>
+                                <div class="adremm-row-flex" style="margin-top:10px;">
+                                    <input type="hidden" name="adremm_clock_settings[analog_overshoot]" value="no">
+                                    <label><input type="checkbox" name="adremm_clock_settings[analog_overshoot]" value="yes" <?php checked(isset($settings['analog_overshoot']) ? $settings['analog_overshoot'] : 'no', 'yes'); ?>> Overshoot (wijzers steken door center)</label>
+                                </div>
                             </td>
                         </tr>
                     </table>

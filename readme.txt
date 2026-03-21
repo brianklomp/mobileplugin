@@ -3,7 +3,7 @@ Contributors: ADREMM
 Tags: clock, widget, opening hours, radio
 Requires at least: 5.0
 Tested up to: 6.4
-Stable tag: 1.2.7
+Stable tag: 1.3.0
 License: GPLv2 or later
 
 Een uiterst gebruiksvriendelijke, meertalige klokplugin met live previews, openingstijden en schaalbare weergave.
@@ -20,6 +20,16 @@ Hij heeft 3 thema's en kan op 8 wijzes getoond worden op de front.
 3. Go to ADREMM Klok in the admin menu to configure.
 
 == Changelog ==
+
+= 1.3.0 =
+* Major release addressing fidelity issues and synchronization.
+* Fixed Admin Preview duplication bug for center rings.
+* Implemented functional toggles for 'Overshoot' and 'Middenringen' (center rings).
+* Corrected Analog hand center alignment and pivot points.
+* Fixed Digital Dimensions: width and height settings are now strictly respected.
+* Refined Wall Clock (Muurklok) with a 35% top/bottom fade effect.
+* Redesigned Matrix theme with a "curved stripe" scanline effect.
+* Incremented version to 1.3.0 to ensure installation overwrites previous versions.
 
 = 1.2.7 =
 * Restored separate "Mobiel & Tablet" submenu for better organizational clarity.
