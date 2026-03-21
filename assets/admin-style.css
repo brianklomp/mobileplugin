@@ -19,6 +19,12 @@
 .form-table select {
     max-width: 180px !important;
 }
+
+/* Row Alignment Fixes */
+.adremm-row-flex { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; margin-bottom: 5px; }
+.adremm-input-item { display: flex; align-items: center; gap: 8px; }
+.adremm-input-item strong { min-width: 60px; font-size: 13px; }
+
 .adremm-panel { padding: 0 10px; }
 .wrap.adremm-clock-v2 .adremm-panel { display: none !important; }
 .wrap.adremm-clock-v2 .adremm-panel.is-active { display: block !important; }
@@ -103,7 +109,7 @@
 }
 
 /* Theme Selector */
-.theme-selector-wrap { display: flex; gap: 10px; }
+.theme-selector-wrap { display: flex; gap: 10px; align-items: center; }
 .theme-option { cursor: pointer; flex: 1; min-width: 80px; }
 .theme-option input { display: none; }
 .theme-card { display: block; padding: 10px; text-align: center; border: 2px solid #ddd; border-radius: 8px; font-weight: 600; transition: all 0.2s; background: #f9f9f9; font-size: 13px; }

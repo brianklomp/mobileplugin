@@ -62,6 +62,14 @@ jQuery(document).ready(function($) {
     const getRadioVal = (name) => $form.find(`[name="adremm_clock_settings[${name}]"]:checked`).val();
 
     function updateWidthLogic() {
+        const pos = getRadioVal('position');
+        const isBar = (pos === 'top-center' || pos === 'bottom-center');
+        if (isBar) {
+            $liveView.removeClass('adremm-clock-panel').addClass('adremm-clock-bar');
+        } else {
+            $liveView.removeClass('adremm-clock-bar').addClass('adremm-clock-panel');
+        }
+
         const size = getVal('panel_size');
         const customOverride = $form.find('input[name="adremm_clock_settings[panel_custom_override]"]').is(':checked');
         const $customInput = $form.find('input[name="adremm_clock_settings[panel_width_custom]"]');
@@ -309,11 +317,18 @@ jQuery(document).ready(function($) {
         updateCloseBtn(s);
     }
 
-    $form.on('input change keyup click', 'input, select, textarea', function() {
+    $form.on('input change keyup click mouseup', 'input, select, textarea', function() {
         if ($(this).hasClass('adremm-font-select')) {
-            $(this).css('font-family', $(this).val() === 'Thema' ? 'inherit' : $(this).val());
+            const font = $(this).val();
+            $(this).css('font-family', (font === 'Thema' || font === 'inherit') ? 'inherit' : font);
         }
-        setTimeout(updatePreview, 10);
+        // Force refresh for all changes immediately
+        updatePreview();
+    });
+
+    // Special trigger for color picker changes which don't always fire 'change' correctly
+    $(document).on('wpcolorpicker:change', function(e, ui) {
+        updatePreview();
     });
 
     function updateCloseBtn(s) {

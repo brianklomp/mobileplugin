@@ -58,7 +58,7 @@ $style_vars = sprintf(
                         background-size: cover;
                         background-position: center;
                         border-color: <?php echo (isset($settings['analog_theme']) && $settings['analog_theme'] === 'mondriaan') ? '#000' : esc_attr(isset($settings['analog_ring_color']) ? $settings['analog_ring_color'] : 'transparent'); ?>;
-                        border-width: <?php echo (isset($settings['analog_theme']) && $settings['analog_theme'] === 'mondriaan') ? '4px' : esc_attr(isset($settings['analog_ring_size']) ? $settings['analog_ring_size'] : '0'); ?>px;
+                        border-width: <?php echo (isset($settings['analog_theme']) && $settings['analog_theme'] === 'mondriaan') ? '8px' : esc_attr(isset($settings['analog_ring_size']) ? $settings['analog_ring_size'] : '0'); ?>px;
                     ">
                         <?php if (isset($settings['analog_theme']) && $settings['analog_theme'] === 'mondriaan'): ?>
                             <div class="mondriaan-elements">

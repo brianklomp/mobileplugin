@@ -3,7 +3,7 @@ Contributors: ADREMM
 Tags: clock, widget, opening hours, radio
 Requires at least: 5.0
 Tested up to: 6.4
-Stable tag: 1.1.9
+Stable tag: 1.2.6
 License: GPLv2 or later
 
 Een uiterst gebruiksvriendelijke, meertalige klokplugin met live previews, openingstijden en schaalbare weergave.
@@ -20,6 +20,30 @@ Hij heeft 3 thema's en kan op 8 wijzes getoond worden op de front.
 3. Go to ADREMM Klok in the admin menu to configure.
 
 == Changelog ==
+
+= 1.2.6 =
+* Improved admin settings alignment to match high-fidelity design requirements.
+* Fixed row spacing and horizontal alignment for input groups and color pickers.
+* Ensured complete Admin Live Preview synchronization across all tabs and settings.
+* Incremented version to ensure installation overwrites previous versions.
+
+= 1.2.5 =
+* Unified mobile and tablet settings into a single "Responsiviteit" tab on the main settings page.
+* Removed redundant "Mobiel & Tablet" submenu for a cleaner admin interface.
+* Optimized Admin Live Preview to correctly reflect Bar vs Floating Panel layouts in real-time.
+* Validated all PHP scripts for syntax accuracy and version persistence.
+
+= 1.2.4 =
+* Refined collapsible tab snapping logic: if the clock floats on the right, it now correctly docks to the left edge when closed.
+* Improved Admin Live Preview to sync between Bar (Header/Footer) and Floating Panel layouts.
+* Added support for toggling different analog notation types (Roman numerals, Arabic numbers, dots) in the admin preview.
+* Synchronized hand thickness and scaling logic across all themes.
+
+= 1.2.3 =
+* Unified mobile and desktop settings into a single "Responsiviteit" (Responsiveness) tab.
+* Fixed collapsible tab snapping logic: right-positioned clocks now dock to the left edge when closed.
+* Improved Admin Live Preview synchronization for all themes and Google Fonts.
+* Incremented version to ensure installation overwrites previous versions.
 
 = 1.1.7 =
 * Improved Mondriaan analog clock design to match provided artwork (circular face, 12 o'clock bar, 9 o'clock square).
