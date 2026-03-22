@@ -3,12 +3,19 @@ Contributors: ADREMM
 Tags: clock, widget, opening hours, radio
 Requires at least: 5.0
 Tested up to: 6.4
-Stable tag: 1.3.4
+Stable tag: 1.3.5
 License: GPLv2 or later
 
 Een uiterst gebruiksvriendelijke, meertalige klokplugin met live previews, openingstijden en schaalbare weergave.
 
 == Changelog ==
+
+= 1.3.5 =
+* Matrix theme overhaul: implemented Dr Glitch font and curved scanline effects.
+* Refined Matrix animation: glitches now only trigger on digits that change.
+* Corrected Analog hand styles (Rectangle, Heart, Arrow, Steampunk) for greater precision.
+* Fixed Pixels theme: decoupled it from Matrix font and ensured it uses Silkscreen.
+* Synchronized Admin Live Preview for 1:1 fidelity with all theme refinements.
 
 = 1.3.4 =
 * Fixed Radio (Alarm) theme scaling: nixie tubes now fit correctly within Small (280px) panels.

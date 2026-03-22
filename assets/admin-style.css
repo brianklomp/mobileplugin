@@ -179,13 +179,20 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    border-radius: 4px;
     z-index: 10;
     display: block;
     transform: translate(-50%, -100%) rotate(var(--adremm-rotate, 0deg)) scale(var(--adremm-scale, 1));
     transform-origin: 50% 100%;
     transition: none;
+    border-radius: 4px;
 }
+.h-hour.rectangle, .h-min.rectangle, .h-sec.rectangle { border-radius: 0 !important; }
+
+.h-hour.point, .h-min.point, .h-sec.point {
+    border-radius: 0 !important;
+    clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+}
+
 .h-hour.has-overshoot, .h-min.has-overshoot, .h-sec.has-overshoot {
     transform: translate(-50%, -90%) rotate(var(--adremm-rotate, 0deg)) scale(var(--adremm-scale, 1));
     transform-origin: 50% 90%;
@@ -194,18 +201,29 @@
 .h-min { height: 35px; width: 2px; }
 .h-sec { height: 38px; width: 1px; background: #ff3b30; }
 
-.h-hour.heart, .h-min.heart, .h-sec.heart { background: transparent !important; }
+.h-hour.heart, .h-min.heart, .h-sec.heart { background: transparent !important; width: 2px !important; }
 .h-hour.heart::before, .h-min.heart::before, .h-sec.heart::before {
-    content: "❤"; position: absolute; top: 0; left: 50%; transform: translateX(-50%); font-size: 14px; color: inherit;
+    content: "❤"; position: absolute; top: 0; left: 50%; transform: translate(-50%, -50%); font-size: 14px; color: inherit;
 }
-.h-hour.arrow, .h-min.arrow, .h-sec.arrow { position: relative; }
+.h-hour.heart::after, .h-min.heart::after, .h-sec.heart::after {
+    content: ""; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 1px; height: 100%; background: currentColor;
+}
+.h-hour.arrow, .h-min.arrow, .h-sec.arrow { background: transparent !important; width: 2px !important; }
 .h-hour.arrow::before, .h-min.arrow::before, .h-sec.arrow::before {
-    content: ""; position: absolute; top: -5px; left: 50%; transform: translateX(-50%);
-    border-left: 5px solid transparent; border-right: 5px solid transparent; border-bottom: 7px solid currentColor;
+    content: ""; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 1px; height: 100%; background: currentColor;
 }
-.h-hour.steampunk, .h-min.steampunk, .h-sec.steampunk { background: transparent !important; border: 1px solid currentColor; border-radius: 50%; width: 12px !important; height: 12px !important; color: inherit; }
-.h-hour.steampunk::after, .h-min.steampunk::after, .h-sec.steampunk::after { content: ""; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); width: 1px; height: 15px; background: currentColor; }
-.h-hour.steampunk::before, .h-min.steampunk::before, .h-sec.steampunk::before { content: "⚙"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 8px; }
+.h-hour.arrow::after, .h-min.arrow::after, .h-sec.arrow::after {
+    content: ""; position: absolute; top: -4px; left: 50%; transform: translateX(-50%);
+    border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 10px solid currentColor;
+}
+.h-hour.steampunk, .h-min.steampunk, .h-sec.steampunk { background: transparent !important; width: 2px !important; }
+.h-hour.steampunk::after, .h-min.steampunk::after, .h-sec.steampunk::after {
+    content: "⚙"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 12px;
+}
+.h-hour.steampunk::before, .h-min.steampunk::before, .h-sec.steampunk::before {
+    content: ""; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 1px; height: 100%; background: currentColor;
+}
 
 /* VINTAGE RADIO PREVIEW STYLES (Sync with public-style.css) */
 .time-row.digital-style-alarm {
@@ -262,27 +280,39 @@
 .time-row.digital-style-wall::before { top: 0; background: linear-gradient(180deg, #111 0%, rgba(17,17,17,0) 100%) !important; }
 .time-row.digital-style-wall::after { bottom: 0; background: linear-gradient(0deg, #111 0%, rgba(17,17,17,0) 100%) !important; }
 
-/* Matrix Blocks Preview - LOOKSKY STYLE */
+/* Matrix Blocks Preview - DR GLITCH STYLE */
 @font-face {
-    font-family: 'MatrixFont';
-    src: url('https://fonts.cdnfonts.com/s/14292/matrix.woff') format('woff');
+    font-family: 'DrGlitch';
+    src: url('https://fonts.cdnfonts.com/s/106604/DrGlitch.woff') format('woff');
 }
 .time-row.digital-style-blocks .preview-time {
     display: flex; align-items: center; justify-content: center; gap: 4px; background: transparent; position: relative; overflow: visible;
-    font-family: 'MatrixFont', monospace; width: 100%; height: 100%;
+    font-family: 'DrGlitch', sans-serif; width: 100%; height: 100%;
     font-size: 32px;
+    color: #00ff41;
 }
 .time-row.digital-style-blocks .preview-time .sep {
-    color: #44ff44; font-size: 32px; line-height: 1; margin: 0;
+    color: #00ff41; font-size: 32px; line-height: 1; margin: 0;
 }
 .time-row.digital-style-blocks .preview-time span.b {
-    color: #44ff44; font-weight: bold; min-width: 30px; display: inline-block; position: relative;
-    text-shadow: 0 0 5px rgba(68, 255, 68, 0.8);
+    color: #00ff41; font-weight: bold; min-width: 35px; display: inline-block; position: relative;
+    text-shadow: 0 0 10px rgba(0, 255, 65, 0.8);
 }
-.time-row.digital-style-blocks .preview-time span.glitch { animation: matrixPulse 0.5s infinite alternate; }
-@keyframes matrixPulse {
-    from { opacity: 0.8; }
-    to { opacity: 1; text-shadow: 0 0 10px rgba(68, 255, 68, 1); }
+.time-row.digital-style-blocks .preview-time span.b::after {
+    content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: repeating-linear-gradient(transparent 0%, rgba(0, 255, 65, 0.1) 2%, transparent 4%);
+    pointer-events: none; mix-blend-mode: color-dodge; z-index: 2;
+}
+.time-row.digital-style-blocks .preview-time span.glitch {
+    animation: matrixGlitch 0.2s cubic-bezier(.25, .46, .45, .94) both infinite;
+}
+@keyframes matrixGlitch {
+    0% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); }
+    40% { transform: translate(-2px, -2px); }
+    60% { transform: translate(2px, 2px); }
+    80% { transform: translate(2px, -2px); }
+    100% { transform: translate(0); }
 }
 
 .preview-time { font-size: 24px; font-weight: 800; margin-bottom: 10px; }

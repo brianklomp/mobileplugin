@@ -329,7 +329,16 @@ jQuery(document).ready(function($) {
                 for(let i=0; i<=60; i++) $scroll.append(`<div class="scale-mark"><span>-</span>${String(i).padStart(2, '0')}</div>`);
                 $scroll.css('transform', `translateY(${-now.getSeconds() * 20}px)`);
             } else if (s.digital_style === 'blocks') {
-                $time.html(`<span class="b">${hh}</span><span class="sep">:</span><span class="b">${mm}</span><span class="sep">:</span><span class="b">${ss}</span>`);
+                const prevSS = $time.attr('data-ss');
+                const prevMM = $time.attr('data-mm');
+                const prevHH = $time.attr('data-hh');
+
+                const glitchHH = (prevHH !== hh && Math.random() > 0.7) ? ' glitch' : '';
+                const glitchMM = (prevMM !== mm && Math.random() > 0.7) ? ' glitch' : '';
+                const glitchSS = (prevSS !== ss && Math.random() > 0.7) ? ' glitch' : '';
+
+                $time.html(`<span class="b${glitchHH}">${hh}</span><span class="sep">:</span><span class="b${glitchMM}">${mm}</span><span class="sep">:</span><span class="b${glitchSS}">${ss}</span>`);
+                $time.attr({'data-hh': hh, 'data-mm': mm});
             } else if (s.digital_style === 'wall') {
                 if ($time.find('.digit-col').length === 0) {
                     const digits = (hh + mm + ss).split('');

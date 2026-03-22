@@ -115,16 +115,23 @@
                      }
                  });
             } else if (handSweep === 'ticking' || ms < 100) {
-                if ($timeTarget.attr('data-ss') !== ss) {
+                const prevSS = $timeTarget.attr('data-ss');
+                const prevMM = $timeTarget.attr('data-mm');
+                const prevHH = $timeTarget.attr('data-hh');
+
+                if (prevSS !== ss) {
                     $timeTarget.addClass('tick-flash');
                     setTimeout(() => $timeTarget.removeClass('tick-flash'), 300);
                     $timeTarget.attr('data-ss', ss);
                 }
 
                 if ($timeRow.hasClass('digital-style-blocks')) {
-                    const isGlitch = Math.random() > 0.95;
-                    const glitchClass = isGlitch ? ' glitch' : '';
-                    $timeTarget.html(`<span class="b${glitchClass}">${hh}</span><span class="sep">:</span><span class="b${glitchClass}">${mm}</span><span class="sep">:</span><span class="b${glitchClass}">${ss}</span>`);
+                    const glitchHH = (prevHH !== hh && Math.random() > 0.7) ? ' glitch' : '';
+                    const glitchMM = (prevMM !== mm && Math.random() > 0.7) ? ' glitch' : '';
+                    const glitchSS = (prevSS !== ss && Math.random() > 0.7) ? ' glitch' : '';
+
+                    $timeTarget.html(`<span class="b${glitchHH}">${hh}</span><span class="sep">:</span><span class="b${glitchMM}">${mm}</span><span class="sep">:</span><span class="b${glitchSS}">${ss}</span>`);
+                    $timeTarget.attr({'data-hh': hh, 'data-mm': mm});
                 } else if ($timeRow.hasClass('digital-style-design')) {
                     const dayName = now.toLocaleDateString('nl-NL', { weekday: 'short' }).toUpperCase().substring(0,2);
                     $timeTarget.html(`<div class="minimalist-container" style="background:var(--adremm-clock-bg); padding:10px; border-radius:8px; display:flex; font-family:monospace; align-items:center; justify-content:center; gap:15px; width:100%;">

@@ -193,27 +193,53 @@
     animation: digitalFlash 0.3s ease-out;
 }
 
-/* MATRIX (Blocks) - LOOKSKY STYLE DOT MATRIX */
+/* MATRIX (Blocks) - DR GLITCH STYLE WITH CURVED STRIPES */
 @font-face {
-    font-family: 'MatrixFont';
-    src: url('https://fonts.cdnfonts.com/s/14292/matrix.woff') format('woff');
+    font-family: 'DrGlitch';
+    src: url('https://fonts.cdnfonts.com/s/106604/DrGlitch.woff') format('woff');
 }
 .time-row.digital-style-blocks .time-digital {
     display: flex; align-items: center; justify-content: center; gap: 4px; background: transparent; position: relative; overflow: visible;
-    font-family: 'MatrixFont', monospace;
-    font-size: calc(52px * var(--panel-scale));
+    font-family: 'DrGlitch', sans-serif;
+    font-size: calc(58px * var(--panel-scale));
+    color: #00ff41;
 }
 .time-row.digital-style-blocks .time-digital .sep {
-    color: #44ff44; font-size: calc(52px * var(--panel-scale)); line-height: 1; display: flex; align-items: center; justify-content: center; width: 20px; height: 100%;
+    color: #00ff41; font-size: calc(52px * var(--panel-scale)); line-height: 1; display: flex; align-items: center; justify-content: center; width: 20px; height: 100%;
 }
 .time-row.digital-style-blocks .time-digital span.b {
-    color: #44ff44; font-weight: bold; min-width: 40px; display: inline-block; position: relative;
-    text-shadow: 0 0 10px rgba(68, 255, 68, 0.8);
+    color: #00ff41; font-weight: bold; min-width: 45px; display: inline-block; position: relative;
+    text-shadow: 0 0 10px rgba(0, 255, 65, 0.8);
 }
-.time-row.digital-style-blocks .time-digital span.glitch { animation: matrixPulse 0.5s infinite alternate; }
-@keyframes matrixPulse {
-    from { opacity: 0.8; text-shadow: 0 0 5px rgba(68, 255, 68, 0.4); }
-    to { opacity: 1; text-shadow: 0 0 15px rgba(68, 255, 68, 1); }
+/* Matrix Curved Stripes/Scanline Overlay */
+.time-row.digital-style-blocks .time-digital span.b::after {
+    content: "";
+    position: absolute;
+    top: -5px; left: -5px; width: calc(100% + 10px); height: calc(100% + 10px);
+    background: repeating-radial-gradient(
+        circle at 50% -100%,
+        transparent 0px,
+        rgba(0, 255, 65, 0.15) 2px,
+        transparent 4px
+    );
+    pointer-events: none;
+    mix-blend-mode: color-dodge;
+    z-index: 2;
+    mask-image: linear-gradient(to bottom, black, transparent);
+    -webkit-mask-image: linear-gradient(to bottom, black, transparent);
+}
+
+.time-row.digital-style-blocks .time-digital span.glitch {
+    animation: matrixGlitch 0.2s cubic-bezier(.25, .46, .45, .94) both infinite;
+}
+
+@keyframes matrixGlitch {
+    0% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); }
+    40% { transform: translate(-2px, -2px); }
+    60% { transform: translate(2px, 2px); }
+    80% { transform: translate(2px, -2px); }
+    100% { transform: translate(0); }
 }
 
 /* PIXELS - Digital block style */
@@ -267,21 +293,41 @@
 .time-row.digital-style-wall .digit-col span { display: block; width: calc(22px * var(--panel-scale)); line-height: calc(60px * var(--panel-scale)); transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); text-align: center; white-space: pre; flex-shrink: 0; }
 .time-row.digital-style-wall .sep { width: 12px; height: 60px; text-align: center; opacity: 0.5; display: flex; align-items: center; justify-content: center; font-size: 32px; line-height: 1; }
 
-/* Hand Styles */
-.h-hour.heart, .h-min.heart, .h-sec.heart { background: transparent !important; }
+/* Hand Styles - Refined for Precision */
+.h-hour.rectangle, .h-min.rectangle, .h-sec.rectangle { border-radius: 0 !important; }
+
+.h-hour.point, .h-min.point, .h-sec.point {
+    border-radius: 0 !important;
+    clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+}
+
+.h-hour.heart, .h-min.heart, .h-sec.heart { background: transparent !important; width: 4px !important; }
 .h-hour.heart::before, .h-min.heart::before, .h-sec.heart::before {
-    content: "❤"; position: absolute; top: 0; left: 50%; transform: translateX(-50%); font-size: 24px; color: inherit;
+    content: "❤"; position: absolute; top: 0; left: 50%; transform: translate(-50%, -50%); font-size: calc(24px * var(--panel-scale)); color: inherit;
+}
+.h-hour.heart::after, .h-min.heart::after, .h-sec.heart::after {
+    content: ""; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 2px; height: 100%; background: currentColor;
 }
 
-.h-hour.arrow, .h-min.arrow, .h-sec.arrow { position: relative; }
+.h-hour.arrow, .h-min.arrow, .h-sec.arrow { background: transparent !important; width: 4px !important; }
 .h-hour.arrow::before, .h-min.arrow::before, .h-sec.arrow::before {
-    content: ""; position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
-    border-left: 10px solid transparent; border-right: 10px solid transparent; border-bottom: 12px solid currentColor;
+    content: ""; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 2px; height: 100%; background: currentColor;
+}
+.h-hour.arrow::after, .h-min.arrow::after, .h-sec.arrow::after {
+    content: ""; position: absolute; top: -5px; left: 50%; transform: translateX(-50%);
+    border-left: calc(10px * var(--panel-scale)) solid transparent;
+    border-right: calc(10px * var(--panel-scale)) solid transparent;
+    border-bottom: calc(15px * var(--panel-scale)) solid currentColor;
 }
 
-.h-hour.steampunk, .h-min.steampunk, .h-sec.steampunk { background: transparent !important; border: 2px solid currentColor; border-radius: 50%; width: 24px !important; height: 24px !important; color: inherit; }
-.h-hour.steampunk::after, .h-min.steampunk::after, .h-sec.steampunk::after { content: ""; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); width: 2px; height: 50px; background: currentColor; }
-.h-hour.steampunk::before, .h-min.steampunk::before, .h-sec.steampunk::before { content: "⚙"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 16px; }
+.h-hour.steampunk, .h-min.steampunk, .h-sec.steampunk { background: transparent !important; width: 4px !important; }
+.h-hour.steampunk::after, .h-min.steampunk::after, .h-sec.steampunk::after {
+    content: "⚙"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: calc(20px * var(--panel-scale));
+}
+.h-hour.steampunk::before, .h-min.steampunk::before, .h-sec.steampunk::before {
+    content: ""; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 2px; height: 100%; background: currentColor;
+}
 
 /* Status, Date etc */
 .status-row { font-weight: bold; font-size: 18px; margin: 5px 0; }
