@@ -3,12 +3,26 @@ Contributors: ADREMM
 Tags: clock, widget, opening hours, radio
 Requires at least: 5.0
 Tested up to: 6.4
-Stable tag: 1.3.2
+Stable tag: 1.3.4
 License: GPLv2 or later
 
 Een uiterst gebruiksvriendelijke, meertalige klokplugin met live previews, openingstijden en schaalbare weergave.
 
-== Description ==
+== Changelog ==
+
+= 1.3.4 =
+* Fixed Radio (Alarm) theme scaling: nixie tubes now fit correctly within Small (280px) panels.
+* Implemented Dutch layout for Minimalist (Design) theme: [DA] [HH] [MM] [SS] with labels.
+* Added 'tick-flash' pulse effect for digital themes triggered on every second change.
+* Synchronized Admin Live Preview with the new Minimalist layout and second-change flash.
+
+= 1.3.3 =
+* Critical fix: corrected analog clock hand alignment using top:50% and transform pivot points.
+* Implemented requested "opposite snapping" for collapsible tabs: clocks on the right dock to the left edge.
+* Refined Wall Clock theme with precise 35% fade gradients and single-line layout.
+* Synchronized Admin Live Preview for 1:1 fidelity with frontend logic.
+* Incremented version to 1.3.3 to ensure clean WordPress install.
+
 
 Deze ADREMM klok plugin is een meertalige plugin voor mijn users.
 Hij heeft 3 thema's en kan op 8 wijzes getoond worden op de front.

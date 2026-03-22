@@ -115,18 +115,34 @@
                      }
                  });
             } else if (handSweep === 'ticking' || ms < 100) {
+                if ($timeTarget.attr('data-ss') !== ss) {
+                    $timeTarget.addClass('tick-flash');
+                    setTimeout(() => $timeTarget.removeClass('tick-flash'), 300);
+                    $timeTarget.attr('data-ss', ss);
+                }
+
                 if ($timeRow.hasClass('digital-style-blocks')) {
                     const isGlitch = Math.random() > 0.95;
                     const glitchClass = isGlitch ? ' glitch' : '';
                     $timeTarget.html(`<span class="b${glitchClass}">${hh}</span><span class="sep">:</span><span class="b${glitchClass}">${mm}</span><span class="sep">:</span><span class="b${glitchClass}">${ss}</span>`);
                 } else if ($timeRow.hasClass('digital-style-design')) {
-                    const dayName = now.toLocaleDateString(locale, { weekday: 'short' }).toUpperCase();
-                    $timeTarget.html(`<div class="minimalist-container" style="background:#000; color:#fff; padding:15px; border-radius:8px; display:inline-block; font-family:monospace;">
-                        <div class="time-main" style="font-size:42px; line-height:1; display:flex; align-items:center; gap:5px;">
-                            <span style="color:#ff3b30; margin-right:5px;">${dayName}:</span><span>${hh}</span><span style="color:#666">:</span><span>${mm}</span><span style="color:#666">:</span><span>${ss}</span>
+                    const dayName = now.toLocaleDateString('nl-NL', { weekday: 'short' }).toUpperCase().substring(0,2);
+                    $timeTarget.html(`<div class="minimalist-container" style="background:var(--adremm-clock-bg); padding:10px; border-radius:8px; display:flex; font-family:monospace; align-items:center; justify-content:center; gap:15px; width:100%;">
+                        <div class="mini-col" style="display:flex; flex-direction:column; align-items:center;">
+                            <span style="color:var(--adremm-clock-text); font-size:32px; font-weight:bold; line-height:1;">${dayName}</span>
+                            <span style="color:var(--adremm-clock-text); font-size:10px; opacity:0.6; text-transform:uppercase; margin-top:4px;">dag</span>
                         </div>
-                        <div class="time-labels" style="color:#666; font-size:12px; display:flex; justify-content:flex-end; gap:15px; margin-top:5px; text-transform:uppercase;">
-                            <span>uur</span><span>min</span><span>sec</span>
+                        <div class="mini-col" style="display:flex; flex-direction:column; align-items:center;">
+                            <span style="color:var(--adremm-clock-text); font-size:32px; font-weight:bold; line-height:1;">${hh}</span>
+                            <span style="color:var(--adremm-clock-text); font-size:10px; opacity:0.6; text-transform:uppercase; margin-top:4px;">uur</span>
+                        </div>
+                        <div class="mini-col" style="display:flex; flex-direction:column; align-items:center;">
+                            <span style="color:var(--adremm-clock-text); font-size:32px; font-weight:bold; line-height:1;">${mm}</span>
+                            <span style="color:var(--adremm-clock-text); font-size:10px; opacity:0.6; text-transform:uppercase; margin-top:4px;">min</span>
+                        </div>
+                        <div class="mini-col" style="display:flex; flex-direction:column; align-items:center;">
+                            <span style="color:var(--adremm-clock-text); font-size:32px; font-weight:bold; line-height:1;">${ss}</span>
+                            <span style="color:var(--adremm-clock-text); font-size:10px; opacity:0.6; text-transform:uppercase; margin-top:4px;">sec</span>
                         </div>
                     </div>`);
                 } else if ($timeRow.hasClass('digital-style-pixels')) {

@@ -315,6 +315,13 @@ jQuery(document).ready(function($) {
             const mm = String(now.getMinutes()).padStart(2, '0');
             const ss = String(now.getSeconds()).padStart(2, '0');
 
+            // Second-change pulse
+            if ($time.attr('data-ss') !== ss) {
+                $time.addClass('tick-flash');
+                setTimeout(() => $time.removeClass('tick-flash'), 300);
+                $time.attr('data-ss', ss);
+            }
+
             if (s.digital_style === 'alarm') {
                 const logoHtml = s.vintage_logo ? `<img src="${s.vintage_logo}" class="logo-circle" style="object-fit:cover;">` : `<div class="logo-circle">A</div>`;
                 $time.html(`<div class="radio-vintage-body"><div class="nixie-tubes"><div class="nixie-tube">${hh[0]}</div><div class="nixie-tube">${hh[1]}</div><div class="nixie-tube-gap">:</div><div class="nixie-tube">${mm[0]}</div><div class="nixie-tube">${mm[1]}</div></div><div class="radio-scale-container" style="height:80px;"><div class="scale-indicator"></div><div class="radio-scale-scroll-v" style="padding-top:30px;"></div></div><div class="radio-side-panel">${logoHtml}<div class="radio-controls-grid"><div class="power-btn on">X</div><div class="volume-knob on"><div class="knob-line"></div></div></div></div></div>`);
@@ -331,13 +338,23 @@ jQuery(document).ready(function($) {
                     $time.html(html).css('display', 'flex');
                 }
             } else if (s.digital_style === 'design') {
-                const dayName = now.toLocaleDateString('nl-NL', { weekday: 'short' }).toUpperCase();
-                $time.html(`<div class="minimalist-container" style="background:#000; color:#fff; padding:15px; border-radius:8px; display:inline-block; font-family:monospace; width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center;">
-                    <div class="time-main" style="font-size:42px; line-height:1; display:flex; align-items:center; gap:5px;">
-                        <span style="color:#ff3b30; margin-right:5px;">${dayName}:</span><span>${hh}</span><span style="color:#666">:</span><span>${mm}</span><span style="color:#666">:</span><span>${ss}</span>
+                const dayName = now.toLocaleDateString('nl-NL', { weekday: 'short' }).toUpperCase().substring(0,2);
+                $time.html(`<div class="minimalist-container" style="background:var(--user-bg-final); padding:10px; border-radius:8px; display:flex; font-family:monospace; align-items:center; justify-content:center; gap:15px; width:100%;">
+                    <div class="mini-col" style="display:flex; flex-direction:column; align-items:center;">
+                        <span style="color:var(--user-text-final); font-size:32px; font-weight:bold; line-height:1;">${dayName}</span>
+                        <span style="color:var(--user-text-final); font-size:10px; opacity:0.6; text-transform:uppercase; margin-top:4px;">dag</span>
                     </div>
-                    <div class="time-labels" style="color:#666; font-size:12px; display:flex; justify-content:flex-end; gap:15px; margin-top:5px; text-transform:uppercase; width:100%; padding-right:10px;">
-                        <span>uur</span><span>min</span><span>sec</span>
+                    <div class="mini-col" style="display:flex; flex-direction:column; align-items:center;">
+                        <span style="color:var(--user-text-final); font-size:32px; font-weight:bold; line-height:1;">${hh}</span>
+                        <span style="color:var(--user-text-final); font-size:10px; opacity:0.6; text-transform:uppercase; margin-top:4px;">uur</span>
+                    </div>
+                    <div class="mini-col" style="display:flex; flex-direction:column; align-items:center;">
+                        <span style="color:var(--user-text-final); font-size:32px; font-weight:bold; line-height:1;">${mm}</span>
+                        <span style="color:var(--user-text-final); font-size:10px; opacity:0.6; text-transform:uppercase; margin-top:4px;">min</span>
+                    </div>
+                    <div class="mini-col" style="display:flex; flex-direction:column; align-items:center;">
+                        <span style="color:var(--user-text-final); font-size:32px; font-weight:bold; line-height:1;">${ss}</span>
+                        <span style="color:var(--user-text-final); font-size:10px; opacity:0.6; text-transform:uppercase; margin-top:4px;">sec</span>
                     </div>
                 </div>`);
             } else { $time.text(`${hh}:${mm}:${ss}`); }
