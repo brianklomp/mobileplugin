@@ -32,27 +32,33 @@ $style_vars = sprintf(
 <div id="adremm-clock-wrapper" class="<?php echo esc_attr($layout_class); ?> <?php echo esc_attr($position_class); ?> <?php echo esc_attr($theme_class); ?> panel-size-<?php echo esc_attr(isset($settings['panel_size']) ? $settings['panel_size'] : 'normal'); ?> <?php echo esc_attr($mobile_vis_class); ?> <?php echo esc_attr($mobile_pos_class); ?> <?php echo esc_attr($mobile_size_class); ?> <?php echo (isset($settings['panel_custom_override']) && $settings['panel_custom_override'] === 'yes') ? 'custom-width-active' : ''; ?>" style="<?php echo esc_attr($style_vars); ?> <?php if(isset($settings['panel_custom_override']) && $settings['panel_custom_override'] === 'yes') { echo '--panel-width: ' . esc_attr($settings['panel_width']) . 'px;'; } ?>">
 
     <div class="adremm-clock-container" style="box-shadow: <?php echo esc_attr(isset($settings['panel_shadow']) ? $settings['panel_shadow'] : 'none'); ?>; border: <?php echo esc_attr(isset($settings['panel_border']) ? $settings['panel_border'] : 'none'); ?>; width: 100%; --digital-width-final: <?php echo (isset($settings['digital_style']) && $settings['digital_style'] === 'custom') ? 'calc(' . esc_attr($settings['digital_width']) . 'px * var(--panel-scale))' : '100%'; ?>; --digital-height-final: <?php echo (isset($settings['digital_style']) && $settings['digital_style'] === 'custom') ? 'calc(' . esc_attr($settings['digital_height']) . 'px * var(--panel-scale))' : 'auto'; ?>;">
-        <?php if (!$is_bar && ($settings['show_close_x'] === 'yes' || $settings['show_close_label'] === 'yes')): ?>
-            <button class="adremm-clock-close anim-<?php echo esc_attr(isset($settings['close_x_anim']) ? $settings['close_x_anim'] : 'fade'); ?>" title="<?php _e('Sluiten', 'adremm-clock-plugin'); ?>" style="color: <?php echo esc_attr(isset($settings['color_close_x']) ? $settings['color_close_x'] : (isset($settings['color_close_label']) ? $settings['color_close_label'] : '#000')); ?>;">
-                <?php if ($settings['show_close_label'] === 'yes'): ?>
-                    <span class="close-label" style="color: <?php echo esc_attr($settings['color_close_label']); ?>;"><?php echo esc_html($settings['close_label']); ?></span>
-                <?php endif; ?>
-                <?php if ($settings['show_close_x'] === 'yes'): ?>
-                    <span class="close-x" style="font-size: <?php echo esc_attr($settings['close_x_size']); ?>px;">&times;</span>
-                <?php endif; ?>
-            </button>
-        <?php endif; ?>
 
-        <div class="adremm-clock-main" style="display: flex; flex-direction: column; <?php
-            if (isset($settings['status_pos']) && $settings['status_pos'] === 'above_digital') { echo 'order: 10;'; }
-        ?>">
+        <div class="adremm-clock-main" style="display: flex; flex-direction: column;">
+
+            <div class="adremm-clock-header" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; order: -10; width: 100%;">
+                <div class="header-status-left" style="flex: 1; text-align: left;">
+                    <?php if (isset($settings['show_status']) && $settings['show_status'] === 'yes' && ($settings['status_pos'] === 'above_digital' || $settings['status_pos'] === 'above_analog')): ?>
+                        <div class="status-row header-status" style="margin: 0; color: <?php echo ($status_data['status'] === 'open') ? esc_attr(isset($settings['color_open']) ? $settings['color_open'] : '#0f0') : esc_attr(isset($settings['color_closed']) ? $settings['color_closed'] : '#f00'); ?>; font-family: <?php echo (isset($settings['font_status']) && $settings['font_status'] === 'Thema' ? 'inherit' : "'" . esc_attr(isset($settings['font_status']) ? $settings['font_status'] : 'Inter') . "'"); ?>;">
+                            <?php echo esc_html($status_data['text']); ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+
+                <?php if (!$is_bar && ($settings['show_close_x'] === 'yes' || $settings['show_close_label'] === 'yes')): ?>
+                    <button class="adremm-clock-close anim-<?php echo esc_attr(isset($settings['close_x_anim']) ? $settings['close_x_anim'] : 'fade'); ?>" title="<?php _e('Sluiten', 'adremm-clock-plugin'); ?>" style="position: static; color: <?php echo esc_attr(isset($settings['color_close_x']) ? $settings['color_close_x'] : (isset($settings['color_close_label']) ? $settings['color_close_label'] : '#000')); ?>; flex-shrink: 0; margin-left: 10px; display: flex; align-items: center; gap: 5px; background: none; border: none; cursor: pointer; padding: 0;">
+                        <?php if ($settings['show_close_label'] === 'yes'): ?>
+                            <span class="close-label" style="color: <?php echo esc_attr($settings['color_close_label']); ?>; font-size: <?php echo esc_attr($settings['close_label_font_size']); ?>px;"><?php echo esc_html($settings['close_label']); ?></span>
+                        <?php endif; ?>
+                        <?php if ($settings['show_close_x'] === 'yes'): ?>
+                            <span class="close-x" style="font-size: <?php echo esc_attr($settings['close_x_size']); ?>px;">&times;</span>
+                        <?php endif; ?>
+                    </button>
+                <?php endif; ?>
+            </div>
+
             <!-- Analog Section -->
             <?php if (isset($settings['show_analog']) && $settings['show_analog'] === 'yes'): ?>
-                <div class="adremm-clock-analog" style="<?php
-                    if (isset($settings['status_pos']) && $settings['status_pos'] === 'above_analog') { echo 'order: 5;'; }
-                    elseif (isset($settings['status_pos']) && $settings['status_pos'] === 'below_analog') { echo 'order: 2;'; }
-                    else { echo 'order: 1;'; }
-                ?>">
+                <div class="adremm-clock-analog" style="order: 10;">
                     <div class="face <?php echo (isset($settings['analog_theme']) && $settings['analog_theme'] === 'mondriaan') ? 'theme-mondriaan' : ''; ?>" style="
                         background-color: <?php echo (isset($settings['analog_theme']) && $settings['analog_theme'] === 'mondriaan') ? '#fff' : esc_attr(isset($settings['analog_bg_color']) ? $settings['analog_bg_color'] : '#000'); ?>;
                         background-image: <?php echo (!empty($settings['analog_bg_image']) && (!isset($settings['analog_theme']) || $settings['analog_theme'] !== 'mondriaan')) ? 'url('.esc_url($settings['analog_bg_image']).')' : 'none'; ?>;
@@ -99,7 +105,7 @@ $style_vars = sprintf(
                         <?php if (isset($settings['digital_style']) && $settings['digital_style'] === 'custom' && !empty($settings['digital_font_url'])): ?>
                             <style>@font-face { font-family: 'CustomFont'; src: url('<?php echo esc_url($settings['digital_font_url']); ?>'); }</style>
                         <?php endif; ?>
-                        <div class="time-row digital-style-<?php echo esc_attr(isset($settings['digital_style']) ? $settings['digital_style'] : 'custom'); ?> <?php echo (isset($settings['digital_glow']) && $settings['digital_glow'] === 'yes') ? 'has-glow' : ''; ?> <?php echo (isset($settings['digital_orientation']) && $settings['digital_orientation'] === 'vertical') ? 'vertical' : ''; ?>" style="
+                        <div class="time-row digital-style-<?php echo esc_attr(isset($settings['digital_style']) ? $settings['digital_style'] : 'custom'); ?> <?php echo (isset($settings['digital_glow']) && $settings['digital_glow'] === 'yes') ? 'has-glow' : ''; ?> <?php echo (isset($settings['digital_orientation']) && $settings['digital_orientation'] === 'vertical') ? 'vertical' : ''; ?>" style="order: 20;
                         font-family: <?php
                             if (isset($settings['digital_style']) && $settings['digital_style'] === 'custom' && !empty($settings['digital_font_url'])) {
                                 echo "'CustomFont', sans-serif";
@@ -165,24 +171,26 @@ $style_vars = sprintf(
                 <?php endif; ?>
 
                 <?php if (isset($settings['show_status']) && $settings['show_status'] === 'yes'): ?>
+                    <?php if (!($settings['status_pos'] === 'above_digital' || $settings['status_pos'] === 'above_analog')): ?>
                     <div class="status-row" style="color: <?php echo ($status_data['status'] === 'open') ? esc_attr(isset($settings['color_open']) ? $settings['color_open'] : '#0f0') : esc_attr(isset($settings['color_closed']) ? $settings['color_closed'] : '#f00'); ?>; font-family: <?php echo (isset($settings['font_status']) && $settings['font_status'] === 'Thema' ? 'inherit' : "'" . esc_attr(isset($settings['font_status']) ? $settings['font_status'] : 'Inter') . "'"); ?>; <?php
                         if (isset($settings['status_pos'])) {
-                            if ($settings['status_pos'] === 'above_digital') echo 'order: 3;';
-                            elseif ($settings['status_pos'] === 'above_analog') echo 'order: 0;';
-                            elseif ($settings['status_pos'] === 'below_analog') echo 'order: 2;';
-                            elseif ($settings['status_pos'] === 'below_date') echo 'order: 5;';
+                            if ($settings['status_pos'] === 'below_analog') echo 'order: 12;';
+                            elseif ($settings['status_pos'] === 'below_digital') echo 'order: 22;';
+                            elseif ($settings['status_pos'] === 'below_date') echo 'order: 32;';
+                            else echo 'order: 21;';
                         }
                     ?>"><?php echo esc_html($status_data['text']); ?></div>
+                    <?php endif; ?>
                 <?php endif; ?>
 
                 <?php if (isset($settings['show_date']) && $settings['show_date'] === 'yes'): ?>
-                    <div class="date-row" style="order: 4; color: <?php echo esc_attr(isset($settings['color_date']) ? $settings['color_date'] : '#ccc'); ?>; font-family: <?php echo (isset($settings['font_date']) && $settings['font_date'] === 'Thema' ? 'inherit' : "'" . esc_attr(isset($settings['font_date']) ? $settings['font_date'] : 'Inter') . "'"); ?>;">
+                    <div class="date-row" style="order: 30; color: <?php echo esc_attr(isset($settings['color_date']) ? $settings['color_date'] : '#ccc'); ?>; font-family: <?php echo (isset($settings['font_date']) && $settings['font_date'] === 'Thema' ? 'inherit' : "'" . esc_attr(isset($settings['font_date']) ? $settings['font_date'] : 'Inter') . "'"); ?>;">
                         <span class="date-text"></span>
                     </div>
                 <?php endif; ?>
 
                 <?php if (!empty($settings['extra_message'])): ?>
-                    <div class="extra-row" style="order: 10; color: <?php echo esc_attr(isset($settings['extra_color']) ? $settings['extra_color'] : '#aaa'); ?>; font-size: <?php echo esc_attr(isset($settings['extra_font_size']) ? $settings['extra_font_size'] : '11'); ?>px;">
+                    <div class="extra-row" style="order: 40; color: <?php echo esc_attr(isset($settings['extra_color']) ? $settings['extra_color'] : '#aaa'); ?>; font-size: <?php echo esc_attr(isset($settings['extra_font_size']) ? $settings['extra_font_size'] : '11'); ?>px;">
                         <span><?php echo esc_html($settings['extra_message']); ?></span>
                     </div>
                 <?php endif; ?>

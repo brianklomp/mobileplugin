@@ -108,7 +108,7 @@
 
 /* Common Elements */
 .adremm-clock-analog { margin-bottom: 15px; }
-.face { border-radius: 50%; background: #000; border: 2px solid #3399ff; position: relative; margin: 0 auto; overflow: hidden; }
+.face { border-radius: 50%; background: #000; border: 2px solid #3399ff; position: relative; margin: 0 auto; overflow: visible !important; display: flex; align-items: center; justify-content: center; }
 
 /* MONDRIAAN THEME - New Design based on Mondriaan.png */
 .face.theme-mondriaan {
@@ -155,9 +155,10 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    transform: translateX(-50.1%) rotate(var(--adremm-rotate, 0deg)) scale(var(--adremm-scale, 1)) translateY(var(--p-y, 0%));
+    transform: translateX(-50%) rotate(var(--adremm-rotate, 0deg)) scale(var(--adremm-scale, 1)) translateY(var(--p-y, 0%));
     transform-origin: 50% 100%;
     transition: none;
+    pointer-events: none;
 }
 .h-hour.has-overshoot, .h-min.has-overshoot, .h-sec.has-overshoot {
     --p-y: 10%; /* Shifts the whole hand so 90% is at the pivot point */
@@ -233,12 +234,12 @@
 
 /* VINTAGE RADIO */
 .time-row.digital-style-alarm {
-    background: #331d14; padding: calc(10px * var(--panel-scale)); border: calc(6px * var(--panel-scale)) solid #4a2c1e; border-radius: calc(20px * var(--panel-scale)); box-shadow: 0 10px 30px rgba(0,0,0,0.8), inset 0 0 40px rgba(0,0,0,0.5); position: relative; overflow: hidden; display: flex !important; width: 100% !important;
+    background: #331d14; padding: calc(10px * var(--panel-scale)); border: calc(6px * var(--panel-scale)) solid #4a2c1e; border-radius: calc(20px * var(--panel-scale)); box-shadow: 0 10px 30px rgba(0,0,0,0.8), inset 0 0 40px rgba(0,0,0,0.5); position: relative; overflow: hidden; display: flex !important; width: 100% !important; min-width: 0;
 }
-.radio-vintage-body { display: flex; align-items: center; justify-content: center; gap: calc(5px * var(--panel-scale)); width: 100%; }
-.nixie-tubes { display: flex; gap: calc(3px * var(--panel-scale)); background: #1a0f0a; padding: calc(8px * var(--panel-scale)); border-radius: calc(12px * var(--panel-scale)); border: calc(3px * var(--panel-scale)) solid #2a1b15; box-shadow: inset 0 0 30px #000; align-items: center; flex-shrink: 0; }
+.radio-vintage-body { display: flex; align-items: center; justify-content: center; gap: calc(5px * var(--panel-scale)); width: 100%; min-width: 0; }
+.nixie-tubes { display: flex; gap: calc(3px * var(--panel-scale)); background: #1a0f0a; padding: calc(8px * var(--panel-scale)); border-radius: calc(12px * var(--panel-scale)); border: calc(3px * var(--panel-scale)) solid #2a1b15; box-shadow: inset 0 0 30px #000; align-items: center; flex-shrink: 1; min-width: 0; }
 .nixie-tube {
-    width: calc(40px * var(--panel-scale)); height: calc(70px * var(--panel-scale));
+    width: calc(40px * var(--panel-scale)); height: calc(70px * var(--panel-scale)); flex-shrink: 1; min-width: calc(25px * var(--panel-scale));
     background:
         radial-gradient(circle, rgba(255,102,0,0.1) 0%, transparent 80%),
         linear-gradient(rgba(255,255,255,0.12) 1px, transparent 1px),
@@ -253,7 +254,7 @@
 .scale-mark { height: 20px; font-size: 10px; color: #333; font-weight: bold; display: flex; align-items: center; gap: 3px; width: 100%; justify-content: center; border-bottom: 1px solid #eee; }
 .scale-mark span { color: #f00; font-size: 12px; }
 .scale-indicator { position: absolute; top: 50%; left: -2px; transform: translateY(-50%); border-left: 8px solid #444; border-top: 5px solid transparent; border-bottom: 5px solid transparent; z-index: 10; }
-.radio-side-panel { display: flex; flex-direction: column; align-items: center; gap: calc(8px * var(--panel-scale)); flex-shrink: 0; min-width: calc(60px * var(--panel-scale)); }
+.radio-side-panel { display: flex; flex-direction: column; align-items: center; gap: calc(8px * var(--panel-scale)); flex-shrink: 1; min-width: calc(50px * var(--panel-scale)); }
 .logo-circle { width: 24px; height: 24px; border: 2px solid #fff; border-radius: 50%; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; }
 .brand-text { font-family: 'Brush Script MT', cursive; color: #ff6600; font-size: 12px; margin-top: -3px; }
 .radio-controls-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: #222; padding: 8px; border-radius: 8px; border: 1px solid #111; box-shadow: inset 0 0 5px #000; }
@@ -326,7 +327,7 @@
 #adremm-clock-wrapper.adremm-clock-pos-middle-right .adremm-clock-tab { left: 0; top: 50%; transform: translateY(-50%); border-radius: 0 10px 10px 0; }
 #adremm-clock-wrapper.adremm-clock-pos-middle-left .adremm-clock-tab { right: 0; top: 50%; transform: translateY(-50%); border-radius: 10px 0 0 10px; }
 
-.adremm-clock-close { position: absolute; top: 10px; right: 10px; background: transparent !important; border: none; cursor: pointer; display: flex; align-items: center; gap: 5px; z-index: 20; padding: 0; box-shadow: none !important; }
+.adremm-clock-close { position: static; background: transparent !important; border: none; cursor: pointer; display: flex; align-items: center; gap: 5px; z-index: 20; padding: 0; box-shadow: none !important; }
 
 .adremm-clock-mobile-hide { display: none !important; }
 

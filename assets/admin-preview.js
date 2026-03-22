@@ -99,6 +99,12 @@ jQuery(document).ready(function($) {
 
     function updatePreview() {
         const { width, scale, customOverride } = updateWidthLogic();
+
+        // Initial setup of header if not exists
+        if ($liveView.find('.adremm-clock-header').length === 0) {
+            $liveView.find('.adremm-clock-container').prepend('<div class="adremm-clock-header" style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:15px; order:-10; width:100%;"><div class="header-status-left" style="flex:1; text-align:left;"></div></div>');
+        }
+
         const s = {
             theme_mode: getRadioVal('theme_mode'),
             theme_font: getVal('theme_font'),
@@ -338,13 +344,27 @@ jQuery(document).ready(function($) {
         } else { $time.parent().hide(); }
 
         const $status = $liveView.find('.preview-status');
+        const $headerStatusContainer = $liveView.find('.header-status-left');
+
         $status.text(s.text_open).css({ 'color': s.color_open, 'font-family': (s.font_status && s.font_status !== 'inherit') ? `"${s.font_status}"` : 'inherit' });
 
-        // Match template order logic
-        if (s.status_pos === 'above_digital') $status.css('order', '3');
-        else if (s.status_pos === 'above_analog') $status.css('order', '0');
-        else if (s.status_pos === 'below_analog') $status.css('order', '2');
-        else if (s.status_pos === 'below_date') $status.css('order', '5');
+        // Match new template logic
+        if (s.status_pos === 'above_digital' || s.status_pos === 'above_analog') {
+            if ($headerStatusContainer.find('.preview-status').length === 0) {
+                $headerStatusContainer.append($status);
+            }
+            $status.css('order', '0');
+        } else {
+            const $info = $liveView.find('.clock-info');
+            if ($info.find('.preview-status').length === 0) {
+                $info.append($status);
+            }
+            if (s.status_pos === 'below_analog') $status.css('order', '12');
+            else if (s.status_pos === 'below_digital') $status.css('order', '22');
+            else if (s.status_pos === 'below_date') $status.css('order', '32');
+            else $status.css('order', '21');
+        }
+
         updateCloseBtn(s);
     }
 
@@ -363,9 +383,10 @@ jQuery(document).ready(function($) {
     });
 
     function updateCloseBtn(s) {
-        let $btn = $liveView.find('.preview-close');
-        if ($btn.length === 0) { $btn = $('<div class="preview-close"></div>'); $liveView.prepend($btn); }
-        $btn.html('').attr('style', 'position:absolute; top:10px; right:10px; display:flex; align-items:center; gap:5px; z-index:20;');
+        let $header = $liveView.find('.adremm-clock-header');
+        let $btn = $header.find('.preview-close');
+        if ($btn.length === 0) { $btn = $('<div class="preview-close"></div>'); $header.append($btn); }
+        $btn.html('').attr('style', 'display:flex; align-items:center; gap:5px; z-index:20; margin-left:auto;');
         if (s.show_close_label === 'yes') $btn.append(`<span class="close-label" style="color:${s.color_close_label}; font-size:${s.close_label_font_size}px;">${s.close_label}</span>`);
         if (s.show_close_x === 'yes') $btn.append(`<span class="close-x" style="font-size:${s.close_x_size}px; color:${s.color_close_x}; line-height:1;">&times;</span>`);
         if (s.show_close_x !== 'yes' && s.show_close_label !== 'yes') $btn.hide(); else $btn.show();
