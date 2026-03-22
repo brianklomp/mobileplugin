@@ -44,13 +44,14 @@ $style_vars = sprintf(
         <?php endif; ?>
 
         <div class="adremm-clock-main" style="display: flex; flex-direction: column; <?php
-            if (isset($settings['status_pos']) && $settings['status_pos'] === 'above_digital') { echo 'order: 0;'; }
+            if (isset($settings['status_pos']) && $settings['status_pos'] === 'above_digital') { echo 'order: 10;'; }
         ?>">
             <!-- Analog Section -->
             <?php if (isset($settings['show_analog']) && $settings['show_analog'] === 'yes'): ?>
                 <div class="adremm-clock-analog" style="<?php
-                    if (isset($settings['status_pos']) && $settings['status_pos'] === 'above_analog') { echo 'order: -1;'; }
-                    elseif (isset($settings['status_pos']) && $settings['status_pos'] === 'below_analog') { echo 'order: 0;'; }
+                    if (isset($settings['status_pos']) && $settings['status_pos'] === 'above_analog') { echo 'order: 5;'; }
+                    elseif (isset($settings['status_pos']) && $settings['status_pos'] === 'below_analog') { echo 'order: 2;'; }
+                    else { echo 'order: 1;'; }
                 ?>">
                     <div class="face <?php echo (isset($settings['analog_theme']) && $settings['analog_theme'] === 'mondriaan') ? 'theme-mondriaan' : ''; ?>" style="
                         background-color: <?php echo (isset($settings['analog_theme']) && $settings['analog_theme'] === 'mondriaan') ? '#fff' : esc_attr(isset($settings['analog_bg_color']) ? $settings['analog_bg_color'] : '#000'); ?>;
@@ -74,18 +75,18 @@ $style_vars = sprintf(
                             <?php for($i=1; $i<=60; $i++): if($i%5!==0): ?><i style="transform: rotate(<?php echo $i*6; ?>deg)"></i><?php endif; endfor; ?>
                         </div>
                         <div class="h-hour <?php echo esc_attr(isset($settings['hand_hour_style']) ? $settings['hand_hour_style'] : 'rectangle'); ?> <?php echo (isset($settings['analog_overshoot']) && $settings['analog_overshoot'] === 'yes') ? 'has-overshoot' : ''; ?>" style="background-color: <?php echo esc_attr(isset($settings['hand_hour_color']) ? $settings['hand_hour_color'] : '#fff'); ?>; color: <?php echo esc_attr(isset($settings['hand_hour_color']) ? $settings['hand_hour_color'] : '#fff'); ?>; width: <?php echo esc_attr(isset($settings['hand_hour_thick']) ? $settings['hand_hour_thick'] : '4'); ?>px; height: <?php echo esc_attr(isset($settings['hand_hour_len']) ? $settings['hand_hour_len'] : '50'); ?>%; --adremm-scale: <?php echo esc_attr(isset($settings['analog_hand_scale']) ? $settings['analog_hand_scale'] : '1.0'); ?>;">
-                            <?php if (isset($settings['analog_center_ring']) && $settings['analog_center_ring'] === 'yes'): ?>
-                                <div class="center-ring" style="width:<?php echo esc_attr(isset($settings['analog_center_ring_size']) ? $settings['analog_center_ring_size'] : '8'); ?>px; height:<?php echo esc_attr(isset($settings['analog_center_ring_size']) ? $settings['analog_center_ring_size'] : '8'); ?>px; background:<?php echo esc_attr(isset($settings['hand_hour_color']) ? $settings['hand_hour_color'] : '#fff'); ?>;"></div>
+                            <?php if (isset($settings['hand_hour_center_ring']) && $settings['hand_hour_center_ring'] === 'yes'): ?>
+                                <div class="center-ring" style="width:<?php echo esc_attr(isset($settings['hand_hour_center_size']) ? $settings['hand_hour_center_size'] : '8'); ?>px; height:<?php echo esc_attr(isset($settings['hand_hour_center_size']) ? $settings['hand_hour_center_size'] : '8'); ?>px; background:<?php echo esc_attr(isset($settings['hand_hour_center_color']) ? $settings['hand_hour_center_color'] : '#fff'); ?>;"></div>
                             <?php endif; ?>
                         </div>
                         <div class="h-min <?php echo esc_attr(isset($settings['hand_min_style']) ? $settings['hand_min_style'] : 'rectangle'); ?> <?php echo (isset($settings['analog_overshoot']) && $settings['analog_overshoot'] === 'yes') ? 'has-overshoot' : ''; ?>" style="background-color: <?php echo esc_attr(isset($settings['hand_min_color']) ? $settings['hand_min_color'] : '#fff'); ?>; color: <?php echo esc_attr(isset($settings['hand_min_color']) ? $settings['hand_min_color'] : '#fff'); ?>; width: <?php echo esc_attr(isset($settings['hand_min_thick']) ? $settings['hand_min_thick'] : '3'); ?>px; height: <?php echo esc_attr(isset($settings['hand_min_len']) ? $settings['hand_min_len'] : '70'); ?>%; --adremm-scale: <?php echo esc_attr(isset($settings['analog_hand_scale']) ? $settings['analog_hand_scale'] : '1.0'); ?>;">
-                            <?php if (isset($settings['analog_center_ring']) && $settings['analog_center_ring'] === 'yes'): ?>
-                                <div class="center-ring" style="width:<?php echo esc_attr(isset($settings['analog_center_ring_size']) ? $settings['analog_center_ring_size'] : '8'); ?>px; height:<?php echo esc_attr(isset($settings['analog_center_ring_size']) ? $settings['analog_center_ring_size'] : '8'); ?>px; background:<?php echo esc_attr(isset($settings['hand_min_color']) ? $settings['hand_min_color'] : '#fff'); ?>;"></div>
+                            <?php if (isset($settings['hand_min_center_ring']) && $settings['hand_min_center_ring'] === 'yes'): ?>
+                                <div class="center-ring" style="width:<?php echo esc_attr(isset($settings['hand_min_center_size']) ? $settings['hand_min_center_size'] : '8'); ?>px; height:<?php echo esc_attr(isset($settings['hand_min_center_size']) ? $settings['hand_min_center_size'] : '8'); ?>px; background:<?php echo esc_attr(isset($settings['hand_min_center_color']) ? $settings['hand_min_center_color'] : '#fff'); ?>;"></div>
                             <?php endif; ?>
                         </div>
                         <div class="h-sec <?php echo esc_attr(isset($settings['hand_sec_style']) ? $settings['hand_sec_style'] : 'point'); ?> <?php echo (isset($settings['analog_overshoot']) && $settings['analog_overshoot'] === 'yes') ? 'has-overshoot' : ''; ?>" style="background-color: <?php echo esc_attr(isset($settings['hand_sec_color']) ? $settings['hand_sec_color'] : '#f00'); ?>; color: <?php echo esc_attr(isset($settings['hand_sec_color']) ? $settings['hand_sec_color'] : '#f00'); ?>; width: <?php echo esc_attr(isset($settings['hand_sec_thick']) ? $settings['hand_sec_thick'] : '1'); ?>px; height: <?php echo esc_attr(isset($settings['hand_sec_len']) ? $settings['hand_sec_len'] : '80'); ?>%; --adremm-scale: <?php echo esc_attr(isset($settings['analog_hand_scale']) ? $settings['analog_hand_scale'] : '1.0'); ?>;">
-                            <?php if (isset($settings['analog_center_ring']) && $settings['analog_center_ring'] === 'yes'): ?>
-                                <div class="center-ring" style="width:<?php echo esc_attr(isset($settings['analog_center_ring_size']) ? $settings['analog_center_ring_size'] : '8'); ?>px; height:<?php echo esc_attr(isset($settings['analog_center_ring_size']) ? $settings['analog_center_ring_size'] : '8'); ?>px; background:<?php echo esc_attr(isset($settings['hand_sec_color']) ? $settings['hand_sec_color'] : '#f00'); ?>;"></div>
+                            <?php if (isset($settings['hand_sec_center_ring']) && $settings['hand_sec_center_ring'] === 'yes'): ?>
+                                <div class="center-ring" style="width:<?php echo esc_attr(isset($settings['hand_sec_center_size']) ? $settings['hand_sec_center_size'] : '8'); ?>px; height:<?php echo esc_attr(isset($settings['hand_sec_center_size']) ? $settings['hand_sec_center_size'] : '8'); ?>px; background:<?php echo esc_attr(isset($settings['hand_sec_center_color']) ? $settings['hand_sec_center_color'] : '#f00'); ?>;"></div>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -166,9 +167,9 @@ $style_vars = sprintf(
                 <?php if (isset($settings['show_status']) && $settings['show_status'] === 'yes'): ?>
                     <div class="status-row" style="color: <?php echo ($status_data['status'] === 'open') ? esc_attr(isset($settings['color_open']) ? $settings['color_open'] : '#0f0') : esc_attr(isset($settings['color_closed']) ? $settings['color_closed'] : '#f00'); ?>; font-family: <?php echo (isset($settings['font_status']) && $settings['font_status'] === 'Thema' ? 'inherit' : "'" . esc_attr(isset($settings['font_status']) ? $settings['font_status'] : 'Inter') . "'"); ?>; <?php
                         if (isset($settings['status_pos'])) {
-                            if ($settings['status_pos'] === 'above_digital') echo 'order: -1;';
-                            elseif ($settings['status_pos'] === 'above_analog') echo 'order: -2;';
-                            elseif ($settings['status_pos'] === 'below_analog') echo 'order: 1;';
+                            if ($settings['status_pos'] === 'above_digital') echo 'order: 3;';
+                            elseif ($settings['status_pos'] === 'above_analog') echo 'order: 0;';
+                            elseif ($settings['status_pos'] === 'below_analog') echo 'order: 2;';
                             elseif ($settings['status_pos'] === 'below_date') echo 'order: 5;';
                         }
                     ?>"><?php echo esc_html($status_data['text']); ?></div>

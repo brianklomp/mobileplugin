@@ -158,18 +158,30 @@ jQuery(document).ready(function($) {
             analog_center_ring_size: getVal('analog_center_ring_size'),
             analog_center_ring_color: getVal('analog_center_ring_color'),
             analog_overshoot: $form.find('[name="adremm_clock_settings[analog_overshoot]"]').is(':checked') ? 'yes' : 'no',
+
             hand_hour_color: getVal('hand_hour_color'),
             hand_hour_thick: getVal('hand_hour_thick'),
             hand_hour_len: getVal('hand_hour_len'),
             hand_hour_style: getVal('hand_hour_style'),
+            hand_hour_center_ring: $form.find('[name="adremm_clock_settings[hand_hour_center_ring]"]').is(':checked') ? 'yes' : 'no',
+            hand_hour_center_size: getVal('hand_hour_center_size'),
+            hand_hour_center_color: getVal('hand_hour_center_color'),
+
             hand_min_color: getVal('hand_min_color'),
             hand_min_thick: getVal('hand_min_thick'),
             hand_min_len: getVal('hand_min_len'),
             hand_min_style: getVal('hand_min_style'),
+            hand_min_center_ring: $form.find('[name="adremm_clock_settings[hand_min_center_ring]"]').is(':checked') ? 'yes' : 'no',
+            hand_min_center_size: getVal('hand_min_center_size'),
+            hand_min_center_color: getVal('hand_min_center_color'),
+
             hand_sec_color: getVal('hand_sec_color'),
             hand_sec_thick: getVal('hand_sec_thick'),
             hand_sec_len: getVal('hand_sec_len'),
             hand_sec_style: getVal('hand_sec_style'),
+            hand_sec_center_ring: $form.find('[name="adremm_clock_settings[hand_sec_center_ring]"]').is(':checked') ? 'yes' : 'no',
+            hand_sec_center_size: getVal('hand_sec_center_size'),
+            hand_sec_center_color: getVal('hand_sec_center_color'),
             hand_sweep: getVal('hand_sweep'),
             show_close_x: $form.find('[name="adremm_clock_settings[show_close_x]"]').is(':checked') ? 'yes' : 'no',
             close_x_size: getVal('close_x_size'),
@@ -260,8 +272,8 @@ jQuery(document).ready(function($) {
                 // Remove existing center ring to prevent duplication
                 $h.find('.center-ring').remove();
 
-                if (s.analog_center_ring === 'yes') {
-                    $h.append(`<div class="center-ring" style="width:${s.analog_center_ring_size}px; height:${s.analog_center_ring_size}px; background:${s.analog_center_ring_color};"></div>`);
+                if (s['hand_' + h + '_center_ring'] === 'yes') {
+                    $h.append(`<div class="center-ring" style="width:${s['hand_' + h + '_center_size']}px; height:${s['hand_' + h + '_center_size']}px; background:${s['hand_' + h + '_center_color']};"></div>`);
                 }
             });
         } else { $analog.hide(); }
@@ -325,7 +337,14 @@ jQuery(document).ready(function($) {
             } else { $time.text(`${hh}:${mm}:${ss}`); }
         } else { $time.parent().hide(); }
 
-        $liveView.find('.preview-status').text(s.text_open).css({ 'color': s.color_open, 'font-family': (s.font_status && s.font_status !== 'inherit') ? `"${s.font_status}"` : 'inherit' });
+        const $status = $liveView.find('.preview-status');
+        $status.text(s.text_open).css({ 'color': s.color_open, 'font-family': (s.font_status && s.font_status !== 'inherit') ? `"${s.font_status}"` : 'inherit' });
+
+        // Match template order logic
+        if (s.status_pos === 'above_digital') $status.css('order', '3');
+        else if (s.status_pos === 'above_analog') $status.css('order', '0');
+        else if (s.status_pos === 'below_analog') $status.css('order', '2');
+        else if (s.status_pos === 'below_date') $status.css('order', '5');
         updateCloseBtn(s);
     }
 

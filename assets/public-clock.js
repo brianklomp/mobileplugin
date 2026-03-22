@@ -57,7 +57,13 @@
                 if ($scaleV.length) {
                     const itemHeight = 20;
                     const secVal = s + ms/1000;
-                    const offset = secVal * itemHeight;
+                    let offset = secVal * itemHeight;
+
+                    // Seamless rolling for vintage scale
+                    if (s === 59 && ms > 900) {
+                         // We are approaching the end, let it roll to 60 then snap
+                    }
+
                     // Reset transition at the start of a minute to avoid "shooting back"
                     if (s === 0 && ms < 100) {
                         $scaleV.css('transition', 'none');
@@ -179,9 +185,12 @@
             $root.on('click', '#adremm-radio-power', function(e) {
                 e.stopPropagation();
                 $(this).toggleClass('on');
+                const $icon = $(this).find('.dashicons');
                 if ($(this).hasClass('on')) {
+                    $icon.removeClass('dashicons-marker').addClass('dashicons-controls-pause');
                     window.adremmRadio.play().catch(e => console.log('Autoplay blocked'));
                 } else {
+                    $icon.removeClass('dashicons-controls-pause').addClass('dashicons-marker');
                     window.adremmRadio.pause();
                 }
             });

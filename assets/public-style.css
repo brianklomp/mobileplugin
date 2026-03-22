@@ -155,7 +155,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    transform: translateX(-50%) rotate(var(--adremm-rotate, 0deg)) scale(var(--adremm-scale, 1)) translateY(var(--p-y, 0%));
+    transform: translateX(-50.1%) rotate(var(--adremm-rotate, 0deg)) scale(var(--adremm-scale, 1)) translateY(var(--p-y, 0%));
     transform-origin: 50% 100%;
     transition: none;
 }
@@ -264,13 +264,13 @@
 
 /* WALL CLOCK - Rolling 6 digits - Exact instructions: Muurklok should fit on 1 line */
 .time-row.digital-style-wall {
-    background: #111 !important; border: 2px solid #333 !important; border-radius: 8px !important; display: flex !important; align-items: center !important; justify-content: center !important; margin: 0 auto 15px !important; color: #fff !important; box-shadow: inset 0 0 20px rgba(0,0,0,0.9), 0 10px 25px rgba(0,0,0,0.5) !important; padding: 0 10px !important; font-family: 'Courier New', Courier, monospace !important; overflow: hidden; position: relative;
+    background: #111 !important; border: 2px solid #333 !important; border-radius: 8px !important; display: flex !important; align-items: center !important; justify-content: center !important; margin: 0 auto 15px !important; color: #fff !important; box-shadow: inset 0 0 20px rgba(0,0,0,0.9), 0 10px 25px rgba(0,0,0,0.5) !important; padding: 0 10px !important; font-family: 'Courier New', Courier, monospace !important; overflow: hidden; position: relative; width: 100% !important;
 }
 .time-row.digital-style-wall::before, .time-row.digital-style-wall::after {
     content: ""; position: absolute; left: 0; width: 100%; height: 35% !important; z-index: 20; pointer-events: none;
 }
-.time-row.digital-style-wall::before { top: 0; background: linear-gradient(180deg, #111 0%, #111 5%, rgba(17,17,17,0) 100%) !important; }
-.time-row.digital-style-wall::after { bottom: 0; background: linear-gradient(0deg, #111 0%, #111 5%, rgba(17,17,17,0) 100%) !important; }
+.time-row.digital-style-wall::before { top: 0; background: linear-gradient(180deg, rgba(17,17,17,1) 0%, rgba(17,17,17,0.7) 35%, rgba(17,17,17,0) 100%) !important; }
+.time-row.digital-style-wall::after { bottom: 0; background: linear-gradient(0deg, rgba(17,17,17,1) 0%, rgba(17,17,17,0.7) 35%, rgba(17,17,17,0) 100%) !important; }
 
 .time-row.digital-style-wall .time-digital { font-size: calc(38px * var(--panel-scale)); font-weight: 300; display: flex; align-items: center; gap: 1px; position: relative; z-index: 5; height: calc(60px * var(--panel-scale)); overflow: hidden; width: 100%; justify-content: center; white-space: nowrap; }
 .time-row.digital-style-wall .digit-col { display: flex; flex-direction: column; height: calc(60px * var(--panel-scale)); overflow: visible; position: relative; flex-shrink: 0; width: auto; }
@@ -314,7 +314,7 @@
     z-index: 2147483647;
     transition: all 0.3s ease;
 }
-.adremm-clock-tab .tab-label { transform: rotate(-90deg); white-space: nowrap; font-weight: bold; font-size: 11px; letter-spacing: 2px; }
+.adremm-clock-tab .tab-label { transform: rotate(-90deg); white-space: nowrap; font-weight: bold; font-size: 11px; letter-spacing: 2px; position: relative; left: -1px; }
 .adremm-clock-tab.tab-left { left: 0; border-radius: 0 10px 10px 0; }
 .adremm-clock-tab.tab-right { right: 0; border-radius: 10px 0 0 10px; }
 

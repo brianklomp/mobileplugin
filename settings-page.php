@@ -225,6 +225,19 @@ $fonts = adremm_clock_get_google_fonts();
                                     </td>
                                 </tr>
                                 <tr>
+                                    <th>Middenring</th>
+                                    <td>
+                                        <div class="adremm-row-flex">
+                                            <input type="hidden" name="adremm_clock_settings[hand_<?php echo $h; ?>_center_ring]" value="no">
+                                            <label><input type="checkbox" name="adremm_clock_settings[hand_<?php echo $h; ?>_center_ring]" value="yes" <?php checked($settings['hand_'.$h.'_center_ring'], 'yes'); ?>> Actief</label>
+                                            <div class="adremm-input-item">
+                                                <strong>Maat:</strong> <input type="number" name="adremm_clock_settings[hand_<?php echo $h; ?>_center_size]" value="<?php echo esc_attr($settings['hand_'.$h.'_center_size']); ?>" style="width:50px;"> px
+                                            </div>
+                                            <input type="text" name="adremm_clock_settings[hand_<?php echo $h; ?>_center_color]" value="<?php echo esc_attr($settings['hand_'.$h.'_center_color']); ?>" class="adremm-color-picker" data-alpha-enabled="true" data-alpha-color-type="rgba">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
                                     <th>Stijl</th>
                                     <td>
                                         <select name="adremm_clock_settings[hand_<?php echo $h; ?>_style]">
@@ -485,15 +498,15 @@ $fonts = adremm_clock_get_google_fonts();
                          <div class="joy-grid">
                             <?php
                             $joy_map = array(
-                                'top-left'      => array('label' => '[  ]',   'title' => __('Linksboven', 'adremm-clock-plugin')),
-                                'top-center'    => array('label' => '[HD]', 'title' => __('Boven (Header)', 'adremm-clock-plugin')),
-                                'top-right'     => array('label' => '[  ]',   'title' => __('Rechtsboven', 'adremm-clock-plugin')),
-                                'middle-left'   => array('label' => '[  ]',   'title' => __('Midden links', 'adremm-clock-plugin')),
+                                'top-left'      => array('label' => '↖',   'title' => __('Linksboven', 'adremm-clock-plugin')),
+                                'top-center'    => array('label' => '↑ HD', 'title' => __('Boven (Header)', 'adremm-clock-plugin')),
+                                'top-right'     => array('label' => '↗',   'title' => __('Rechtsoven', 'adremm-clock-plugin')),
+                                'middle-left'   => array('label' => '←',   'title' => __('Midden links', 'adremm-clock-plugin')),
                                 'center'        => array('label' => ' ',   'title' => __('Midden', 'adremm-clock-plugin'), 'is_gap' => true),
-                                'middle-right'  => array('label' => '[  ]',   'title' => __('Midden rechts', 'adremm-clock-plugin')),
-                                'bottom-left'   => array('label' => '[  ]',   'title' => __('Linksonder', 'adremm-clock-plugin')),
-                                'bottom-center' => array('label' => '[FT]', 'title' => __('Onder (Footer)', 'adremm-clock-plugin')),
-                                'bottom-right'  => array('label' => '[X]',  'title' => __('Rechtsonder', 'adremm-clock-plugin')),
+                                'middle-right'  => array('label' => '→',   'title' => __('Midden rechts', 'adremm-clock-plugin')),
+                                'bottom-left'   => array('label' => '↙',   'title' => __('Linksonder', 'adremm-clock-plugin')),
+                                'bottom-center' => array('label' => '↓ FT', 'title' => __('Onder (Footer)', 'adremm-clock-plugin')),
+                                'bottom-right'  => array('label' => '↘ X',  'title' => __('Rechtsonder', 'adremm-clock-plugin')),
                             );
                             foreach($joy_map as $k => $data):
                                 if (!empty($data['is_gap'])) { echo '<div class="joy-gap">'.esc_html($data['label']).'</div>'; continue; }

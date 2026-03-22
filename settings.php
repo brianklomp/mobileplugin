@@ -60,14 +60,26 @@ function adremm_clock_get_default_settings() {
         'hand_hour_len' => '50',
         'hand_hour_color' => '#ffffff',
         'hand_hour_style' => 'rectangle',
+        'hand_hour_center_ring' => 'yes',
+        'hand_hour_center_size' => '8',
+        'hand_hour_center_color' => '#ffffff',
+
         'hand_min_thick' => '3',
         'hand_min_len' => '70',
         'hand_min_color' => '#ffffff',
         'hand_min_style' => 'rectangle',
+        'hand_min_center_ring' => 'yes',
+        'hand_min_center_size' => '8',
+        'hand_min_center_color' => '#ffffff',
+
         'hand_sec_thick' => '1',
         'hand_sec_len' => '80',
         'hand_sec_color' => '#ff3b30',
         'hand_sec_style' => 'point',
+        'hand_sec_center_ring' => 'yes',
+        'hand_sec_center_size' => '8',
+        'hand_sec_center_color' => '#ff3b30',
+
         'hand_sweep' => 'smooth',
 
         // Digitale Tijd
@@ -171,7 +183,8 @@ function adremm_clock_settings_validate($input) {
         'hand_min_color', 'hand_sec_color', 'digital_color', 'digital_bg',
         'digital_glow_color', 'color_open', 'color_closed', 'color_date',
         'color_close_x', 'color_close_label', 'tab_color', 'tab_bg',
-        'minimalist_bg'
+        'minimalist_bg', 'hand_hour_center_color', 'hand_min_center_color', 'hand_sec_center_color',
+        'analog_center_ring_color'
     );
 
     $float_keys = array(
@@ -179,7 +192,7 @@ function adremm_clock_settings_validate($input) {
         'hand_hour_thick', 'hand_min_thick', 'hand_sec_thick', 'analog_ring_size', 'panel_width',
         'panel_width_custom', 'digital_width', 'digital_height', 'minimalist_padding', 'minimalist_radius',
         'analog_center_ring_size', 'digital_font_size', 'digital_border_size', 'digital_border_radius',
-        'close_label_font_size'
+        'close_label_font_size', 'hand_hour_center_size', 'hand_min_center_size', 'hand_sec_center_size'
     );
 
     if (is_array($input)) {
