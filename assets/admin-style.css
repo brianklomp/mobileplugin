@@ -117,7 +117,27 @@
 
 /* Preview Stage */
 .adremm-preview-col { position: sticky; top: 32px; }
-.adremm-preview-card { background: #f0f0f1; border: 1px solid #ccd0d4; border-radius: 4px; padding: 15px; }
+.adremm-preview-card { background: #f0f0f1; border: 1px solid #ccd0d4; border-radius: 4px; padding: 15px; position: relative; }
+
+/* Tab Preview Style */
+.adremm-clock-tab {
+    position: absolute;
+    width: 25px !important;
+    height: 100px !important;
+    background: #fff;
+    color: #000;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    border: 1px solid rgba(0,0,0,0.1);
+    z-index: 2147483647;
+    transition: all 0.3s ease;
+}
+.adremm-clock-tab .tab-label { transform: rotate(-90deg); white-space: nowrap; font-weight: bold; font-size: 11px; letter-spacing: 2px; position: relative; left: -1px; }
+.adremm-clock-tab.tab-left { left: 0; border-radius: 0 10px 10px 0; top: 50%; transform: translateY(-50%); display: flex !important; }
+.adremm-clock-tab.tab-right { right: 0; border-radius: 10px 0 0 10px; top: 50%; transform: translateY(-50%); display: flex !important; }
 .preview-stage { height: 350px; background: #fff; border: 1px solid #ddd; display: flex; align-items: center; justify-content: center; overflow: hidden; background-image: radial-gradient(#ddd 1px, transparent 1px); background-size: 20px 20px; margin-bottom: 15px; }
 
 #clock-live-view {
@@ -157,7 +177,7 @@
 
 .h-hour, .h-min, .h-sec {
     position: absolute;
-    bottom: 50%;
+    top: 50%;
     left: 50%;
     border-radius: 4px;
     z-index: 10;
@@ -165,12 +185,12 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    transform: translateX(-50%) rotate(var(--adremm-rotate, 0deg)) scale(var(--adremm-scale, 1)) translateY(var(--p-y, 0%));
+    transform: translate(-50%, -100%) rotate(var(--adremm-rotate, 0deg)) scale(var(--adremm-scale, 1));
     transform-origin: 50% 100%;
     transition: none;
 }
 .h-hour.has-overshoot, .h-min.has-overshoot, .h-sec.has-overshoot {
-    --p-y: 10%;
+    transform: translate(-50%, -90%) rotate(var(--adremm-rotate, 0deg)) scale(var(--adremm-scale, 1));
     transform-origin: 50% 90%;
 }
 .h-hour { height: 25px; width: 3px; }

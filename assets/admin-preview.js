@@ -366,6 +366,28 @@ jQuery(document).ready(function($) {
         }
 
         updateCloseBtn(s);
+        updateTabPreview(s);
+    }
+
+    function updateTabPreview(s) {
+        let $tab = $liveView.find('.adremm-clock-tab');
+        if ($tab.length === 0) {
+            $tab = $('<div class="adremm-clock-tab" style="display:none;"><span class="tab-label"></span></div>');
+            $liveView.append($tab);
+        }
+
+        $tab.removeClass('tab-left tab-right');
+        const pos = getRadioVal('position');
+        const isLeftSide = pos.includes('left');
+        // Opposite snapping for preview too
+        $tab.addClass(isLeftSide ? 'tab-right' : 'tab-left');
+
+        $tab.find('.tab-label').text(s.tab_text || 'KLOK');
+        $tab.css({
+            'background-color': s.tab_bg,
+            'color': s.tab_color,
+            'font-family': s.tab_font
+        });
     }
 
     $form.on('input change keyup click mouseup', 'input, select, textarea', function() {

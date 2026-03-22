@@ -108,7 +108,7 @@
 
 /* Common Elements */
 .adremm-clock-analog { margin-bottom: 15px; }
-.face { border-radius: 50%; background: #000; border: 2px solid #3399ff; position: relative; margin: 0 auto; overflow: visible !important; display: flex; align-items: center; justify-content: center; }
+.face { border-radius: 50%; background: #000; border: 2px solid #3399ff; position: relative; margin: 0 auto; overflow: visible !important; }
 
 /* MONDRIAAN THEME - New Design based on Mondriaan.png */
 .face.theme-mondriaan {
@@ -147,7 +147,7 @@
 
 .h-hour, .h-min, .h-sec {
     position: absolute;
-    bottom: 50%;
+    top: 50%;
     left: 50%;
     border-radius: 4px;
     z-index: 10;
@@ -155,13 +155,16 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    transform: translateX(-50%) rotate(var(--adremm-rotate, 0deg)) scale(var(--adremm-scale, 1)) translateY(var(--p-y, 0%));
+    /* translate(-50%, -100%) puts the bottom-center at the container center (top:50%, left:50%) */
+    transform: translate(-50%, -100%) rotate(var(--adremm-rotate, 0deg)) scale(var(--adremm-scale, 1));
     transform-origin: 50% 100%;
     transition: none;
     pointer-events: none;
 }
 .h-hour.has-overshoot, .h-min.has-overshoot, .h-sec.has-overshoot {
-    --p-y: 10%; /* Shifts the whole hand so 90% is at the pivot point */
+    /* For overshoot, we want the 90% point of the hand to be at the center. */
+    /* translate(-50%, -90%) puts the 90% point at the center. */
+    transform: translate(-50%, -90%) rotate(var(--adremm-rotate, 0deg)) scale(var(--adremm-scale, 1));
     transform-origin: 50% 90%;
 }
 
@@ -265,13 +268,13 @@
 
 /* WALL CLOCK - Rolling 6 digits - Exact instructions: Muurklok should fit on 1 line */
 .time-row.digital-style-wall {
-    background: #111 !important; border: 2px solid #333 !important; border-radius: 8px !important; display: flex !important; align-items: center !important; justify-content: center !important; margin: 0 auto 15px !important; color: #fff !important; box-shadow: inset 0 0 20px rgba(0,0,0,0.9), 0 10px 25px rgba(0,0,0,0.5) !important; padding: 0 10px !important; font-family: 'Courier New', Courier, monospace !important; overflow: hidden; position: relative; width: 100% !important;
+    background: #111 !important; border: 2px solid #333 !important; border-radius: 8px !important; display: flex !important; align-items: center !important; justify-content: center !important; margin: 0 auto 15px !important; color: #fff !important; box-shadow: inset 0 0 20px rgba(0,0,0,0.9), 0 10px 25px rgba(0,0,0,0.5) !important; padding: 0 10px !important; font-family: 'Courier New', Courier, monospace !important; overflow: hidden; position: relative; width: 100% !important; flex-wrap: nowrap !important;
 }
 .time-row.digital-style-wall::before, .time-row.digital-style-wall::after {
     content: ""; position: absolute; left: 0; width: 100%; height: 35% !important; z-index: 20; pointer-events: none;
 }
-.time-row.digital-style-wall::before { top: 0; background: linear-gradient(180deg, rgba(17,17,17,1) 0%, rgba(17,17,17,0.7) 35%, rgba(17,17,17,0) 100%) !important; }
-.time-row.digital-style-wall::after { bottom: 0; background: linear-gradient(0deg, rgba(17,17,17,1) 0%, rgba(17,17,17,0.7) 35%, rgba(17,17,17,0) 100%) !important; }
+.time-row.digital-style-wall::before { top: 0; background: linear-gradient(180deg, rgba(17,17,17,1) 0%, rgba(17,17,17,1) 35%, rgba(17,17,17,0) 100%) !important; }
+.time-row.digital-style-wall::after { bottom: 0; background: linear-gradient(0deg, rgba(17,17,17,1) 0%, rgba(17,17,17,1) 35%, rgba(17,17,17,0) 100%) !important; }
 
 .time-row.digital-style-wall .time-digital { font-size: calc(38px * var(--panel-scale)); font-weight: 300; display: flex; align-items: center; gap: 1px; position: relative; z-index: 5; height: calc(60px * var(--panel-scale)); overflow: hidden; width: 100%; justify-content: center; white-space: nowrap; }
 .time-row.digital-style-wall .digit-col { display: flex; flex-direction: column; height: calc(60px * var(--panel-scale)); overflow: visible; position: relative; flex-shrink: 0; width: auto; }

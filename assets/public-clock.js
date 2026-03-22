@@ -225,12 +225,12 @@
         if ($root.hasClass('adremm-clock-panel')) {
              function updateTabPos() {
                  $tab.removeClass('tab-left tab-right');
-                 // Standard behavior: if clock floats right, it closes to a tab on the RIGHT side.
+                 // Opposite snapping: if clock floats right, it closes to a tab on the LEFT side.
                  let isLeftSide = $root.hasClass('adremm-clock-pos-top-left') ||
                                   $root.hasClass('adremm-clock-pos-middle-left') ||
                                   $root.hasClass('adremm-clock-pos-bottom-left');
 
-                 let tabPos = isLeftSide ? 'tab-left' : 'tab-right';
+                 let tabPos = isLeftSide ? 'tab-right' : 'tab-left';
                  $tab.addClass(tabPos);
              }
              updateTabPos();
